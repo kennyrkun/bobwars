@@ -3,8 +3,30 @@
 #include <iostream>
 #include <fstream>
 
+#include <SFML\Graphics.hpp>
+
 namespace engine
 {
+	sf::Text text_default;
+
+	void draw_text(sf::RenderWindow &window, sf::Text &text, const std::string string, sf::Vector2f &pos, const sf::Vector2f &scale)
+	{
+		text.setPosition(pos);
+		text.setScale(scale);
+		text.setString(string);
+
+		window.draw(text);
+	}
+
+	void draw_text(sf::RenderWindow &window, sf::Text &text, const std::string string, const sf::Vector2f &pos)
+	{
+		text.setPosition(pos);
+		text.setScale(.2f, .2f);
+		text.setString(string);
+
+		window.draw(text);
+	}
+
 	std::string getTime()
 	{
 		time_t $time = time(0);
@@ -61,5 +83,12 @@ namespace engine
 		std::string time = hours_s + ":" + minutes_s + ":" + seconds_s;
 
 		return time;
+	}
+
+	std::string getObjectCoords(sf::Sprite &object)
+	{
+		std::string coords = "X: " + std::to_string(static_cast<int>(object.getPosition().x)) + " Y: " + std::to_string(static_cast<int>(object.getPosition().y));
+
+		return coords;
 	}
 }

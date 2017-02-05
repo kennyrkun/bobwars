@@ -61,7 +61,7 @@ namespace logger
 		write(output);
 	}
 
-	void DEBUG(std::string output)
+	void DEBUG(std::string output) // TODO: the program doesn't even run in debug mode.
 	{
 		output = engine::getTime() + " DEBUG#INFO: " + output;
 		write(output);
