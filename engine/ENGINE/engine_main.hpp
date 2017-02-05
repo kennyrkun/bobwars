@@ -1,0 +1,17 @@
+#pragma once
+
+namespace engine
+{
+	std::string getTime();
+}
+
+namespace logger
+{
+	void INFO(std::string output);
+
+	void WARNING(std::string output);
+
+	void ERROR(int type, std::string output);
+
+//	void DEBUG(std::string output);
+}
