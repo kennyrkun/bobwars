@@ -19,6 +19,9 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
+    <Filter Include="BOBWARS\Classes">
+      <UniqueIdentifier>{d0e709c4-2ae6-45de-aa2d-1eb16649a0b5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\engine\ENGINE\engine_main.cpp">
@@ -34,9 +37,6 @@
   <ItemGroup>
     <ClInclude Include="..\engine\ENGINE\engine_main.hpp">
       <Filter>ENGINE</Filter>
-    </ClInclude>
-    <ClInclude Include="game.hpp">
-      <Filter>BOBWARS\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

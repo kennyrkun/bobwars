@@ -13,6 +13,8 @@ sf::RectangleShape world;
 sf::Texture world_tex;
 sf::RectangleShape selector;
 
+static float view_speed = .1f;
+
 void showcoords(sf::RenderWindow &window, sf::Sprite &object)
 {
 	std::string coords = "X: " + 
@@ -106,13 +108,14 @@ int main(int argc, char *argv[])
 
 	logger::INFO("initializing");
 
-	sf::RenderWindow window(sf::VideoMode(800, 600), "bobwars 0.0.1", sf::Style::Titlebar | sf::Style::Close);
+	sf::RenderWindow window(sf::VideoMode(800, 600), ("bobwars 0.0." + engine::build), sf::Style::Titlebar | sf::Style::Close);
 	sf::View main_view(sf::Vector2f(400, 300), sf::Vector2f(400, 300));
 
 	gui_load();
 
 	sf::Clock clock;
 	float lastTime = 0; // for fps
+	int dont_lag_the_game(0);
 
 	// game loop
 	while (window.isOpen())
@@ -128,13 +131,25 @@ int main(int argc, char *argv[])
 			{
 				if (event.key.code == sf::Keyboard::Escape)
 					logger::INFO("pause function not yet implemented.");
+
+				if (event.key.code == sf::Keyboard::LShift)
+				{
+					view_speed = .05f;
+				}
+			}
+
+			if (event.type == sf::Event::KeyReleased)
+			{
+				if (event.key.code == sf::Keyboard::LShift)
+				{
+					view_speed = .1f;
+				}
 			}
 		}
 
 		if (window.hasFocus())
 		{
-			static float player_speed = .1f;
-			static float view_speed = .1f;
+			static float player_speed = .05f;
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 				main_view.move(0, -view_speed);
@@ -147,24 +162,13 @@ int main(int argc, char *argv[])
 
 			{
 				if (main_view.getCenter().x > 800)
-				{
 					main_view.setCenter(800, main_view.getCenter().y);
-				}
-
 				if (main_view.getCenter().y > 600)
-				{
 					main_view.setCenter(main_view.getCenter().x, 600);
-				}
-
 				if (main_view.getCenter().x < 0)
-				{
 					main_view.setCenter(0, main_view.getCenter().y);
-				}
-
 				if (main_view.getCenter().y < 0)
-				{
 					main_view.setCenter(main_view.getCenter().x, 0);
-				}
 			}
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
@@ -175,13 +179,25 @@ int main(int argc, char *argv[])
 				player.move(0, player_speed);
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 				player.move(player_speed, 0);
+
+			if (!player.getGlobalBounds().intersects(world.getGlobalBounds()))
+			{
+				static int dont_lag_the_game;
+
+				if (dont_lag_the_game == 10000)
+					dont_lag_the_game = 0;
+
+				if (dont_lag_the_game == 0)
+					logger::WARNING("player out of bounds!");
+				else
+					dont_lag_the_game++;
+			}
 		}
 
 		camera_coordinates.setPosition(main_view.getCenter().x - 199, main_view.getCenter().y - 150);
 		camera_coordinates.setString("X: " + std::to_string(static_cast<int>(main_view.getCenter().x)) + " Y: " + std::to_string(static_cast<int>(main_view.getCenter().y)));
 
 		framecounter.setPosition(main_view.getCenter().x + 172.5f, main_view.getCenter().y - 150);
-
 		framecounter.setString(std::to_string(lastTime));
 
 		float currentTime = clock.restart().asSeconds();
@@ -192,4 +208,6 @@ int main(int argc, char *argv[])
 	}
 
 	logger::INFO("exiting...");
+
+	return 0;
 }
