@@ -5,10 +5,10 @@
 
 #include <SFML\Graphics.hpp>
 
+sf::Text text_default;
+
 namespace engine
 {
-	sf::Text text_default;
-
 	void draw_text(sf::RenderWindow &window, sf::Text &text, const std::string string, sf::Vector2f &pos, const sf::Vector2f &scale)
 	{
 		text.setPosition(pos);

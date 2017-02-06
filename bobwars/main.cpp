@@ -1,31 +1,28 @@
-#include <SFML\Graphics.hpp>
 #include <ENGINE\engine_main.hpp>
-
 #include <iostream>
 
 sf::Font font;
-sf::Text coordinates;
+sf::Text text;
+
+sf::Text camera_coordinates;
 sf::Text player_coordinates;
-sf::Text coords;
-sf::Text fps;
+sf::Text framecounter;
 sf::Sprite player;
 sf::Texture player_tex;
 sf::RectangleShape world;
-sf::RectangleShape selector;
 sf::Texture world_tex;
+sf::RectangleShape selector;
 
 void showcoords(sf::RenderWindow &window, sf::Sprite &object)
 {
-	{
-		coords.setFont(font);
-		coords.setString("coordinates");
-		coords.setScale(sf::Vector2f(.2, .2));
-	}
+	std::string coords = "X: " + 
+						std::to_string(static_cast<int>(object.getPosition().x)) + 
+						" Y: " + 
+						std::to_string(static_cast<int>(object.getPosition().y));
 
-	coords.setPosition(object.getPosition().x + 15, object.getPosition().y - 5);
-	coords.setString("X: " + std::to_string(static_cast<int>(object.getPosition().x)) + " Y: " + std::to_string(static_cast<int>(object.getPosition().y)));
+	sf::Vector2f position(object.getPosition().x + 15, object.getPosition().y - 5);
 
-	window.draw(coords);
+	engine::draw_text(window, text, coords, position);
 }
 
 void move_sprite(sf::Sprite &sprite, int x, int y)
@@ -46,10 +43,11 @@ void draw(sf::RenderWindow &window, sf::View &view)
 	window.draw(world);
 	window.draw(player);
 	//gui
-	window.draw(coordinates);
-	showcoords(window, player);
-	window.draw(fps);
 
+	showcoords(window, player);
+
+	window.draw(camera_coordinates);
+	window.draw(framecounter);
 	window.display();
 }
 
@@ -63,18 +61,23 @@ void gui_load()
 	}
 	else
 	{
-		coordinates.setFont(font);
-		coordinates.setString("coordinates");
-		coordinates.setScale(sf::Vector2f(.2, .2));
+		camera_coordinates.setFont(font);
+		camera_coordinates.setString("coordinates");
+		camera_coordinates.setScale(sf::Vector2f(.2, .2));
 
 		player_coordinates.setFont(font);
 		player_coordinates.setScale(sf::Vector2f(.2, .2));
 		player_coordinates.setString("coordinates");
+
+		text.setFont(font);
+		text.setScale(sf::Vector2f(.2f, .2f));
 	}
 
+	logger::INFO("world texture...");
 	if (!world_tex.loadFromFile("resource\\textures\\world.png"))
 		std::cout << "unable to load world textures!" << std::endl;
 
+	logger::INFO("player texture...");
 	if (!player_tex.loadFromFile("resource\\textures\\player.png"))
 		std::cout << "unable to load player textures!" << std::endl;
 
@@ -82,8 +85,8 @@ void gui_load()
 	world.setTexture(&world_tex);
 	player.setTexture(player_tex);
 
-	fps.setFont(font);
-	fps.setScale(.2, .2);
+	framecounter.setFont(font);
+	framecounter.setScale(sf::Vector2f(.2f, .2f));
 
 	logger::INFO("done!");
 }
@@ -91,14 +94,7 @@ void gui_load()
 int main(int argc, char *argv[])
 {	
 	{
-		std::string args;
-
-		if (argc > 1)
-			args = "arguments";
-		else
-			args = "argument";
-
-		std::cout << "launched with " << argc << " " + args + ": " << std::endl;
+		std::cout << "launched with " << argc << " arguments: " << std::endl;
 
 		for (int i = 0; i < argc; i++)
 		{
@@ -131,20 +127,23 @@ int main(int argc, char *argv[])
 			if (event.type == sf::Event::KeyPressed)
 			{
 				if (event.key.code == sf::Keyboard::Escape)
-					std::cout << "pause function not yet implemented." << std::endl;
+					logger::INFO("pause function not yet implemented.");
 			}
 		}
 
 		if (window.hasFocus())
 		{
+			static float player_speed = .1f;
+			static float view_speed = .1f;
+
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-				main_view.move(0, -.1f);
+				main_view.move(0, -view_speed);
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-				main_view.move(-.1f, -0);
+				main_view.move(-view_speed, 0);
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-				main_view.move(0, .1f);
+				main_view.move(0, view_speed);
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-				main_view.move(.1f, 0);
+				main_view.move(view_speed, 0);
 
 			{
 				if (main_view.getCenter().x > 800)
@@ -178,12 +177,12 @@ int main(int argc, char *argv[])
 				player.move(.1f, 0);
 		}
 
-		coordinates.setPosition(main_view.getCenter().x - 199, main_view.getCenter().y - 150);
-		coordinates.setString("X: " + std::to_string(static_cast<int>(main_view.getCenter().x)) + " Y: " + std::to_string(static_cast<int>(main_view.getCenter().y)));
+		camera_coordinates.setPosition(main_view.getCenter().x - 199, main_view.getCenter().y - 150);
+		camera_coordinates.setString("X: " + std::to_string(static_cast<int>(main_view.getCenter().x)) + " Y: " + std::to_string(static_cast<int>(main_view.getCenter().y)));
 
-		fps.setPosition(main_view.getCenter().x + 170, main_view.getCenter().y - 150);
+		framecounter.setPosition(main_view.getCenter().x + 172.5f, main_view.getCenter().y - 150);
 
-		fps.setString(std::to_string(lastTime));
+		framecounter.setString(std::to_string(lastTime));
 
 		float currentTime = clock.restart().asSeconds();
 		float fps = 1.f / (currentTime - lastTime);
