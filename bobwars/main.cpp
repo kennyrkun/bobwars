@@ -168,13 +168,13 @@ int main(int argc, char *argv[])
 			}
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-				player.move(0, -.1f);
+				player.move(0, -player_speed);
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-				player.move(-.1f, -0);
+				player.move(-player_speed, 0);
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-				player.move(0, .1f);
+				player.move(0, player_speed);
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-				player.move(.1f, 0);
+				player.move(player_speed, 0);
 		}
 
 		camera_coordinates.setPosition(main_view.getCenter().x - 199, main_view.getCenter().y - 150);
