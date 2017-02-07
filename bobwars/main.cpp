@@ -4,16 +4,16 @@
 sf::Font font;
 sf::Text text;
 
-sf::Text camera_coordinates;
-sf::Text player_coordinates;
 sf::Text framecounter;
 sf::Sprite player;
 sf::Texture player_tex;
 sf::RectangleShape world;
 sf::Texture world_tex;
 sf::RectangleShape selector;
+sf::View main_view(sf::Vector2f(400, 300), sf::Vector2f(400, 300));
 
 static float view_speed = .1f;
+static float player_speed = .05f;
 
 void showcoords(sf::RenderWindow &window, sf::Sprite &object)
 {
@@ -48,7 +48,10 @@ void draw(sf::RenderWindow &window, sf::View &view)
 
 	showcoords(window, player);
 
-	window.draw(camera_coordinates);
+	engine::draw_text(window, text, ("X: " + std::to_string(static_cast<int>(main_view.getCenter().x)) + " Y: " + std::to_string(static_cast<int>(main_view.getCenter().y))), sf::Vector2f(main_view.getCenter().x - 199,	main_view.getCenter().y - 150));
+	//while I can understand the above line with ease, I fear it may be hard for others who are new to this codebase to get. I also fear that it's just a bad thing to do in general because it's so damn long
+	//input is appreciated.
+
 	window.draw(framecounter);
 	window.display();
 }
@@ -63,14 +66,6 @@ void gui_load()
 	}
 	else
 	{
-		camera_coordinates.setFont(font);
-		camera_coordinates.setString("coordinates");
-		camera_coordinates.setScale(sf::Vector2f(.2, .2));
-
-		player_coordinates.setFont(font);
-		player_coordinates.setScale(sf::Vector2f(.2, .2));
-		player_coordinates.setString("coordinates");
-
 		text.setFont(font);
 		text.setScale(sf::Vector2f(.2f, .2f));
 	}
@@ -108,14 +103,13 @@ int main(int argc, char *argv[])
 
 	logger::INFO("initializing");
 
-	sf::RenderWindow window(sf::VideoMode(800, 600), ("bobwars 0.0." + engine::build), sf::Style::Titlebar | sf::Style::Close);
+	sf::RenderWindow window(sf::VideoMode(800, 600), ("bobwars 0.0." + engine::build), sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize);
 	sf::View main_view(sf::Vector2f(400, 300), sf::Vector2f(400, 300));
 
 	gui_load();
 
 	sf::Clock clock;
 	float lastTime = 0; // for fps
-	int dont_lag_the_game(0);
 
 	// game loop
 	while (window.isOpen())
@@ -149,7 +143,6 @@ int main(int argc, char *argv[])
 
 		if (window.hasFocus())
 		{
-			static float player_speed = .05f;
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 				main_view.move(0, -view_speed);
@@ -182,20 +175,9 @@ int main(int argc, char *argv[])
 
 			if (!player.getGlobalBounds().intersects(world.getGlobalBounds()))
 			{
-				static int dont_lag_the_game;
-
-				if (dont_lag_the_game == 10000)
-					dont_lag_the_game = 0;
-
-				if (dont_lag_the_game == 0)
-					logger::WARNING("player out of bounds!");
-				else
-					dont_lag_the_game++;
+				logger::WARNING("player out of bounds!");
 			}
 		}
-
-		camera_coordinates.setPosition(main_view.getCenter().x - 199, main_view.getCenter().y - 150);
-		camera_coordinates.setString("X: " + std::to_string(static_cast<int>(main_view.getCenter().x)) + " Y: " + std::to_string(static_cast<int>(main_view.getCenter().y)));
 
 		framecounter.setPosition(main_view.getCenter().x + 172.5f, main_view.getCenter().y - 150);
 		framecounter.setString(std::to_string(lastTime));

@@ -17,6 +17,8 @@ namespace engine
 
 namespace logger
 {
+	extern std::string last_message;
+
 	void INFO(std::string output);
 
 	void WARNING(std::string output);

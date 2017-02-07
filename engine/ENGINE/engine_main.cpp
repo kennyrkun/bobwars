@@ -9,7 +9,7 @@ sf::Text text_default;
 
 namespace engine
 {
-	std::string build("03");
+	std::string build("04");
 
 	void draw_text(sf::RenderWindow &window, sf::Text &text, const std::string string, sf::Vector2f &pos, const sf::Vector2f &scale)
 	{
@@ -23,7 +23,7 @@ namespace engine
 	void draw_text(sf::RenderWindow &window, sf::Text &text, const std::string string, const sf::Vector2f &pos)
 	{
 		text.setPosition(pos);
-		text.setScale(.2f, .2f);
+		text.setCharacterSize(34);
 		text.setString(string);
 
 		window.draw(text);
