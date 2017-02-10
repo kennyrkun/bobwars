@@ -22,21 +22,54 @@
     <Filter Include="BOBWARS\Classes">
       <UniqueIdentifier>{d0e709c4-2ae6-45de-aa2d-1eb16649a0b5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="BOBWARS\Classes\Building">
+      <UniqueIdentifier>{820f933b-9a06-434d-b8dc-19f93c8cdaac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BOBWARS\Classes\Unit">
+      <UniqueIdentifier>{58964bc8-8d7f-42cb-b13f-dfe6b95f1c86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BOBWARS\Classes\Entity">
+      <UniqueIdentifier>{ecfb9ac7-748b-4f42-9f21-86b2e930f8f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ENGINE\logger">
+      <UniqueIdentifier>{6626ac10-cc37-48ea-84c4-c3581c8ad8ec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\engine\ENGINE\engine_main.cpp">
       <Filter>ENGINE</Filter>
     </ClCompile>
-    <ClCompile Include="..\engine\ENGINE\logger.cpp">
-      <Filter>ENGINE</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>BOBWARS\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseEntity.cpp">
+      <Filter>BOBWARS\Classes\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseUnit.cpp">
+      <Filter>BOBWARS\Classes\Unit</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseBuilding.cpp">
+      <Filter>BOBWARS\Classes\Building</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\ENGINE\logger.cpp">
+      <Filter>ENGINE\logger</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\engine\ENGINE\engine_main.hpp">
       <Filter>ENGINE</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseEntity.hpp">
+      <Filter>BOBWARS\Classes\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseUnit.hpp">
+      <Filter>BOBWARS\Classes\Unit</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseBuilding.hpp">
+      <Filter>BOBWARS\Classes\Building</Filter>
+    </ClInclude>
+    <ClInclude Include="logger.hpp">
+      <Filter>ENGINE\logger</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
