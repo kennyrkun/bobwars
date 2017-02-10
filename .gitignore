@@ -243,3 +243,6 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+
+# SFML Files, No need to be included in the repo.
+sfml/
