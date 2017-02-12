@@ -4,31 +4,31 @@
 
 #include "engine_main.hpp"
 
-namespace logger
+void write(std::string output)
 {
-	void write(std::string output)
+	std::cout << output << std::endl;
+
+	std::ofstream log("bobwars.log", std::ios::app);
+
+	if (log.is_open())
 	{
-		std::cout << output << std::endl;
+		log << output << std::endl;
 
-		std::ofstream log("bobwars.log", std::ios::app);
+		log.close();
 
-		if (log.is_open())
+		if (log.bad())
 		{
-			log << output << std::endl;
-
-			log.close();
-
-			if (log.bad())
-			{
-				std::cerr << "failed to write to log!" << std::endl;
-			}
-		}
-		else
-		{
-			std::cerr << "\n" << "unable to open log file for writing!" << std::endl;
+			std::cerr << "failed to write to log!" << std::endl;
 		}
 	}
+	else
+	{
+		std::cerr << "\n" << "unable to open log file for writing!" << std::endl;
+	}
+}
 
+namespace logger
+{
 	void INFO(std::string output)
 	{
 		output = engine::getTime() + " INFO: " + output;
@@ -61,7 +61,7 @@ namespace logger
 		write(output);
 	}
 
-	void DEBUG(std::string output) // TODO: the program doesn't even run in debug mode.
+	void DEBUG(std::string output) // TODO: MAKE DEBUG MODE WORK.
 	{
 		output = engine::getTime() + " DEBUG#INFO: " + output;
 		write(output);

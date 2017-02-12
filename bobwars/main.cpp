@@ -1,21 +1,39 @@
 #include <ENGINE\engine_main.hpp>
+
+#include "BaseEntity.hpp"
+#include "BaseUnit.hpp"
+#include "BaseBuilding.hpp"
+
 #include <iostream>
 
 sf::Font font;
 sf::Text text;
-
 sf::Text framecounter;
-sf::Sprite player;
 sf::Texture player_tex;
 sf::RectangleShape world;
 sf::Texture world_tex;
-sf::RectangleShape selector;
-sf::View main_view(sf::Vector2f(400, 300), sf::Vector2f(400, 300));
+sf::RectangleShape googlebutton;
+
+BaseUnit unit;
 
 static float view_speed = .1f;
 static float player_speed = .05f;
 
-void showcoords(sf::RenderWindow &window, sf::Sprite &object)
+void fade(sf::Shape &object, int r, int g, int b)
+{
+	std::cout << "doing the fade" << std::endl;
+	
+	std::cout << r << std::endl;
+	std::cout << g << std::endl;
+	std::cout << b << std::endl;
+
+	std::cout << std::to_string(object.getFillColor().r) << std::endl;
+	std::cout << std::to_string(object.getFillColor().g) << std::endl;
+	std::cout << std::to_string(object.getFillColor().b) << std::endl;
+
+}
+
+void show_coords(sf::RenderWindow &window, sf::Sprite &object)
 {
 	std::string coords = "X: " + 
 						std::to_string(static_cast<int>(object.getPosition().x)) + 
@@ -43,16 +61,15 @@ void draw(sf::RenderWindow &window, sf::View &view)
 	window.setView(view);
 	//world
 	window.draw(world);
-	window.draw(player);
+	window.draw(unit.m_sprite);
+
 	//gui
-
-	showcoords(window, player);
-
-	engine::draw_text(window, text, ("X: " + std::to_string(static_cast<int>(main_view.getCenter().x)) + " Y: " + std::to_string(static_cast<int>(main_view.getCenter().y))), sf::Vector2f(main_view.getCenter().x - 199,	main_view.getCenter().y - 150));
-	//while I can understand the above line with ease, I fear it may be hard for others who are new to this codebase to get. I also fear that it's just a bad thing to do in general because it's so damn long
-	//input is appreciated.
+	show_coords(window, unit.m_sprite);
+	engine::draw_text(window, text, ("X: " + std::to_string(static_cast<int>(view.getCenter().x)) + " Y: " + std::to_string(static_cast<int>(view.getCenter().y))), sf::Vector2f(view.getCenter().x - 199, view.getCenter().y - 150)); // should I get the coordinates somewhere else and only draw here? -Kenny
+	engine::draw_text(window, text, std::to_string(unit.m_health), sf::Vector2f(unit.m_sprite.getPosition().x, unit.m_sprite.getPosition().y));
 
 	window.draw(framecounter);
+	window.draw(googlebutton);
 	window.display();
 }
 
@@ -80,10 +97,12 @@ void gui_load()
 
 	world.setSize(sf::Vector2f(800, 600));
 	world.setTexture(&world_tex);
-	player.setTexture(player_tex);
+	unit.m_sprite.setTexture(player_tex);
 
 	framecounter.setFont(font);
 	framecounter.setScale(sf::Vector2f(.2f, .2f));
+
+	googlebutton.setSize(sf::Vector2f(100, 100));
 
 	logger::INFO("done!");
 }
@@ -99,11 +118,13 @@ int main(int argc, char *argv[])
 		}
 
 		std::cout << std::endl;
+
+//TODO: parseArgs(argv[]); 
 	}
 
 	logger::INFO("initializing");
 
-	sf::RenderWindow window(sf::VideoMode(800, 600), ("bobwars 0.0." + engine::build), sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize);
+	sf::RenderWindow window(sf::VideoMode(800, 600), ("bobwars 0.0.1:" + engine::build), sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize);
 	sf::View main_view(sf::Vector2f(400, 300), sf::Vector2f(400, 300));
 
 	gui_load();
@@ -141,9 +162,8 @@ int main(int argc, char *argv[])
 			}
 		}
 
-		if (window.hasFocus())
+		if ((window.hasFocus()) && !(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LSystem) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::RSystem)))
 		{
-
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 				main_view.move(0, -view_speed);
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
@@ -165,17 +185,33 @@ int main(int argc, char *argv[])
 			}
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-				player.move(0, -player_speed);
+				unit.m_sprite.move(0, -player_speed);
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-				player.move(-player_speed, 0);
+				unit.m_sprite.move(-player_speed, 0);
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-				player.move(0, player_speed);
+				unit.m_sprite.move(0, player_speed);
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-				player.move(player_speed, 0);
+				unit.m_sprite.move(player_speed, 0);
 
-			if (!player.getGlobalBounds().intersects(world.getGlobalBounds()))
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 			{
-				logger::WARNING("player out of bounds!");
+				std::cout << "doing the fade 1" << std::endl;
+
+				fade(googlebutton, 155, 155, 155);
+			}
+
+			if (!unit.m_sprite.getGlobalBounds().intersects(world.getGlobalBounds()))
+			{
+				static int times_logged_out_of_bounds;
+				if (times_logged_out_of_bounds == 1000)
+				{
+					logger::WARNING("unit is out of bounds!");
+					times_logged_out_of_bounds = 0;
+				}
+				else
+				{
+					times_logged_out_of_bounds++;
+				}
 			}
 		}
 

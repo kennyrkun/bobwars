@@ -15,15 +15,4 @@ namespace engine
 	std::string getObjectCoords(sf::Sprite &object);
 }
 
-namespace logger
-{
-	extern std::string last_message;
-
-	void INFO(std::string output);
-
-	void WARNING(std::string output);
-
-	void ERROR(int type, std::string output);
-
-//	void DEBUG(std::string output);
-}
+#include "logger.hpp"

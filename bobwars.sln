@@ -7,16 +7,20 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bobwars", "bobwars\bobwars.
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4AED59B2-9B61-4406-9C63-102E3343A182}.Debug|Any CPU.ActiveCfg = Debug|Win32
 		{4AED59B2-9B61-4406-9C63-102E3343A182}.Debug|x64.ActiveCfg = Debug|x64
 		{4AED59B2-9B61-4406-9C63-102E3343A182}.Debug|x64.Build.0 = Debug|x64
 		{4AED59B2-9B61-4406-9C63-102E3343A182}.Debug|x86.ActiveCfg = Debug|Win32
 		{4AED59B2-9B61-4406-9C63-102E3343A182}.Debug|x86.Build.0 = Debug|Win32
+		{4AED59B2-9B61-4406-9C63-102E3343A182}.Release|Any CPU.ActiveCfg = Release|Win32
 		{4AED59B2-9B61-4406-9C63-102E3343A182}.Release|x64.ActiveCfg = Release|x64
 		{4AED59B2-9B61-4406-9C63-102E3343A182}.Release|x64.Build.0 = Release|x64
 		{4AED59B2-9B61-4406-9C63-102E3343A182}.Release|x86.ActiveCfg = Release|Win32
