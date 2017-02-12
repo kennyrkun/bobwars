@@ -88,7 +88,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>SFML_STATIC;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>P:\VS Projects\C++\bobwars\engine;..\sfml\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\engine;..\sfml\include</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile />
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
@@ -125,7 +125,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>SFML_STATIC;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>P:\VS Projects\C++\bobwars\engine;..\sfml\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\engine;..\sfml\include</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile />
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
@@ -162,10 +162,17 @@
   <ItemGroup>
     <ClCompile Include="..\engine\ENGINE\engine_main.cpp" />
     <ClCompile Include="..\engine\ENGINE\logger.cpp" />
+    <ClCompile Include="BaseBuilding.cpp" />
+    <ClCompile Include="BaseEntity.cpp" />
+    <ClCompile Include="BaseUnit.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\engine\ENGINE\engine_main.hpp" />
+    <ClInclude Include="BaseBuilding.hpp" />
+    <ClInclude Include="BaseEntity.hpp" />
+    <ClInclude Include="BaseUnit.hpp" />
+    <ClInclude Include="logger.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
