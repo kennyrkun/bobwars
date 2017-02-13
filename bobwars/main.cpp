@@ -12,25 +12,18 @@ sf::Text framecounter;
 sf::Texture player_tex;
 sf::RectangleShape world;
 sf::Texture world_tex;
-sf::RectangleShape googlebutton;
 
 BaseUnit unit;
 
 static float view_speed = .1f;
 static float player_speed = .05f;
 
-void fade(sf::Shape &object, int r, int g, int b)
+void fade(sf::Shape &object, int opacity)
 {
-	std::cout << "doing the fade" << std::endl;
-	
-	std::cout << r << std::endl;
-	std::cout << g << std::endl;
-	std::cout << b << std::endl;
-
-	std::cout << std::to_string(object.getFillColor().r) << std::endl;
-	std::cout << std::to_string(object.getFillColor().g) << std::endl;
-	std::cout << std::to_string(object.getFillColor().b) << std::endl;
-
+	if (object.getFillColor().a > opacity) // 255 0
+	{
+		object.setFillColor(sf::Color(object.getFillColor().r, object.getFillColor().g, object.getFillColor().b, object.getFillColor().a - 1));
+	}
 }
 
 void show_coords(sf::RenderWindow &window, sf::Sprite &object)
@@ -69,7 +62,6 @@ void draw(sf::RenderWindow &window, sf::View &view)
 	engine::draw_text(window, text, std::to_string(unit.m_health), sf::Vector2f(unit.m_sprite.getPosition().x, unit.m_sprite.getPosition().y));
 
 	window.draw(framecounter);
-	window.draw(googlebutton);
 	window.display();
 }
 
@@ -102,8 +94,6 @@ void gui_load()
 	framecounter.setFont(font);
 	framecounter.setScale(sf::Vector2f(.2f, .2f));
 
-	googlebutton.setSize(sf::Vector2f(100, 100));
-
 	logger::INFO("done!");
 }
 
@@ -124,7 +114,7 @@ int main(int argc, char *argv[])
 
 	logger::INFO("initializing");
 
-	sf::RenderWindow window(sf::VideoMode(800, 600), ("bobwars 0.0.1:" + engine::build), sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize);
+	sf::RenderWindow window(sf::VideoMode(800, 600), ("bobwars 0.0.1:" + engine::build), sf::Style::Titlebar | sf::Style::Close);
 	sf::View main_view(sf::Vector2f(400, 300), sf::Vector2f(400, 300));
 
 	gui_load();
@@ -192,13 +182,6 @@ int main(int argc, char *argv[])
 				unit.m_sprite.move(0, player_speed);
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 				unit.m_sprite.move(player_speed, 0);
-
-			if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-			{
-				std::cout << "doing the fade 1" << std::endl;
-
-				fade(googlebutton, 155, 155, 155);
-			}
 
 			if (!unit.m_sprite.getGlobalBounds().intersects(world.getGlobalBounds()))
 			{

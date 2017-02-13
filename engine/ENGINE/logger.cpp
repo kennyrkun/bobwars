@@ -63,7 +63,10 @@ namespace logger
 
 	void DEBUG(std::string output) // TODO: MAKE DEBUG MODE WORK.
 	{
-		output = engine::getTime() + " DEBUG#INFO: " + output;
-		write(output);
+		if (engine::cl_debug)
+		{
+			output = engine::getTime() + " DEBUG#INFO: " + output;
+			write(output);
+		}
 	}
 }

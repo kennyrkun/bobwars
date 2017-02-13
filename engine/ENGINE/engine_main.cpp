@@ -4,12 +4,14 @@
 #include <fstream>
 
 #include <SFML\Graphics.hpp>
+#include <ENGINE\engine_main.hpp>
 
 sf::Text text_default;
 
 namespace engine
 {
 	std::string build("5");
+	ConVar cl_debug(0);
 
 	void draw_text(sf::RenderWindow &window, sf::Text &text, const std::string string, sf::Vector2f &pos, const sf::Vector2f &scale)
 	{
