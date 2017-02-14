@@ -13,7 +13,11 @@ sf::Texture player_tex;
 sf::RectangleShape world;
 sf::Texture world_tex;
 
-BaseUnit unit;
+BaseEntity null_ent;
+BaseUnit unit1;
+BaseUnit unit2;
+
+BaseEntity *selectedObject = &unit1;
 
 static float view_speed = .1f;
 static float player_speed = .05f;
@@ -54,14 +58,20 @@ void draw(sf::RenderWindow &window, sf::View &view)
 	window.setView(view);
 	//world
 	window.draw(world);
-	window.draw(unit.m_sprite);
+
+	window.draw(unit1.m_sprite);
+	window.draw(unit2.m_sprite);
 
 	//gui
-	show_coords(window, unit.m_sprite);
-	engine::draw_text(window, text, ("X: " + std::to_string(static_cast<int>(view.getCenter().x)) + " Y: " + std::to_string(static_cast<int>(view.getCenter().y))), sf::Vector2f(view.getCenter().x - 199, view.getCenter().y - 150)); // should I get the coordinates somewhere else and only draw here? -Kenny
-	engine::draw_text(window, text, std::to_string(unit.m_health), sf::Vector2f(unit.m_sprite.getPosition().x, unit.m_sprite.getPosition().y));
+	if (engine::cl_debug) // debug things like coordinantes
+	{
+		window.draw(framecounter);
+		engine::draw_text(window, text, ("X: " + std::to_string(static_cast<int>(view.getCenter().x)) + " Y: " + std::to_string(static_cast<int>(view.getCenter().y))), sf::Vector2f(view.getCenter().x - 199, view.getCenter().y - 150)); // should I get the coordinates somewhere else and only draw here? -Kenny
 
-	window.draw(framecounter);
+		show_coords(window, selectedObject->m_sprite); // coords of sprite
+		engine::draw_text(window, text, std::to_string(selectedObject->m_health), sf::Vector2f(selectedObject->m_sprite.getPosition().x, selectedObject->m_sprite.getPosition().y)); // unit health
+	}
+
 	window.display();
 }
 
@@ -89,7 +99,8 @@ void gui_load()
 
 	world.setSize(sf::Vector2f(800, 600));
 	world.setTexture(&world_tex);
-	unit.m_sprite.setTexture(player_tex);
+	unit1.m_sprite.setTexture(player_tex);
+	unit2.m_sprite.setTexture(player_tex);
 
 	framecounter.setFont(font);
 	framecounter.setScale(sf::Vector2f(.2f, .2f));
@@ -132,6 +143,7 @@ int main(int argc, char *argv[])
 			if (event.type == sf::Event::Closed)
 				window.close();
 
+			//---------------KEYBOARD
 			if (event.type == sf::Event::KeyPressed)
 			{
 				if (event.key.code == sf::Keyboard::Escape)
@@ -148,6 +160,38 @@ int main(int argc, char *argv[])
 				if (event.key.code == sf::Keyboard::LShift)
 				{
 					view_speed = .1f;
+				}
+			}
+
+		//---------------MOUSE
+			if (event.type == sf::Event::MouseButtonPressed)
+			{
+				if (event.key.code == sf::Mouse::Left)
+				{
+					if (unit1.m_sprite.getGlobalBounds().contains(window.mapPixelToCoords(sf::Mouse::getPosition(window), main_view)))
+					{
+						if (selectedObject != &unit1)
+						{
+							selectedObject = &unit1;
+
+							logger::DEBUG("selected unit1");
+						}
+					}
+					else if (unit2.m_sprite.getGlobalBounds().contains(window.mapPixelToCoords(sf::Mouse::getPosition(window), main_view)))
+					{
+						if (selectedObject != &unit2)
+						{
+							selectedObject = &unit2;
+
+							logger::DEBUG("selected unit2");
+						}
+					}
+					else
+					{
+						selectedObject = &null_ent;
+
+						logger::DEBUG("selected null entity.");
+					}
 				}
 			}
 		}
@@ -175,15 +219,15 @@ int main(int argc, char *argv[])
 			}
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-				unit.m_sprite.move(0, -player_speed);
+				selectedObject->m_sprite.move(0, -player_speed);
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-				unit.m_sprite.move(-player_speed, 0);
+				selectedObject->m_sprite.move(-player_speed, 0);
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-				unit.m_sprite.move(0, player_speed);
+				selectedObject->m_sprite.move(0, player_speed);
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-				unit.m_sprite.move(player_speed, 0);
+				selectedObject->m_sprite.move(player_speed, 0);
 
-			if (!unit.m_sprite.getGlobalBounds().intersects(world.getGlobalBounds()))
+			if (!selectedObject->m_sprite.getGlobalBounds().intersects(world.getGlobalBounds()) && selectedObject != &null_ent)
 			{
 				static int times_logged_out_of_bounds;
 				if (times_logged_out_of_bounds == 1000)

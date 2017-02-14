@@ -8,4 +8,6 @@ namespace logger
 	void WARNING(std::string output);
 
 	void ERROR(int type, std::string output);
+
+	void DEBUG(std::string output);
 }

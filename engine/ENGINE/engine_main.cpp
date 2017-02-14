@@ -11,7 +11,7 @@ sf::Text text_default;
 namespace engine
 {
 	std::string build("5");
-	ConVar cl_debug(0);
+	ConVar cl_debug(1);
 
 	void draw_text(sf::RenderWindow &window, sf::Text &text, const std::string string, sf::Vector2f &pos, const sf::Vector2f &scale)
 	{
