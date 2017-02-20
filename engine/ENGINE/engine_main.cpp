@@ -6,29 +6,42 @@
 #include <SFML\Graphics.hpp>
 #include <ENGINE\engine_main.hpp>
 
-sf::Text text_default;
-
 namespace engine
 {
-	std::string build("5");
-	ConVar cl_debug(1);
+	std::string build_number("6");
+	CVar cl_debug(1);
 
-	void draw_text(sf::RenderWindow &window, sf::Text &text, const std::string string, sf::Vector2f &pos, const sf::Vector2f &scale)
+	namespace text
 	{
-		text.setPosition(pos);
-		text.setScale(scale);
-		text.setString(string);
+		void draw_text(sf::RenderWindow &window, sf::Text &text, const std::string string, const sf::Vector2f &pos, const int characterSize, sf::Color c)
+		{
+			text.setPosition(pos);
+			text.setCharacterSize(characterSize);
+			text.setFillColor(c);
+			text.setString(string);
 
-		window.draw(text);
-	}
+			window.draw(text);
 
-	void draw_text(sf::RenderWindow &window, sf::Text &text, const std::string string, const sf::Vector2f &pos)
-	{
-		text.setPosition(pos);
-		text.setCharacterSize(34);
-		text.setString(string);
+			text.setFillColor(sf::Color::White);
+		}
 
-		window.draw(text);
+		void draw_text(sf::RenderWindow &window, sf::Text &text, const std::string string, const sf::Vector2f &pos, const int characterSize)
+		{
+			text.setPosition(pos);
+			text.setCharacterSize(characterSize);
+			text.setString(string);
+
+			window.draw(text);
+		}
+
+		void draw_text(sf::RenderWindow &window, sf::Text &text, const std::string string, const sf::Vector2f &pos)
+		{
+			text.setPosition(pos);
+			text.setCharacterSize(34);
+			text.setString(string);
+
+			window.draw(text);
+		}
 	}
 
 	std::string getTime()
@@ -87,12 +100,5 @@ namespace engine
 		std::string time = hours_s + ":" + minutes_s + ":" + seconds_s;
 
 		return time;
-	}
-
-	std::string getObjectCoords(sf::Sprite &object)
-	{
-		std::string coords = "X: " + std::to_string(static_cast<int>(object.getPosition().x)) + " Y: " + std::to_string(static_cast<int>(object.getPosition().y));
-
-		return coords;
 	}
 }

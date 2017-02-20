@@ -2,20 +2,21 @@
 
 #include <SFML\Graphics.hpp>
 
-using ConVar = bool;
+using CVar = bool;
 
 namespace engine
 {
-	extern std::string build;
-	extern ConVar cl_debug;
+	extern std::string build_number;
+	extern CVar cl_debug;
 
-	void draw_text(sf::RenderWindow &window, sf::Text &text, const std::string string, const sf::Vector2f &pos, const sf::Vector2f &scale);
-
-	void draw_text(sf::RenderWindow &window, sf::Text &text, const std::string string, const sf::Vector2f &pos);
+	namespace text
+	{
+		void draw_text(sf::RenderWindow &window, sf::Text &text, const std::string string, const sf::Vector2f &pos, const int characterSize, sf::Color c);
+		void draw_text(sf::RenderWindow &window, sf::Text &text, const std::string string, const sf::Vector2f &pos, const int characterSize);
+		void draw_text(sf::RenderWindow &window, sf::Text &text, const std::string string, const sf::Vector2f &pos);
+	}
 
 	std::string getTime();
-
-	std::string getObjectCoords(sf::Sprite &object);
 }
 
 #include "logger.hpp"
