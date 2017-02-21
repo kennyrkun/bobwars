@@ -7,6 +7,7 @@
 //-------------------------------------
 BaseEntity::BaseEntity()
 {
+	logger::DEBUG("new entity created");
 	m_health = 100;
 }
 
@@ -15,4 +16,5 @@ BaseEntity::BaseEntity()
 //-------------------------------------
 BaseEntity::~BaseEntity()
 {
+	logger::DEBUG("entity removed");
 }

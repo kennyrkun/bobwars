@@ -1,4 +1,6 @@
-#pragma once
+#ifndef BASE_ENTITY_HPP
+#define BASE_ENTITY_HPP
+
 #include <ENGINE\engine_main.hpp>
 
 #include <string>
@@ -9,7 +11,10 @@ public:
 	int m_health;
 	sf::Sprite m_sprite;
 	std::string m_name;
+	bool m_active;
 
 	BaseEntity();
 	~BaseEntity();
 };
+
+#endif

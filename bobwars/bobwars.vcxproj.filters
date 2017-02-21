@@ -28,15 +28,6 @@
     <Filter Include="BOBWARS\Classes\Entities">
       <UniqueIdentifier>{8182fa6a-3efe-4037-a9b0-cf947c7a12c0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="BOBWARS\Classes\Entities\Entity">
-      <UniqueIdentifier>{ecfb9ac7-748b-4f42-9f21-86b2e930f8f6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="BOBWARS\Classes\Entities\Building">
-      <UniqueIdentifier>{820f933b-9a06-434d-b8dc-19f93c8cdaac}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="BOBWARS\Classes\Entities\Unit">
-      <UniqueIdentifier>{58964bc8-8d7f-42cb-b13f-dfe6b95f1c86}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\engine\ENGINE\engine_main.cpp">
@@ -45,34 +36,28 @@
     <ClCompile Include="main.cpp">
       <Filter>BOBWARS\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BaseEntity.cpp">
-      <Filter>BOBWARS\Classes\Entities\Entity</Filter>
-    </ClCompile>
-    <ClCompile Include="BaseUnit.cpp">
-      <Filter>BOBWARS\Classes\Entities\Unit</Filter>
-    </ClCompile>
-    <ClCompile Include="BaseBuilding.cpp">
-      <Filter>BOBWARS\Classes\Entities\Building</Filter>
-    </ClCompile>
     <ClCompile Include="..\engine\ENGINE\logger.cpp">
       <Filter>ENGINE\logger</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseEntity.cpp">
+      <Filter>BOBWARS\Classes\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObjectManager.cpp">
+      <Filter>BOBWARS\Classes\Entities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\engine\ENGINE\engine_main.hpp">
       <Filter>ENGINE</Filter>
     </ClInclude>
-    <ClInclude Include="BaseEntity.hpp">
-      <Filter>BOBWARS\Classes\Entities\Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="BaseUnit.hpp">
-      <Filter>BOBWARS\Classes\Entities\Unit</Filter>
-    </ClInclude>
-    <ClInclude Include="BaseBuilding.hpp">
-      <Filter>BOBWARS\Classes\Entities\Building</Filter>
-    </ClInclude>
     <ClInclude Include="logger.hpp">
       <Filter>ENGINE\logger</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseEntity.hpp">
+      <Filter>BOBWARS\Classes\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObjectManager.hpp">
+      <Filter>BOBWARS\Classes\Entities</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

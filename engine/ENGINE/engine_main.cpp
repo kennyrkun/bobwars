@@ -8,12 +8,12 @@
 
 namespace engine
 {
-	std::string build_number("6");
+	std::string const build_number("6");
 	CVar cl_debug(1);
 
 	namespace text
 	{
-		void draw_text(sf::RenderWindow &window, sf::Text &text, const std::string string, const sf::Vector2f &pos, const int characterSize, sf::Color c)
+		void drawText(sf::RenderWindow &window, sf::Text &text, const std::string string, const sf::Vector2f &pos, const int characterSize, sf::Color c)
 		{
 			text.setPosition(pos);
 			text.setCharacterSize(characterSize);
@@ -25,7 +25,7 @@ namespace engine
 			text.setFillColor(sf::Color::White);
 		}
 
-		void draw_text(sf::RenderWindow &window, sf::Text &text, const std::string string, const sf::Vector2f &pos, const int characterSize)
+		void drawText(sf::RenderWindow &window, sf::Text &text, const std::string string, const sf::Vector2f &pos, const int characterSize)
 		{
 			text.setPosition(pos);
 			text.setCharacterSize(characterSize);
@@ -34,7 +34,7 @@ namespace engine
 			window.draw(text);
 		}
 
-		void draw_text(sf::RenderWindow &window, sf::Text &text, const std::string string, const sf::Vector2f &pos)
+		void drawText(sf::RenderWindow &window, sf::Text &text, const std::string string, const sf::Vector2f &pos)
 		{
 			text.setPosition(pos);
 			text.setCharacterSize(34);

@@ -1,4 +1,6 @@
-#pragma once
+#ifndef LOGGER_HPP
+#define LOGGER_HPP
+
 #include <string>
 
 namespace logger
@@ -11,3 +13,5 @@ namespace logger
 
 	void DEBUG(std::string output);
 }
+
+#endif

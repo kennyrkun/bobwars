@@ -65,7 +65,7 @@ namespace logger
 	{
 		if (engine::cl_debug)
 		{
-			output = engine::getTime() + " DEBUG#INFO: " + output;
+			output = engine::getTime() + " DEBUG: " + output;
 			write(output);
 		}
 	}

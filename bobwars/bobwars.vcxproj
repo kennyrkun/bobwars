@@ -162,16 +162,14 @@
   <ItemGroup>
     <ClCompile Include="..\engine\ENGINE\engine_main.cpp" />
     <ClCompile Include="..\engine\ENGINE\logger.cpp" />
-    <ClCompile Include="BaseBuilding.cpp" />
     <ClCompile Include="BaseEntity.cpp" />
-    <ClCompile Include="BaseUnit.cpp" />
+    <ClCompile Include="GameObjectManager.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\engine\ENGINE\engine_main.hpp" />
-    <ClInclude Include="BaseBuilding.hpp" />
     <ClInclude Include="BaseEntity.hpp" />
-    <ClInclude Include="BaseUnit.hpp" />
+    <ClInclude Include="GameObjectManager.hpp" />
     <ClInclude Include="logger.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

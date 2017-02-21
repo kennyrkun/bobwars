@@ -1,26 +1,38 @@
 #include <ENGINE\engine_main.hpp>
 
-#include "BaseEntity.hpp"
-#include "BaseUnit.hpp"
-#include "BaseBuilding.hpp"
+#include "GameObjectManager.hpp"
 
 #include <iostream>
+
+BaseEntity null_ent;
+BaseEntity *selectedObject = &null_ent;
+std::vector<BaseEntity*> entities;
 
 sf::Font font;
 sf::Text text;
 sf::Text framecounter;
 sf::Texture player_tex;
 sf::RectangleShape world;
-sf::Texture world_tex;
-
-BaseEntity null_ent;
-BaseUnit unit1;
-BaseUnit unit2;
-
-BaseEntity *selectedObject = &unit1;
+sf::RectangleShape create_ent_button;
+sf::RectangleShape delete_ent_button;
 
 static float view_speed = .1f;
 static float player_speed = .05f;
+
+bool clickedEntity(sf::RenderWindow &window, sf::View &view)
+{
+	for (unsigned int i = 0; i < entities.size(); i++)
+	{
+		if (entities[i]->m_sprite.getGlobalBounds().contains(window.mapPixelToCoords(sf::Mouse::getPosition(window), view)))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+}
 
 void fade(sf::Shape &object, int opacity)
 {
@@ -39,10 +51,10 @@ void show_coords(sf::RenderWindow &window, sf::Sprite &object)
 
 	sf::Vector2f position(object.getPosition().x + 15, object.getPosition().y - 5);
 
-	engine::draw_text(window, text, coords, position);
+	engine::text::drawText(window, text, coords, position, 34);
 }
 
-void move_sprite(sf::Sprite &sprite, int x, int y)
+void move_sprite(sf::Sprite &sprite, int x, int y) //TODO:move sprite function
 {
 	while ((sprite.getPosition().x != x) && (sprite.getPosition().y != y))
 	{
@@ -58,19 +70,30 @@ void draw(sf::RenderWindow &window, sf::View &view)
 	window.setView(view);
 	//world
 	window.draw(world);
-
-	window.draw(unit1.m_sprite);
-	window.draw(unit2.m_sprite);
+	
+	for (unsigned int i = 0; i < entities.size(); i++)
+	{
+		window.draw(entities[i]->m_sprite);
+	}
 
 	//gui
 	if (engine::cl_debug) // debug things like coordinantes
 	{
 		window.draw(framecounter);
-		engine::draw_text(window, text, ("X: " + std::to_string(static_cast<int>(view.getCenter().x)) + " Y: " + std::to_string(static_cast<int>(view.getCenter().y))), sf::Vector2f(view.getCenter().x - 199, view.getCenter().y - 150)); // should I get the coordinates somewhere else and only draw here? -Kenny
+		engine::text::drawText(window, text, ("X: " + std::to_string(static_cast<int>(view.getCenter().x)) + " Y: " + std::to_string(static_cast<int>(view.getCenter().y))), sf::Vector2f(view.getCenter().x - 199, view.getCenter().y - 150)); // should I get the coordinates somewhere else and only draw here? -Kenny
 
-		show_coords(window, selectedObject->m_sprite); // coords of sprite
-		engine::draw_text(window, text, std::to_string(selectedObject->m_health), sf::Vector2f(selectedObject->m_sprite.getPosition().x, selectedObject->m_sprite.getPosition().y)); // unit health
+		if (selectedObject != &null_ent)
+		{
+			show_coords(window, selectedObject->m_sprite); // coords of sprite
+			engine::text::drawText(window, text, std::to_string(selectedObject->m_health), sf::Vector2f(selectedObject->m_sprite.getPosition().x, selectedObject->m_sprite.getPosition().y)); // unit health
+		}
 	}
+
+	window.draw(create_ent_button);
+	window.draw(delete_ent_button);
+
+	engine::text::drawText(window, text, "+", sf::Vector2f(10.4, -38.4), 128, sf::Color::Green);
+	engine::text::drawText(window, text, "X", sf::Vector2f(32, -32.5), 86, sf::Color::Red);
 
 	window.display();
 }
@@ -90,6 +113,9 @@ void gui_load()
 	}
 
 	logger::INFO("world texture...");
+
+	static sf::Texture world_tex;
+
 	if (!world_tex.loadFromFile("resource\\textures\\world.png"))
 		std::cout << "unable to load world textures!" << std::endl;
 
@@ -99,11 +125,15 @@ void gui_load()
 
 	world.setSize(sf::Vector2f(800, 600));
 	world.setTexture(&world_tex);
-	unit1.m_sprite.setTexture(player_tex);
-	unit2.m_sprite.setTexture(player_tex);
 
 	framecounter.setFont(font);
 	framecounter.setScale(sf::Vector2f(.2f, .2f));
+
+	create_ent_button.setSize(sf::Vector2f(16, 16));
+	delete_ent_button.setSize(sf::Vector2f(16, 16));
+
+	create_ent_button.setPosition(sf::Vector2f(10, -30));
+	delete_ent_button.setPosition(sf::Vector2f(30, -30));
 
 	logger::INFO("done!");
 }
@@ -120,12 +150,12 @@ int main(int argc, char *argv[])
 
 		std::cout << std::endl;
 
-//TODO: parseArgs(argv[]); 
+//TODO: parseArgs(argv[]);
 	}
 
 	logger::INFO("initializing");
 
-	sf::RenderWindow window(sf::VideoMode(800, 600), ("bobwars 0.0.1:" + engine::build), sf::Style::Titlebar | sf::Style::Close);
+	sf::RenderWindow window(sf::VideoMode(800, 600), ("bobwars 0.0.6:" + engine::build_number), sf::Style::Titlebar | sf::Style::Close);
 	sf::View main_view(sf::Vector2f(400, 300), sf::Vector2f(400, 300));
 
 	gui_load();
@@ -143,7 +173,7 @@ int main(int argc, char *argv[])
 			if (event.type == sf::Event::Closed)
 				window.close();
 
-			//---------------KEYBOARD
+		//---------------KEYBOARD
 			if (event.type == sf::Event::KeyPressed)
 			{
 				if (event.key.code == sf::Keyboard::Escape)
@@ -168,29 +198,44 @@ int main(int argc, char *argv[])
 			{
 				if (event.key.code == sf::Mouse::Left)
 				{
-					if (unit1.m_sprite.getGlobalBounds().contains(window.mapPixelToCoords(sf::Mouse::getPosition(window), main_view)))
+					if (clickedEntity)
 					{
-						if (selectedObject != &unit1)
+						for (unsigned int i = 0; i < entities.size(); i++)
 						{
-							selectedObject = &unit1;
+							if (entities[i]->m_sprite.getGlobalBounds().contains(window.mapPixelToCoords(sf::Mouse::getPosition(window), main_view)))
+							{
+								if (selectedObject != entities[i])
+								{
+									selectedObject = entities[i];
 
-							logger::DEBUG("selected unit1");
-						}
-					}
-					else if (unit2.m_sprite.getGlobalBounds().contains(window.mapPixelToCoords(sf::Mouse::getPosition(window), main_view)))
-					{
-						if (selectedObject != &unit2)
-						{
-							selectedObject = &unit2;
-
-							logger::DEBUG("selected unit2");
+									logger::DEBUG("selected an entity");
+								}
+							}
 						}
 					}
 					else
 					{
 						selectedObject = &null_ent;
+					}
 
-						logger::DEBUG("selected null entity.");
+					if (create_ent_button.getGlobalBounds().contains(window.mapPixelToCoords(sf::Mouse::getPosition(window), main_view)))
+					{
+						logger::INFO("creating new entity");
+
+						BaseEntity* newEnt = new BaseEntity();
+						newEnt->m_sprite.setTexture(player_tex);
+						entities.push_back(newEnt);
+						selectedObject = newEnt;
+					}
+					else if (delete_ent_button.getGlobalBounds().contains(window.mapPixelToCoords(sf::Mouse::getPosition(window), main_view)) && entities.size() != 0)
+					{
+						logger::INFO("deleting last entity");
+						entities.pop_back();
+
+						if (entities.size() == 0)
+							selectedObject = &null_ent;
+						else
+							selectedObject = entities.back();
 					}
 				}
 			}
