@@ -163,14 +163,20 @@
     <ClCompile Include="..\engine\ENGINE\engine_main.cpp" />
     <ClCompile Include="..\engine\ENGINE\logger.cpp" />
     <ClCompile Include="BaseEntity.cpp" />
-    <ClCompile Include="GameObjectManager.cpp" />
+    <ClCompile Include="GameObjectManager.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ResourceManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\engine\ENGINE\engine_main.hpp" />
     <ClInclude Include="BaseEntity.hpp" />
-    <ClInclude Include="GameObjectManager.hpp" />
+    <ClInclude Include="GameObjectManager.hpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="logger.hpp" />
+    <ClInclude Include="ResourceManager.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

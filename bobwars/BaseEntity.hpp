@@ -9,6 +9,7 @@ class BaseEntity
 {
 public:
 	int m_health;
+	int m_id;
 	sf::Sprite m_sprite;
 	std::string m_name;
 	bool m_active;

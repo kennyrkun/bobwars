@@ -28,6 +28,9 @@
     <Filter Include="BOBWARS\Classes\Entities">
       <UniqueIdentifier>{8182fa6a-3efe-4037-a9b0-cf947c7a12c0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="BOBWARS\Classes\Managers">
+      <UniqueIdentifier>{0548b272-ad37-4107-827b-c04b1a09418d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\engine\ENGINE\engine_main.cpp">
@@ -43,7 +46,10 @@
       <Filter>BOBWARS\Classes\Entities</Filter>
     </ClCompile>
     <ClCompile Include="GameObjectManager.cpp">
-      <Filter>BOBWARS\Classes\Entities</Filter>
+      <Filter>BOBWARS\Classes\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
+      <Filter>BOBWARS\Classes\Managers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -57,7 +63,10 @@
       <Filter>BOBWARS\Classes\Entities</Filter>
     </ClInclude>
     <ClInclude Include="GameObjectManager.hpp">
-      <Filter>BOBWARS\Classes\Entities</Filter>
+      <Filter>BOBWARS\Classes\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.hpp">
+      <Filter>BOBWARS\Classes\Managers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
