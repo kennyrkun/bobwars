@@ -9,6 +9,8 @@ Make sure you have [SFML 2.4](http://www.sfml-dev.org/download/sfml/2.4.2/) in t
 ## Playing
 While in the game, the WASD are used to control the main view, and the arrow keys are used to move selected units. You can create or destroy a unit using one of the two buttons located in the top left corner of the map. To select a unit, simply left click the desired unit. To deselect that unit, either click another unit or click something that is not a unit. 
 
+The speed of the camera can be changed by holding down the Left-Shift Key.
+
 ---
 
 ## Built With
