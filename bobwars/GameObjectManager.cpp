@@ -2,7 +2,7 @@
 
 GameObjectManager::GameObjectManager()
 {
-	logger::INFO("object manager instance created.");
+	logger::DEBUG("ObjectManager constructed.");
 
 	BaseEntity* null_entity = new BaseEntity;
 	entites.push_back(null_entity); // because we need an null.
@@ -10,7 +10,7 @@ GameObjectManager::GameObjectManager()
 
 GameObjectManager::~GameObjectManager()
 {
-	logger::INFO("object manager instance removed.");
+	logger::DEBUG("ObjectManager deconstructed.");
 
 	delete &entites;
 }

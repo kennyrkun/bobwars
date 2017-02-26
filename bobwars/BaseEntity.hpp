@@ -2,7 +2,6 @@
 #define BASE_ENTITY_HPP
 
 #include <ENGINE\engine_main.hpp>
-
 #include <string>
 
 class BaseEntity
@@ -12,7 +11,7 @@ public:
 	int m_id;
 	sf::Sprite m_sprite;
 	std::string m_name;
-	bool m_active;
+	//bool m_active;
 
 	BaseEntity();
 	~BaseEntity();

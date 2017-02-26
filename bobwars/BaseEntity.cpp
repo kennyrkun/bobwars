@@ -1,7 +1,5 @@
 #include "BaseEntity.hpp"
 
-#include <ENGINE\logger.hpp>
-
 //-------------------------------------
 /// Defines the BaseEntity entry point.
 //-------------------------------------
