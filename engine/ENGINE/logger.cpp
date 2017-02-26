@@ -4,7 +4,7 @@
 
 #include "engine_main.hpp"
 
-void write(std::string output)
+void log(std::string output)
 {
 	std::cout << output << std::endl;
 
@@ -33,40 +33,36 @@ namespace logger
 	{
 		output = engine::getTime() + " INFO: " + output;
 
-		write(output);
+		log(output);
 	}
 
 	void WARNING(std::string output)
 	{
 		output = engine::getTime() + " WARNING: " + output;
 
-		write(output);
+		log(output);
 	}
 
-	void ERROR(int type, std::string output)
+	void ERROR(std::string output)
 	{
-		if (type == 0)
-		{
-			output = engine::getTime() + " ERROR: " + output;
-		}
-		else if (type == 1)
-		{
-			output = engine::getTime() + " ERROR#FATAL: " + output;
-		}
-		else
-		{
-			output = engine::getTime() + " ERROR#UNKOWN: " + output;
-		}
+		output = engine::getTime() + " ERROR: " + output;
 
-		write(output);
+		log(output);
 	}
 
-	void DEBUG(std::string output) // TODO: MAKE DEBUG MODE WORK.
+	void SILENT(std::string output)
+	{
+		output = engine::getTime() + " SILENT: " + output;
+
+		log(output);
+	}
+
+	void DEBUG(std::string output)
 	{
 		if (engine::cl_debug)
 		{
 			output = engine::getTime() + " DEBUG: " + output;
-			write(output);
+			log(output);
 		}
 	}
 }
