@@ -149,8 +149,6 @@ int main(int argc, char *argv[])
 	sf::RenderWindow gameWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), ("bobwars 0.1.0-" + engine::version), sf::Style::Titlebar | sf::Style::Close);
 	sf::View main_view(sf::Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2), sf::Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2));
 
-	gameWindow.setFramerateLimit(60);
-
 	gui_load();
 
 	sf::Clock clock;    // for fps
@@ -289,7 +287,7 @@ int main(int argc, char *argv[])
 		{ //FRAMES PER SECOND
 			float frames_per_second = clock.getElapsedTime().asSeconds();
 			framecounter.setPosition(main_view.getCenter().x + 170, main_view.getCenter().y - 150); // top right
-			framecounter.setString( "FPS: " + std::to_string( (int)(1.0f / frames_per_second) ) );
+			framecounter.setString( "FPS: " + std::to_string( (1.0f / frames_per_second) ) );
 			clock.restart();
 		}
 
