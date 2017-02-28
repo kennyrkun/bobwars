@@ -174,10 +174,8 @@ int main(int argc, char *argv[])
 
 	logger::INFO("initializing");
 
-	sf::RenderWindow rWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), ("bobwars 0.1.0-" + engine::version), sf::Style::Titlebar | sf::Style::Close);
+	sf::RenderWindow gameWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), ("bobwars 0.1.0-" + engine::version), sf::Style::Titlebar | sf::Style::Close);
 	sf::View main_view(sf::Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2), sf::Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2));
-
-	rWindow.setFramerateLimit(60);
 
 	gui_load();
 
@@ -185,14 +183,14 @@ int main(int argc, char *argv[])
 	float lastTime = 0; // also for fps
 
 	// game loop
-	while (rWindow.isOpen())
+	while (gameWindow.isOpen())
 	{
 		sf::Event event;
 
-		while (rWindow.pollEvent(event))
+		while (gameWindow.pollEvent(event))
 		{
 			if (event.type == sf::Event::Closed)
-				rWindow.close();
+				gameWindow.close();
 
 			//---------------KEYBOARD
 			if (event.type == sf::Event::KeyPressed)
@@ -219,7 +217,7 @@ int main(int argc, char *argv[])
 
 					for (size_t i = 0; i < entities.size(); i++)
 					{
-						if (entities[i]->m_sprite.getGlobalBounds().contains(rWindow.mapPixelToCoords(sf::Mouse::getPosition(rWindow), main_view)))
+						if (entities[i]->m_sprite.getGlobalBounds().contains(gameWindow.mapPixelToCoords(sf::Mouse::getPosition(gameWindow), main_view)))
 						{
 							if (entities[i] != selectedObject) // if this entity isn't already selected
 							{
@@ -244,7 +242,7 @@ int main(int argc, char *argv[])
 					}
 
 					// check if one of the entity buttons were pressed
-					if (create_ent.m_shape.getGlobalBounds().contains(rWindow.mapPixelToCoords(sf::Mouse::getPosition(rWindow), main_view)))
+					if (create_ent.m_shape.getGlobalBounds().contains(gameWindow.mapPixelToCoords(sf::Mouse::getPosition(gameWindow), main_view)))
 					{
 						logger::INFO("creating new entity");
 
@@ -254,7 +252,7 @@ int main(int argc, char *argv[])
 						entities.push_back(newEnt);
 						selectedObject = newEnt;
 					}
-					else if (delete_ent.m_shape.getGlobalBounds().contains(rWindow.mapPixelToCoords(sf::Mouse::getPosition(rWindow), main_view)) && entities.size() != 0)
+					else if (delete_ent.m_shape.getGlobalBounds().contains(gameWindow.mapPixelToCoords(sf::Mouse::getPosition(gameWindow), main_view)) && entities.size() != 0)
 					{
 						logger::INFO("deleting last entity");
 						entities.pop_back();
@@ -268,7 +266,7 @@ int main(int argc, char *argv[])
 			} // mouseButtonPressedgit
 		} // pollevent
 
-		if (rWindow.hasFocus())
+		if (gameWindow.hasFocus())
 		{
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 				main_view.move(0, -view_speed);
@@ -317,17 +315,11 @@ int main(int argc, char *argv[])
 		{ //FRAMES PER SECOND
 			sf::Time frames_per_second = clock.getElapsedTime();
 			framecounter.setPosition(main_view.getCenter().x + 170, main_view.getCenter().y - 150); // top right
-			framecounter.setString( "FPS: " + std::to_string( (1.0f / frames_per_second.asSeconds()) ) );
-
-			if (frames_per_second.asSeconds() < 60)
-			{
-				logger::WARNING("less than 60 fps");
-			}
-
+			framecounter.setString( "FPS: " + std::to_string( (int)(1.0f / frames_per_second.asSeconds()) ) );
 			clock.restart();
 		}
 
-		draw(rWindow, main_view);
+		draw(gameWindow, main_view);
 	}
 
 	logger::INFO("exiting...");
