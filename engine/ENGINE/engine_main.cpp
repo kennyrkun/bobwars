@@ -44,6 +44,37 @@ namespace engine
 		}
 	}
 
+	namespace graphics
+	{
+		void outline(sf::RenderWindow &window, sf::Shape &object, float thickness, sf::Color color)
+		{
+			sf::RectangleShape line;
+
+			line.setPosition(object.getPosition());
+			line.setSize(sf::Vector2f(object.getLocalBounds().width, object.getLocalBounds().height));
+			line.setFillColor(sf::Color(0, 0, 0, 0));
+
+			line.setOutlineColor(color);
+			line.setOutlineThickness(thickness);
+
+			window.draw(line);
+		}
+
+		void outline(sf::RenderWindow &window, sf::Sprite &object, float thickness, sf::Color color)
+		{
+			sf::RectangleShape line;
+
+			line.setPosition(object.getPosition());
+			line.setSize(sf::Vector2f(object.getLocalBounds().width, object.getLocalBounds().height));
+			line.setFillColor(sf::Color(0, 0, 0, 0));
+
+			line.setOutlineColor(color);
+			line.setOutlineThickness(thickness);
+
+			window.draw(line);
+		}
+	}
+
 	std::string getTime()
 	{
 		time_t $time = time(0);

@@ -11,7 +11,7 @@ Button::Button(const sf::Vector2f &window_size, const sf::Vector2f &size, const 
 
 	m_shape.setFillColor(sf::Color::White);
 	m_shape.setSize(sf::Vector2f(size.x, size.y));
-	m_text.setCharacterSize(size.y);
+	m_text.setCharacterSize((int)size.y);
 
 	m_shape.setOrigin(m_shape.getLocalBounds().width / 2, m_shape.getLocalBounds().height / 2);
 	m_text.setOrigin(m_text.getLocalBounds().width / 2, m_text.getLocalBounds().height);
@@ -20,8 +20,8 @@ Button::Button(const sf::Vector2f &window_size, const sf::Vector2f &size, const 
 	m_text.setPosition(m_shape.getOrigin());
 
 	//TODO: not have this set in stone
-	m_shape.setScale(.2, .2);
-	m_text.setScale(.2, .2);
+	m_shape.setScale(.2f, .2f);
+	m_text.setScale(.2f, .2f);
 }
 
 Button::~Button()

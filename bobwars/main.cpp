@@ -37,34 +37,6 @@ void fade(sf::Shape &object, int opacity)
 	}
 }
 
-void outline(sf::RenderWindow &window, sf::Shape &object, float thickness, sf::Color color)
-{
-	sf::RectangleShape line;
-
-	line.setPosition(object.getPosition());
-	line.setSize(sf::Vector2f(object.getLocalBounds().width, object.getLocalBounds().height));
-	line.setFillColor(sf::Color(0, 0, 0, 0));
-
-	line.setOutlineColor(color);
-	line.setOutlineThickness(thickness);
-
-	window.draw(line);
-}
-
-void outline(sf::RenderWindow &window, sf::Sprite &object, float thickness, sf::Color color)
-{
-	sf::RectangleShape line;
-
-	line.setPosition(object.getPosition());
-	line.setSize(sf::Vector2f(object.getLocalBounds().width, object.getLocalBounds().height));
-	line.setFillColor(sf::Color(0, 0, 0, 0));
-
-	line.setOutlineColor(color);
-	line.setOutlineThickness(thickness);
-
-	window.draw(line);
-}
-
 void show_coords(sf::RenderWindow &window, sf::Sprite &object)
 {
 	std::string coords = "X: " +
@@ -110,14 +82,14 @@ void draw(sf::RenderWindow &window, sf::View &view)
 			show_coords(window, entities[i]->m_sprite);
 
 			if (entities[i] != selectedObject)
-				outline(window, entities[i]->m_sprite, 2, sf::Color::Red);
+				engine::graphics::outline(window, entities[i]->m_sprite, 2, sf::Color::Red);
 
 			engine::text::draw(window, text, std::to_string(entities[i]->m_id) + "/" + std::to_string(entities.size()), sf::Vector2f(entities[i]->m_sprite.getPosition().x, entities[i]->m_sprite.getPosition().y));
 		}
 	}
 
 	if (selectedObject != &null_ent)
-		outline(window, selectedObject->m_sprite, 2, sf::Color::Yellow);
+		engine::graphics::outline(window, selectedObject->m_sprite, 2, sf::Color::Yellow);
 
 	window.display();
 }
@@ -177,10 +149,12 @@ int main(int argc, char *argv[])
 	sf::RenderWindow gameWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), ("bobwars 0.1.0-" + engine::version), sf::Style::Titlebar | sf::Style::Close);
 	sf::View main_view(sf::Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2), sf::Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2));
 
+	gameWindow.setFramerateLimit(60);
+
 	gui_load();
 
 	sf::Clock clock;    // for fps
-	float lastTime = 0; // also for fps
+//	float lastTime = 0; // also for fps
 
 	// game loop
 	while (gameWindow.isOpen())
@@ -313,9 +287,9 @@ int main(int argc, char *argv[])
 		}
 
 		{ //FRAMES PER SECOND
-			sf::Time frames_per_second = clock.getElapsedTime();
+			float frames_per_second = clock.getElapsedTime().asSeconds();
 			framecounter.setPosition(main_view.getCenter().x + 170, main_view.getCenter().y - 150); // top right
-			framecounter.setString( "FPS: " + std::to_string( (int)(1.0f / frames_per_second.asSeconds()) ) );
+			framecounter.setString( "FPS: " + std::to_string( (int)(1.0f / frames_per_second) ) );
 			clock.restart();
 		}
 
