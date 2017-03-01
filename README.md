@@ -1,6 +1,6 @@
 # bobwars
-bobwars is a simple RTS game designed to expand Age of Empires to allow for much deeper strategies.
-it's also based off of the "This is Bob" copy/pasta from when Google+ took over. Guess what the two civs are?
+bobwars is a simple RTS game for getting a developer's hands dirty. After this, off to clone Age of Empires!
+It's also based off of the "This is Bob" copy/pasta from when Google+ took over. Guess what the two civs are?
 
 ## Setting up
 Clone the project to the desired location on your machine.
@@ -17,4 +17,4 @@ The speed of the camera can be changed by holding down the Left-Shift Key.
 
 ## Built With
 * [Simple and Fast Media Library (SFML)](http://www.sfml-dev.org) - The Graphics library used.
-* anyone who had their code copied from StackOverflow (idicated by comments in the source code)
+* anyone who had their code copied from StackOverflow (indicated by comments in the source code)
