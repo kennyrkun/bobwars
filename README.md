@@ -17,4 +17,5 @@ The speed of the camera can be changed by holding down the Left-Shift Key.
 
 ## Built With
 * [Simple and Fast Media Library (SFML)](http://www.sfml-dev.org) - The Graphics library used.
+* some bits of the [Create Me Engine](https://github.com/roglew/CreateMeEngine)
 * anyone who had their code copied from StackOverflow (indicated by comments in the source code)
