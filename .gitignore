@@ -246,3 +246,4 @@ ModelManifest.xml
 
 # SFML Files, No need to be included in the repo.
 sfml/
+/bobwars/screenshots

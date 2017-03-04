@@ -1,8 +1,9 @@
 #include <ENGINE\engine_main.hpp>
-//#include "GameObjectManager.hpp"
 #include "BaseEntity.hpp"
 #include "Button.hpp"
+
 #include <iostream>
+#include <filesystem>
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
@@ -20,10 +21,10 @@ sf::Text framecounter;
 sf::Texture player_tex;
 sf::RectangleShape world;
 
-float view_speed = .1f;
-float player_speed = .05f;
+float view_speed = 5.0f;
+float player_speed = 2.5f;
 
-void fade(sf::Shape &object, int opacity)
+void fade(sf::Shape &object, int opacity) // TODO: run this in another thread
 {
 	logger::DEBUG("fading to " + std::to_string(opacity));
 
@@ -131,6 +132,55 @@ void gui_load()
 	logger::INFO("done!");
 }
 
+void screenshot(sf::RenderWindow &window)
+{
+	sf::Vector2u windowSize = window.getSize();
+	sf::Texture texture;
+
+	texture.create(windowSize.x, windowSize.y);
+	texture.update(window); // give texture window
+
+	{
+		namespace fs = std::experimental::filesystem;
+
+		if (fs::exists("screenshots"))
+		{
+			int screenshots = 0;
+
+			for (auto& p : fs::recursive_directory_iterator("screenshots")) // gets us the amount of files in there
+			{
+				screenshots += 1;
+			}
+
+			std::string savePath = "screenshots\\screenshot_" + std::to_string(screenshots) + ".png";
+
+			if (!texture.copyToImage().saveToFile(savePath))
+			{
+				logger::ERROR("failed to save screenshot.");
+			}
+			else
+			{
+				logger::INFO("saved screenshot #" + std::to_string(screenshots));
+			}
+		}
+		else // screenshots folder is a non
+		{
+			logger::WARNING("screenshots folder does not exist, attempting to create one.");
+
+			if (fs::create_directory("screenshots"))
+			{
+				logger::INFO("attempting to save screenshot again...");
+
+				screenshot(window);
+			}
+			else
+			{
+				logger::ERROR("failed to create screenshots folder, make it yourself.");
+			}
+		}
+	}
+}
+
 int main(int argc, char *argv[])
 {
 	{
@@ -146,18 +196,21 @@ int main(int argc, char *argv[])
 
 	logger::INFO("initializing");
 
-	sf::RenderWindow gameWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), ("bobwars 0.1.0-" + engine::version), sf::Style::Titlebar | sf::Style::Close);
+	sf::RenderWindow gameWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), ("bobwars 0.2.0-" + engine::version), sf::Style::Titlebar | sf::Style::Close);
 	sf::View main_view(sf::Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2), sf::Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2));
+
+	gameWindow.setFramerateLimit(120); // everything goes REALLY WICKED FAST without this. do not remove.
 
 	gui_load();
 
-	sf::Clock clock;    // for fps
-//	float lastTime = 0; // also for fps
+	sf::Clock frame_time; // for fps
 
 	// game loop
 	while (gameWindow.isOpen())
 	{
 		sf::Event event;
+
+		bool should_screenshot(false);
 
 		while (gameWindow.pollEvent(event))
 		{
@@ -168,16 +221,21 @@ int main(int argc, char *argv[])
 			if (event.type == sf::Event::KeyPressed)
 			{
 				if (event.key.code == sf::Keyboard::Escape)
-					logger::INFO("pause function not yet implemented.");
+					logger::DEBUG("pause function not yet implemented.");
 
 				if (event.key.code == sf::Keyboard::LShift)
-					view_speed = .05f;
+					view_speed = 2.5f;
+
+				if (event.key.code == sf::Keyboard::F12)
+				{
+					should_screenshot = true;
+				}
 			}
 
 			if (event.type == sf::Event::KeyReleased)
 			{
 				if (event.key.code == sf::Keyboard::LShift)
-					view_speed = .1f;
+					view_speed = 5.0f;
 			}
 
 			//---------------MOUSE
@@ -285,13 +343,22 @@ int main(int argc, char *argv[])
 		}
 
 		{ //FRAMES PER SECOND
-			float frames_per_second = clock.getElapsedTime().asSeconds();
-			framecounter.setPosition(main_view.getCenter().x + 170, main_view.getCenter().y - 150); // top right
-			framecounter.setString( "FPS: " + std::to_string( (1.0f / frames_per_second) ) );
-			clock.restart();
+			float frames_per_second = frame_time.getElapsedTime().asSeconds();
+
+			framecounter.setPosition(main_view.getCenter().x - 199, main_view.getCenter().y -  140);
+			framecounter.setString( "FPS: " + std::to_string( (int)(1.0f / frames_per_second) ) );
+
+			frame_time.restart();
 		}
 
 		draw(gameWindow, main_view);
+
+		if (should_screenshot)
+		{
+			screenshot(gameWindow);
+
+			should_screenshot = false;
+		}
 	}
 
 	logger::INFO("exiting...");
