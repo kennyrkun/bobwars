@@ -3,7 +3,6 @@
 #include <iostream>
 #include <fstream>
 
-#include <SFML\Graphics.hpp>
 #include <ENGINE\engine_main.hpp>
 
 namespace engine
@@ -93,40 +92,19 @@ namespace engine
 		std::string hours_s(std::to_string(hours));
 
 		if (seconds < 10)
-		{
-			for (int i = 0; i < 10; i++)
-			{
-				seconds_s = "0" + std::to_string(seconds);
-			}
-		}
+			seconds_s = "0" + std::to_string(seconds);
 		else
-		{
 			seconds_s = std::to_string(seconds);
-		}
 
 		if (minutes < 10)
-		{
-			for (int i = 0; i < 10; i++)
-			{
-				minutes_s = "0" + std::to_string(minutes);
-			}
-		}
+			minutes_s = "0" + std::to_string(minutes);
 		else
-		{
 			minutes_s = std::to_string(minutes);
-		}
 
 		if (hours < 10)
-		{
-			for (int i = 0; i < 10; i++)
-			{
 				hours_s = "0" + std::to_string(hours);
-			}
-		}
 		else
-		{
 			hours_s = std::to_string(hours);
-		}
 
 		std::string time = hours_s + ":" + minutes_s + ":" + seconds_s;
 

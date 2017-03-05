@@ -29,4 +29,4 @@ namespace engine
 
 #include "logger.hpp"
 
-#endif
+#endif // ENGINE_MAIN_HPP

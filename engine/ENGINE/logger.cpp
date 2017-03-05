@@ -6,8 +6,6 @@
 
 void log(std::string output)
 {
-	std::cout << output << std::endl;
-
 	std::ofstream log("bobwars.log", std::ios::app);
 
 	if (log.is_open())
@@ -32,6 +30,7 @@ namespace logger
 	void INFO(std::string output)
 	{
 		output = engine::getTime() + " INFO: " + output;
+		std::cout << output << std::endl;
 
 		log(output);
 	}
@@ -39,6 +38,7 @@ namespace logger
 	void WARNING(std::string output)
 	{
 		output = engine::getTime() + " WARNING: " + output;
+		std::cout << output << std::endl;
 
 		log(output);
 	}
@@ -46,6 +46,7 @@ namespace logger
 	void ERROR(std::string output)
 	{
 		output = engine::getTime() + " ERROR: " + output;
+		std::cout << output << std::endl;
 
 		log(output);
 	}
@@ -62,6 +63,8 @@ namespace logger
 		if (engine::cl_debug)
 		{
 			output = engine::getTime() + " DEBUG: " + output;
+			std::cout << output << std::endl;
+
 			log(output);
 		}
 	}
