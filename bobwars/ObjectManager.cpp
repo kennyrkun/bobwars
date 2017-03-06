@@ -26,7 +26,9 @@ void ObjectManager::createObject()
 
 	BaseEntity *newEnt = new BaseEntity();
 	newEnt->m_id += 1;
-//	newEnt->m_sprite.setTexture(player_tex); ADDED WHEN RESOURCE MANAGER IS IMPLEMENTED
+
+//	newEnt->m_sprite.setTexture(player_tex);
+//  ^ we need a resource manager for this
 
 	entities.push_back(newEnt); // add it to the stack
 	selected = entities.back(); // select it
@@ -39,7 +41,7 @@ void ObjectManager::deleteObject(BaseEntity *ent)
 	delete &ent;
 }
 
-void ObjectManager::select(BaseEntity *entity)
+void ObjectManager::selectObject(BaseEntity *entity)
 {
 	selected = entity;
 }

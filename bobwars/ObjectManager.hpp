@@ -18,7 +18,7 @@ public:
 
 	void createObject();
 	void deleteObject(BaseEntity *ent);
-	void select(BaseEntity *entity);
+	void selectObject(BaseEntity *entity);
 
 private:
 	// nothing
