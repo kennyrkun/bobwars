@@ -30,9 +30,6 @@
     <ClInclude Include="BaseEntity.hpp">
       <Filter>BOBWARS\Classes\Entities</Filter>
     </ClInclude>
-    <ClInclude Include="GameObjectManager.hpp">
-      <Filter>BOBWARS\Classes</Filter>
-    </ClInclude>
     <ClInclude Include="..\engine\ENGINE\engine_main.hpp">
       <Filter>ENGINE</Filter>
     </ClInclude>
@@ -45,6 +42,9 @@
     <ClInclude Include="ResourceManager.hpp">
       <Filter>BOBWARS\Classes</Filter>
     </ClInclude>
+    <ClInclude Include="ObjectManager.hpp">
+      <Filter>BOBWARS\Classes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -52,9 +52,6 @@
     </ClCompile>
     <ClCompile Include="BaseEntity.cpp">
       <Filter>BOBWARS\Classes\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObjectManager.cpp">
-      <Filter>BOBWARS\Classes</Filter>
     </ClCompile>
     <ClCompile Include="..\engine\ENGINE\engine_main.cpp">
       <Filter>ENGINE</Filter>
@@ -66,6 +63,9 @@
       <Filter>BOBWARS\Classes</Filter>
     </ClCompile>
     <ClCompile Include="ResourceManager.cpp">
+      <Filter>BOBWARS\Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectManager.cpp">
       <Filter>BOBWARS\Classes</Filter>
     </ClCompile>
   </ItemGroup>
