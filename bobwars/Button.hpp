@@ -12,6 +12,7 @@ public:
 	~Button();
 
 	void setPosition(const sf::Vector2f &pos);
+	void setString(std::string string);
 	void draw(sf::RenderWindow &window);
 
 private:

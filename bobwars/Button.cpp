@@ -35,6 +35,14 @@ void Button::setPosition(const sf::Vector2f &pos)
 	m_text.setPosition(m_shape.getPosition());
 }
 
+void Button::setString(std::string string)
+{
+	m_text.setString(string);
+
+	m_shape.setSize(sf::Vector2f(m_text.getLocalBounds().width + 60, m_text.getLocalBounds().height + 13));
+	m_text.setPosition(sf::Vector2f(m_shape.getPosition().x, m_shape.getPosition().y + 1));
+}
+
 void Button::draw(sf::RenderWindow &window)
 {
 	window.draw(m_shape);
