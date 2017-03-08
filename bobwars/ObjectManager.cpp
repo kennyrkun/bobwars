@@ -2,20 +2,19 @@
 
 ObjectManager::ObjectManager()
 {
-	BaseEntity* null = new BaseEntity;
-	null->m_id = 1;
+	null.m_id = 1;
+	entities.push_back(&null); // because we need a null.
 
-	entities.push_back(null); // because we need a null.
+	null = *entities[0];
 
 	logger::DEBUG("ObjectManager constructed.");
 }
 
 ObjectManager::~ObjectManager()
 {
-	for (size_t i = 0; i < entities.size(); i++)
-	{
-		delete &entities[i];
-	}
+	// this breaks things. don't do it.
+	//for (size_t i = 0; i < entities.size(); i++)
+		//delete &entities[i];
 
 	logger::DEBUG("ObjectManager deconstructed.");
 }
@@ -25,10 +24,7 @@ void ObjectManager::createObject()
 	logger::DEBUG("created new entity");
 
 	BaseEntity *newEnt = new BaseEntity();
-	newEnt->m_id += 1;
-
-//	newEnt->m_sprite.setTexture(player_tex);
-//  ^ we need a resource manager for this
+	newEnt->m_id += 1; // how the fuck does this work.
 
 	entities.push_back(newEnt); // add it to the stack
 	selected = entities.back(); // select it
@@ -41,7 +37,7 @@ void ObjectManager::deleteObject(BaseEntity *ent)
 	delete &ent;
 }
 
-void ObjectManager::selectObject(BaseEntity *entity)
+inline void ObjectManager::selectObject(BaseEntity *ent)
 {
-	selected = entity;
+	selected = ent;
 }
