@@ -1,4 +1,6 @@
 #include <ENGINE\engine_main.hpp>
+
+#include "ObjectManager.hpp"
 #include "BaseEntity.hpp"
 #include "Button.hpp"
 
@@ -8,18 +10,16 @@
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
 
-Button create_ent(sf::Vector2f(WINDOW_WIDTH, WINDOW_HEIGHT), sf::Vector2f(200, 50), "create");
-Button delete_ent(sf::Vector2f(WINDOW_WIDTH, WINDOW_HEIGHT), sf::Vector2f(200, 50), "delete");
-
-BaseEntity null_ent;
-BaseEntity *selectedObject = &null_ent;
-std::vector<BaseEntity*> entities;
-
 sf::Font Arial;
 sf::Text text;
 sf::Text framecounter;
 sf::Texture player_tex;
 sf::RectangleShape world;
+
+Button create_ent(sf::Vector2f(WINDOW_WIDTH, WINDOW_HEIGHT), sf::Vector2f(200, 50), "create");
+Button delete_ent(sf::Vector2f(WINDOW_WIDTH, WINDOW_HEIGHT), sf::Vector2f(200, 50), "delete");
+
+ObjectManager obMan;
 
 float view_speed = 5.0f;
 float player_speed = 2.5f;
@@ -60,8 +60,8 @@ void draw(sf::RenderWindow &window, sf::View &view)
 	window.setView(view);
 	window.draw(world);
 
-	for (size_t i = 0; i < entities.size(); i++)
-		window.draw(entities[i]->m_sprite);
+	for (size_t i = 0; i < obMan.entities.size(); i++)
+		window.draw(obMan.entities[i]->m_sprite);
 
 	create_ent.draw(window);
 	delete_ent.draw(window);
@@ -78,19 +78,19 @@ void draw(sf::RenderWindow &window, sf::View &view)
 			engine::text::draw(window, text, x + " " + y, sf::Vector2f(view.getCenter().x - 199, view.getCenter().y - 150));
 		}
 
-		for (size_t i = 0; i < entities.size(); i++)
+		for (size_t i = 0; i < obMan.entities.size(); i++)
 		{
-			show_coords(window, entities[i]->m_sprite);
+			show_coords(window, obMan.entities[i]->m_sprite);
 
-			if (entities[i] != selectedObject)
-				engine::graphics::outline(window, entities[i]->m_sprite, 2, sf::Color::Red);
+			if (obMan.entities[i] != obMan.selected)
+				engine::graphics::outline(window, obMan.entities[i]->m_sprite, 2, sf::Color::Red);
 
-			engine::text::draw(window, text, std::to_string(entities[i]->m_id) + "/" + std::to_string(entities.size()), sf::Vector2f(entities[i]->m_sprite.getPosition().x, entities[i]->m_sprite.getPosition().y));
+			engine::text::draw(window, text, std::to_string(obMan.entities[i]->m_id) + "/" + std::to_string(obMan.entities.size()), sf::Vector2f(obMan.entities[i]->m_sprite.getPosition().x, obMan.entities[i]->m_sprite.getPosition().y));
 		}
 	}
 
-	if (selectedObject != &null_ent)
-		engine::graphics::outline(window, selectedObject->m_sprite, 2, sf::Color::Yellow);
+	if (obMan.selected != &obMan.null)
+		engine::graphics::outline(window, obMan.selected->m_sprite, 2, sf::Color::Yellow);
 
 	window.display();
 }
@@ -204,6 +204,7 @@ int main(int argc, char *argv[])
 	gui_load();
 
 	sf::Clock frame_time; // for fps
+	sf::Clock clock;
 
 	// game loop
 	while (gameWindow.isOpen())
@@ -245,13 +246,13 @@ int main(int argc, char *argv[])
 				{
 					bool entity_was_selected(false);
 
-					for (size_t i = 0; i < entities.size(); i++)
+					for (size_t i = 0; i < obMan.entities.size(); i++)
 					{
-						if (entities[i]->m_sprite.getGlobalBounds().contains(gameWindow.mapPixelToCoords(sf::Mouse::getPosition(gameWindow), main_view)))
+						if (obMan.entities[i]->m_sprite.getGlobalBounds().contains(gameWindow.mapPixelToCoords(sf::Mouse::getPosition(gameWindow), main_view)))
 						{
-							if (entities[i] != selectedObject) // if this entity isn't already selected
+							if (obMan.entities[i] != obMan.selected) // if this entity isn't already selected
 							{
-								selectedObject = entities[i];
+								obMan.selected = obMan.entities[i];
 
 								entity_was_selected = true;
 
@@ -263,11 +264,11 @@ int main(int argc, char *argv[])
 							}
 						}
 
-						if (!entity_was_selected && selectedObject != &null_ent)
+						if (!entity_was_selected && (obMan.selected != &obMan.null))
 						{
 							logger::DEBUG("entity deselected");
 
-							selectedObject = &null_ent;
+							obMan.selected = &obMan.null;
 						}
 					}
 
@@ -278,19 +279,20 @@ int main(int argc, char *argv[])
 
 						BaseEntity* newEnt = new BaseEntity();
 						newEnt->m_sprite.setTexture(player_tex);
-						newEnt->m_id = entities.size() + 1;
-						entities.push_back(newEnt);
-						selectedObject = newEnt;
+						newEnt->m_id = obMan.entities.size() + 1;
+
+						obMan.entities.push_back(newEnt);
+						obMan.selected = newEnt;
 					}
-					else if (delete_ent.m_shape.getGlobalBounds().contains(gameWindow.mapPixelToCoords(sf::Mouse::getPosition(gameWindow), main_view)) && entities.size() != 0)
+					else if (delete_ent.m_shape.getGlobalBounds().contains(gameWindow.mapPixelToCoords(sf::Mouse::getPosition(gameWindow), main_view)) && obMan.entities.size() != 0)
 					{
 						logger::INFO("deleting last entity");
-						entities.pop_back();
+						obMan.entities.pop_back();
 
-						if (entities.size() == 0)
-							selectedObject = &null_ent;
+						if (obMan.entities.size() == 0)
+							obMan.selected = &obMan.null;
 						else
-							selectedObject = entities.back();
+							obMan.selected = obMan.entities.back();
 					} // entity button
 				} // left button
 			} // mouseButtonPressedgit
@@ -319,28 +321,29 @@ int main(int argc, char *argv[])
 			}
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-				selectedObject->m_sprite.move(0, -player_speed);
+				obMan.selected->m_sprite.move(0, -player_speed);
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-				selectedObject->m_sprite.move(-player_speed, 0);
+				obMan.selected->m_sprite.move(-player_speed, 0);
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-				selectedObject->m_sprite.move(0, player_speed);
+				obMan.selected->m_sprite.move(0, player_speed);
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-				selectedObject->m_sprite.move(player_speed, 0);
+				obMan.selected->m_sprite.move(player_speed, 0);
 
-			if (!selectedObject->m_sprite.getGlobalBounds().intersects(world.getGlobalBounds()) && selectedObject != &null_ent)
+			if (!obMan.selected->m_sprite.getGlobalBounds().intersects(world.getGlobalBounds()) &&( obMan.selected != &obMan.null))
 			{
-				static int times_logged; // this so that we don't print thousands of messages and lag the game
-				if (times_logged == 1000)
+				obMan.selected->m_sprite.getOrigin();
+
+				if ((int)clock.getElapsedTime().asSeconds() == 5)
 				{
-					logger::WARNING("unit is out of bounds!");
-					times_logged = 0;
+					logger::WARNING("player is out of bounds");
+
+					clock.restart();
 				}
-				else
-				{
-					times_logged++;
-				}
+
+				if (clock.getElapsedTime().asSeconds() > 5)
+					clock.restart();
 			}
-		}
+		} // gameWindow.hasFocus()
 
 		{ //FRAMES PER SECOND
 			float frames_per_second = frame_time.getElapsedTime().asSeconds();
