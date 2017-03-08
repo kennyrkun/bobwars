@@ -116,7 +116,7 @@ void gui_load()
 		logger::ERROR("unable to load world textures!");
 
 	logger::INFO("player texture...");
-	if (!player_tex.loadFromFile("resource\\textures\\player.png"))
+	if (!player_tex.loadFromFile("resource\\textures\\bob.png"))
 		logger::ERROR("unable to load player textures!");
 
 	world.setSize(sf::Vector2f(800, 600));
