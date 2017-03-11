@@ -12,9 +12,9 @@ public:
 	~ObjectManager();
 
 	std::vector<BaseEntity*> entities;
+	int num_entities = 0; // number of entites in the stack
 
-	BaseEntity null;
-	BaseEntity *selected = &null;
+	BaseEntity *selected;
 
 	void createObject();
 	void deleteObject(BaseEntity *ent);

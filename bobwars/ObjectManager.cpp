@@ -1,13 +1,18 @@
 #include "ObjectManager.hpp"
 
+#include <algorithm>
+
 ObjectManager::ObjectManager()
 {
-	null.m_id = 1;
-	entities.push_back(&null); // because we need a null.
+	BaseEntity *null = new BaseEntity();
 
-	null = *entities[0];
+	num_entities += 1;
+	null->m_id = num_entities;
 
-	logger::DEBUG("ObjectManager constructed.");
+	entities.push_back(null);
+	selected = entities[0];
+
+	logger::SILENT("ObjectManager constructed.");
 }
 
 ObjectManager::~ObjectManager()
@@ -16,25 +21,37 @@ ObjectManager::~ObjectManager()
 	//for (size_t i = 0; i < entities.size(); i++)
 		//delete &entities[i];
 
-	logger::DEBUG("ObjectManager deconstructed.");
+	logger::SILENT("ObjectManager deconstructed.");
 }
 
 void ObjectManager::createObject()
 {
-	logger::DEBUG("created new entity");
-
 	BaseEntity *newEnt = new BaseEntity();
-	newEnt->m_id += 1; // how the fuck does this work.
+	num_entities += 1;
+	newEnt->m_id = num_entities;
 
 	entities.push_back(newEnt); // add it to the stack
-	selected = entities.back(); // select it
+	selectObject(entities.back());
+
+	logger::DEBUG("creating new entity");
 }
 
 void ObjectManager::deleteObject(BaseEntity *ent)
 {
-	logger::DEBUG("deleted entity");
+	for (size_t i = 0; i < entities.size(); i++)
+	{
+		if (ent == entities[i])
+		{
+			entities.erase(std::remove(entities.begin(), entities.end(), ent), entities.end());
 
-	delete &ent;
+			break;
+		}
+	}
+
+	num_entities -= 1;
+	selected = entities.front();
+
+	logger::DEBUG("deleted entity");
 }
 
 inline void ObjectManager::selectObject(BaseEntity *ent)

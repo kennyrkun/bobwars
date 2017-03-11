@@ -24,17 +24,27 @@ ObjectManager obMan;
 float view_speed = 5.0f;
 float player_speed = 2.5f;
 
-void fade(sf::Shape &object, int opacity) // TODO: run this in another thread
+bool clicked(sf::Shape &object, sf::RenderWindow &window, sf::View &view)
 {
-	logger::DEBUG("fading to " + std::to_string(opacity));
-
-	if (opacity < object.getFillColor().a) // 255 0
+	if (object.getGlobalBounds().contains(window.mapPixelToCoords(sf::Mouse::getPosition(window), view)))
 	{
-		object.setFillColor(sf::Color(object.getFillColor().r, object.getFillColor().g, object.getFillColor().b, object.getFillColor().a - 1));
+		return true;
 	}
-	else if (opacity > object.getFillColor().a)
+	else
 	{
-		object.setFillColor(sf::Color(object.getFillColor().r, object.getFillColor().g, object.getFillColor().b, object.getFillColor().a + 1));
+		return false;
+	}
+}
+
+bool clicked(sf::Sprite &object, sf::RenderWindow &window, sf::View &view)
+{
+	if (object.getGlobalBounds().contains(window.mapPixelToCoords(sf::Mouse::getPosition(window), view)))
+	{
+		return true;
+	}
+	else
+	{
+		return false;
 	}
 }
 
@@ -80,16 +90,16 @@ void draw(sf::RenderWindow &window, sf::View &view)
 
 		for (size_t i = 0; i < obMan.entities.size(); i++)
 		{
-			show_coords(window, obMan.entities[i]->m_sprite);
-
-			if (obMan.entities[i] != obMan.selected)
+			if (obMan.entities[i] != obMan.entities[0])
+			{
+				show_coords(window, obMan.entities[i]->m_sprite);
 				engine::graphics::outline(window, obMan.entities[i]->m_sprite, 2, sf::Color::Red);
-
-			engine::text::draw(window, text, std::to_string(obMan.entities[i]->m_id) + "/" + std::to_string(obMan.entities.size()), sf::Vector2f(obMan.entities[i]->m_sprite.getPosition().x, obMan.entities[i]->m_sprite.getPosition().y));
+				engine::text::draw(window, text, std::to_string(obMan.entities[i]->m_id) + "/" + std::to_string(obMan.entities.size()), sf::Vector2f(obMan.entities[i]->m_sprite.getPosition().x, obMan.entities[i]->m_sprite.getPosition().y));
+			}
 		}
 	}
 
-	if (obMan.selected != &obMan.null)
+	if (obMan.selected != obMan.entities[0])
 		engine::graphics::outline(window, obMan.selected->m_sprite, 2, sf::Color::Yellow);
 
 	window.display();
@@ -196,7 +206,7 @@ int main(int argc, char *argv[])
 
 	logger::INFO("initializing");
 
-	sf::RenderWindow gameWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), ("bobwars 0.2.0-" + engine::version), sf::Style::Titlebar | sf::Style::Close);
+	sf::RenderWindow gameWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), ("bobwars 0.3.0-" + engine::version), sf::Style::Titlebar | sf::Style::Close);
 	sf::View main_view(sf::Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2), sf::Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2));
 
 	gameWindow.setFramerateLimit(120); // everything goes REALLY WICKED FAST without this. do not remove.
@@ -228,9 +238,7 @@ int main(int argc, char *argv[])
 					view_speed = 2.5f;
 
 				if (event.key.code == sf::Keyboard::F12)
-				{
 					should_screenshot = true;
-				}
 			}
 
 			if (event.type == sf::Event::KeyReleased)
@@ -244,72 +252,59 @@ int main(int argc, char *argv[])
 			{
 				if (event.key.code == sf::Mouse::Left)
 				{
-					bool entity_was_selected(false);
-
-					for (size_t i = 0; i < obMan.entities.size(); i++)
+					if ( clicked(create_ent.m_shape, gameWindow, main_view) )
 					{
-						if (obMan.entities[i]->m_sprite.getGlobalBounds().contains(gameWindow.mapPixelToCoords(sf::Mouse::getPosition(gameWindow), main_view)))
-						{
-							if (obMan.entities[i] != obMan.selected) // if this entity isn't already selected
-							{
-								obMan.selected = obMan.entities[i];
-
-								entity_was_selected = true;
-
-								logger::DEBUG("selected an entity");
-							}
-							else
-							{
-								logger::DEBUG("this entity is already selected");
-							}
-						}
-
-						if (!entity_was_selected && (obMan.selected != &obMan.null))
-						{
-							logger::DEBUG("entity deselected");
-
-							obMan.selected = &obMan.null;
-						}
+						obMan.createObject();
+						obMan.entities.back()->m_sprite.setTexture(player_tex); // TODO: load textures in ResourceManager, which ObjectManager will have access to.
 					}
-
-					// check if one of the entity buttons were pressed
-					if (create_ent.m_shape.getGlobalBounds().contains(gameWindow.mapPixelToCoords(sf::Mouse::getPosition(gameWindow), main_view)))
+					else if ( clicked(delete_ent.m_shape, gameWindow, main_view) && obMan.selected != obMan.entities[0] )
 					{
-						logger::INFO("creating new entity");
-
-						BaseEntity* newEnt = new BaseEntity();
-						newEnt->m_sprite.setTexture(player_tex);
-						newEnt->m_id = obMan.entities.size() + 1;
-
-						obMan.entities.push_back(newEnt);
-						obMan.selected = newEnt;
+						obMan.deleteObject(obMan.selected);
 					}
-					else if (delete_ent.m_shape.getGlobalBounds().contains(gameWindow.mapPixelToCoords(sf::Mouse::getPosition(gameWindow), main_view)) && obMan.entities.size() != 0)
+					else // didn't click a button so let's see if they clicked an entity
 					{
-						logger::INFO("deleting last entity");
-						obMan.entities.pop_back();
+						for (size_t i = 0; i < obMan.entities.size(); i++)
+						{
+							bool entity_was_selected(false);
 
-						if (obMan.entities.size() == 0)
-							obMan.selected = &obMan.null;
-						else
-							obMan.selected = obMan.entities.back();
-					} // entity button
-				} // left button
+							if (clicked(obMan.entities[i]->m_sprite, gameWindow, main_view))
+							{
+								if (obMan.entities[i] == obMan.selected)
+								{
+									logger::DEBUG("this entity is already selected");
+									break;
+								}
+								else
+								{
+									obMan.selectObject(obMan.entities[i]);
+									logger::DEBUG("selected an entity");
+									break;
+								}
+							}
+
+							if (!entity_was_selected && (obMan.selected != obMan.entities[0]))
+							{
+								obMan.selected = obMan.entities[0];
+								logger::DEBUG("entity deselected");
+							}
+						} // what entity did we click
+					} // what did we click
+				} // left mouse button
 			} // mouseButtonPressedgit
 		} // pollevent
 
 		if (gameWindow.hasFocus())
 		{
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-				main_view.move(0, -view_speed);
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-				main_view.move(-view_speed, 0);
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-				main_view.move(0, view_speed);
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-				main_view.move(view_speed, 0);
+			{
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+					main_view.move(0, -view_speed);
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+					main_view.move(-view_speed, 0);
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+					main_view.move(0, view_speed);
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+					main_view.move(view_speed, 0);
 
-			{ // keeps the camera from going out of bounds
 				if (main_view.getCenter().x > 800)
 					main_view.setCenter(800, main_view.getCenter().y);
 				if (main_view.getCenter().y > 600)
@@ -320,39 +315,27 @@ int main(int argc, char *argv[])
 					main_view.setCenter(main_view.getCenter().x, 0);
 			}
 
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-				obMan.selected->m_sprite.move(0, -player_speed);
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-				obMan.selected->m_sprite.move(-player_speed, 0);
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-				obMan.selected->m_sprite.move(0, player_speed);
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-				obMan.selected->m_sprite.move(player_speed, 0);
-
-			if (!obMan.selected->m_sprite.getGlobalBounds().intersects(world.getGlobalBounds()) &&( obMan.selected != &obMan.null))
+			if (obMan.selected != obMan.entities[0])
 			{
-				obMan.selected->m_sprite.getOrigin();
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+					obMan.selected->m_sprite.move(0, -player_speed);
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+					obMan.selected->m_sprite.move(-player_speed, 0);
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+					obMan.selected->m_sprite.move(0, player_speed);
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+					obMan.selected->m_sprite.move(player_speed, 0);
+			}
 
-				if ((int)clock.getElapsedTime().asSeconds() == 5)
-				{
-					logger::WARNING("player is out of bounds");
+			{ //FRAMES PER SECOND
+				float frames_per_second = frame_time.getElapsedTime().asSeconds();
 
-					clock.restart();
-				}
+				framecounter.setPosition(main_view.getCenter().x - 199, main_view.getCenter().y - 140);
+				framecounter.setString("FPS: " + std::to_string((int)(1.0f / frames_per_second)));
 
-				if (clock.getElapsedTime().asSeconds() > 5)
-					clock.restart();
+				frame_time.restart().asSeconds();
 			}
 		} // gameWindow.hasFocus()
-
-		{ //FRAMES PER SECOND
-			float frames_per_second = frame_time.getElapsedTime().asSeconds();
-
-			framecounter.setPosition(main_view.getCenter().x - 199, main_view.getCenter().y -  140);
-			framecounter.setString( "FPS: " + std::to_string( (int)(1.0f / frames_per_second) ) );
-
-			frame_time.restart();
-		}
 
 		draw(gameWindow, main_view);
 
