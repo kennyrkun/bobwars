@@ -2,11 +2,10 @@
 
 BaseEntity::BaseEntity()
 {
-	logger::DEBUG("entity base class constructed.");
-	m_health = 100;
+	logger::SILENT("entity base class constructed.");
 }
 
 BaseEntity::~BaseEntity()
 {
-	logger::DEBUG("entity base class deconstructed.");
+	logger::SILENT("entity base class deconstructed.");
 }
