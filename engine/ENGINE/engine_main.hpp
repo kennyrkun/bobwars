@@ -3,12 +3,13 @@
 
 #include <SFML\Graphics.hpp>
 
-using CVar = bool;
+using CVar_B = bool;
+using CVar_I = int;
 
 namespace engine
 {
 	extern const std::string version;
-	extern CVar cl_debug;
+	extern CVar_B cl_debug;
 
 	///Functions related to drawing text.
 	namespace text
@@ -22,6 +23,8 @@ namespace engine
 	{
 		void outline(sf::RenderWindow &window, sf::Shape &object, float thickness, sf::Color color);
 		void outline(sf::RenderWindow &window, sf::Sprite &object, float thickness, sf::Color color);
+
+		void fade(sf::Shape &object, int opacity);
 	}
 
 	std::string getTime();

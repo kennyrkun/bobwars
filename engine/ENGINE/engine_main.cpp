@@ -7,8 +7,9 @@
 
 namespace engine
 {
-	std::string const version("1.0.7");
-	CVar cl_debug(1);
+	std::string const version("1.0.8");
+	CVar_B cl_debug(1);
+	CVar_I cl_debugoutput(2);
 
 	namespace text
 	{
@@ -72,6 +73,20 @@ namespace engine
 
 			window.draw(line);
 		}
+
+		void fade(sf::Shape &object, int opacity) // TODO: run this in another thread
+		{
+			logger::DEBUG("fading to " + std::to_string(opacity));
+
+			if (opacity < object.getFillColor().a) // 255 0
+			{
+				object.setFillColor(sf::Color(object.getFillColor().r, object.getFillColor().g, object.getFillColor().b, object.getFillColor().a - 1));
+			}
+			else if (opacity > object.getFillColor().a)
+			{
+				object.setFillColor(sf::Color(object.getFillColor().r, object.getFillColor().g, object.getFillColor().b, object.getFillColor().a + 1));
+			}
+		}
 	}
 
 	std::string getTime()
@@ -84,7 +99,7 @@ namespace engine
 		int minutes = $time % 60;
 		$time /= 60;
 
-		int hours = $time % 24; // Oklahoma timezone.
+		int hours = $time % 24;
 		$time /= 24;
 
 		std::string seconds_s;
