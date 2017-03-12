@@ -1,9 +1,10 @@
+#include <ENGINE\engine_main.hpp>
+
 #include <string>
 #include <time.h>
 #include <iostream>
 #include <fstream>
-
-#include <ENGINE\engine_main.hpp>
+#include <filesystem>
 
 namespace engine
 {
@@ -88,6 +89,56 @@ namespace engine
 			}
 		}
 	}
+
+	void screenshot(sf::RenderWindow &window)
+	{
+		sf::Vector2u windowSize = window.getSize();
+		sf::Texture texture;
+
+		texture.create(windowSize.x, windowSize.y);
+		texture.update(window); // give texture window
+
+		{
+			namespace fs = std::experimental::filesystem;
+
+			if (fs::exists("screenshots"))
+			{
+				int screenshots = 0;
+
+				for (fs::directory_iterator it("screenshots"); it != fs::directory_iterator(); ++it)
+				{
+					screenshots += 1;
+				}
+
+				std::string savePath = "screenshots\\screenshot_" + std::to_string(screenshots) + ".png";
+
+				if (!texture.copyToImage().saveToFile(savePath))
+				{
+					logger::ERROR("failed to save screenshot.");
+				}
+				else
+				{
+					logger::INFO("saved screenshot #" + std::to_string(screenshots));
+				}
+			}
+			else // screenshots folder is a non
+			{
+				logger::WARNING("screenshots folder does not exist, attempting to create one.");
+
+				if (fs::create_directory("screenshots"))
+				{
+					logger::INFO("attempting to save screenshot again...");
+
+					screenshot(window);
+				}
+				else
+				{
+					logger::ERROR("failed to create screenshots folder, make it yourself");
+				}
+			}
+		}
+	}
+
 
 	std::string getTime()
 	{

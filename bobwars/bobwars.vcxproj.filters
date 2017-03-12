@@ -39,10 +39,10 @@
     <ClInclude Include="Button.hpp">
       <Filter>BOBWARS\Classes</Filter>
     </ClInclude>
-    <ClInclude Include="ResourceManager.hpp">
+    <ClInclude Include="ObjectManager.hpp">
       <Filter>BOBWARS\Classes</Filter>
     </ClInclude>
-    <ClInclude Include="ObjectManager.hpp">
+    <ClInclude Include="ResourceManager.hpp">
       <Filter>BOBWARS\Classes</Filter>
     </ClInclude>
   </ItemGroup>
@@ -62,10 +62,10 @@
     <ClCompile Include="Button.cpp">
       <Filter>BOBWARS\Classes</Filter>
     </ClCompile>
-    <ClCompile Include="ResourceManager.cpp">
+    <ClCompile Include="ObjectManager.cpp">
       <Filter>BOBWARS\Classes</Filter>
     </ClCompile>
-    <ClCompile Include="ObjectManager.cpp">
+    <ClCompile Include="ResourceManager.cpp">
       <Filter>BOBWARS\Classes</Filter>
     </ClCompile>
   </ItemGroup>

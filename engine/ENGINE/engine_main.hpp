@@ -27,6 +27,8 @@ namespace engine
 		void fade(sf::Shape &object, int opacity);
 	}
 
+	void screenshot(sf::RenderWindow &window);
+
 	std::string getTime();
 }
 
