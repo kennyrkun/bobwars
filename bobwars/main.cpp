@@ -157,7 +157,7 @@ void screenshot(sf::RenderWindow &window)
 		{
 			int screenshots = 0;
 
-			for (auto& p : fs::recursive_directory_iterator("screenshots")) // gets us the amount of files in there
+			for (fs::directory_iterator it("screenshots"); it != fs::directory_iterator(); ++it)
 			{
 				screenshots += 1;
 			}
