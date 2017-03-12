@@ -4,7 +4,7 @@
 
 #include "engine_main.hpp"
 
-void log(std::string output)
+void write_log(const std::string output)
 {
 	std::ofstream log("bobwars.log", std::ios::app);
 
@@ -32,7 +32,7 @@ namespace logger
 		output = engine::getTime() + " INFO: " + output;
 		std::cout << output << std::endl;
 
-		log(output);
+		write_log(output);
 	}
 
 	void WARNING(std::string output)
@@ -40,7 +40,7 @@ namespace logger
 		output = engine::getTime() + " WARNING: " + output;
 		std::cout << output << std::endl;
 
-		log(output);
+		write_log(output);
 	}
 
 	void ERROR(std::string output)
@@ -48,14 +48,14 @@ namespace logger
 		output = engine::getTime() + " ERROR: " + output;
 		std::cout << output << std::endl;
 
-		log(output);
+		write_log(output);
 	}
 
 	void SILENT(std::string output)
 	{
 		output = engine::getTime() + " SILENT: " + output;
 
-		log(output);
+		write_log(output);
 	}
 
 	void DEBUG(std::string output)
@@ -65,7 +65,7 @@ namespace logger
 			output = engine::getTime() + " DEBUG: " + output;
 			std::cout << output << std::endl;
 
-			log(output);
+			write_log(output);
 		}
 	}
 }
