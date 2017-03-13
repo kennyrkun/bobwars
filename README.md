@@ -11,7 +11,8 @@ If you want to build the game without dynamic runtime library linking then you'l
 ## Playing
 While in the game, the WASD are used to control the main view, and the arrow keys are used to move selected units. Units can be created with the create button, and delete with the delete button or the DEL key. To select a unit, simply left click the desired unit. To deselect that unit, either click another unit or click something that is not a unit. 
 
-The speed of the camera can be changed by holding down the Left-Shift Key.
+The speed of the camera can be changed by holding down the Left-Shift Key.  
+The zoom level of the camera can be changed with the middle mouse wheel.
 
 ---
 

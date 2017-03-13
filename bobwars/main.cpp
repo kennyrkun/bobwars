@@ -64,7 +64,7 @@ void showObjectCoords(sf::RenderWindow &window, sf::Sprite &object)
 	engine::text::draw(window, text, coords, position, 34);
 }
 
-void draw(sf::RenderWindow &window, sf::View &view)
+void draw(sf::RenderWindow &window, sf::View &anchor, sf::View &view)
 {
 	window.clear();
 
@@ -80,13 +80,17 @@ void draw(sf::RenderWindow &window, sf::View &view)
 	// debug info like coordinates and stuff
 	if (engine::cl_debug)
 	{
-		window.draw(framecounter);
-
 		{ // main view coordinates
+			window.setView(anchor);
+
 			std::string x = "X: " + std::to_string((int)view.getCenter().x);
 			std::string y = "Y: " + std::to_string((int)view.getCenter().y);
 
 			engine::text::draw(window, text, x + " " + y, sf::Vector2f(view.getCenter().x - 199, view.getCenter().y - 150));
+
+			window.draw(framecounter);
+
+			window.setView(view);
 		}
 
 		for (size_t i = 0; i < obMan.entities.size(); i++)
@@ -160,6 +164,7 @@ int main(int argc, char *argv[])
 
 	sf::RenderWindow gameWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), ("bobwars 0.3.0-" + engine::version), sf::Style::Titlebar | sf::Style::Close);
 	sf::View main_view(sf::Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2), sf::Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2));
+	sf::View anchor(sf::Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2), sf::Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2)); // HACK: to keep text in place
 
 	gameWindow.setFramerateLimit(120); // everything goes REALLY WICKED FAST without this. do not remove.
 
@@ -193,9 +198,7 @@ int main(int argc, char *argv[])
 					should_screenshot = true;
 
 				if (event.key.code == sf::Keyboard::Delete && obMan.selected != obMan.entities[0])
-				{
 					obMan.deleteObject(obMan.selected);
-				}
 			}
 
 			if (event.type == sf::Event::KeyReleased)
@@ -249,6 +252,28 @@ int main(int argc, char *argv[])
 					} // what did we click
 				} // left mouse button
 			} // mouseButtonPressedgit
+
+			if (event.type == sf::Event::MouseWheelMoved)
+			{
+				static float zoomlevel = 2.0f;
+
+				if (event.mouseWheel.delta < 0)
+				{
+					if (zoomlevel <= 4)
+					{
+						main_view.zoom(2.0f);
+						zoomlevel = zoomlevel * 2.0f;
+					}
+				}
+				else
+				{
+					if (zoomlevel > 0.5f)
+					{
+						main_view.zoom(0.5f);
+						zoomlevel *= 0.5f;
+					}
+				}
+			}
 		} // pollevent
 
 		if (gameWindow.hasFocus())
@@ -302,9 +327,8 @@ int main(int argc, char *argv[])
 			}
 		} // gameWindow.hasFocus()
 
-
-
-		draw(gameWindow, main_view);
+		anchor.setCenter(main_view.getCenter());
+		draw(gameWindow, anchor, main_view);
 
 		if (should_screenshot)
 		{
