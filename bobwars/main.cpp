@@ -1,4 +1,5 @@
 #include <ENGINE\engine_main.hpp>
+#include <SFML\Audio.hpp>
 
 #include "ObjectManager.hpp"
 #include "BaseEntity.hpp"
@@ -16,15 +17,15 @@ sf::Text framecounter;
 sf::Texture player_tex;
 sf::RectangleShape world;
 
-Button create_ent(sf::Vector2f(WINDOW_WIDTH, WINDOW_HEIGHT), sf::Vector2f(200, 50), "create");
-Button delete_ent(sf::Vector2f(WINDOW_WIDTH, WINDOW_HEIGHT), sf::Vector2f(200, 50), "delete");
+Button create_ent_button(sf::Vector2f(WINDOW_WIDTH, WINDOW_HEIGHT), sf::Vector2f(200, 50), "create");
+Button delete_ent_button(sf::Vector2f(WINDOW_WIDTH, WINDOW_HEIGHT), sf::Vector2f(200, 50), "delete");
 
 ObjectManager obMan;
 
 float view_speed = 5.0f;
 float player_speed = 2.5f;
 
-bool clicked(sf::Shape &object, sf::RenderWindow &window, sf::View &view)
+bool didClick(sf::Shape &object, sf::RenderWindow &window, sf::View &view)
 {
 	if (object.getGlobalBounds().contains(window.mapPixelToCoords(sf::Mouse::getPosition(window), view)))
 	{
@@ -36,7 +37,7 @@ bool clicked(sf::Shape &object, sf::RenderWindow &window, sf::View &view)
 	}
 }
 
-bool clicked(sf::Sprite &object, sf::RenderWindow &window, sf::View &view)
+bool didClick(sf::Sprite &object, sf::RenderWindow &window, sf::View &view)
 {
 	if (object.getGlobalBounds().contains(window.mapPixelToCoords(sf::Mouse::getPosition(window), view)))
 	{
@@ -48,7 +49,7 @@ bool clicked(sf::Sprite &object, sf::RenderWindow &window, sf::View &view)
 	}
 }
 
-void show_coords(sf::RenderWindow &window, sf::Sprite &object)
+void showObjectCoords(sf::RenderWindow &window, sf::Sprite &object)
 {
 	std::string coords = "X: " +
 		std::to_string((int)(object.getPosition().x)) +
@@ -73,8 +74,8 @@ void draw(sf::RenderWindow &window, sf::View &view)
 	for (size_t i = 0; i < obMan.entities.size(); i++)
 		window.draw(obMan.entities[i]->m_sprite);
 
-	create_ent.draw(window);
-	delete_ent.draw(window);
+	create_ent_button.draw(window);
+	delete_ent_button.draw(window);
 
 	// debug info like coordinates and stuff
 	if (engine::cl_debug)
@@ -92,7 +93,7 @@ void draw(sf::RenderWindow &window, sf::View &view)
 		{
 			if (obMan.entities[i] != obMan.entities[0])
 			{
-				show_coords(window, obMan.entities[i]->m_sprite);
+				showObjectCoords(window, obMan.entities[i]->m_sprite);
 				engine::graphics::outline(window, obMan.entities[i]->m_sprite, 2, sf::Color::Red);
 				engine::text::draw(window, text, std::to_string(obMan.entities[i]->m_id) + "/" + std::to_string(obMan.entities.size()), sf::Vector2f(obMan.entities[i]->m_sprite.getPosition().x, obMan.entities[i]->m_sprite.getPosition().y));
 			}
@@ -105,7 +106,7 @@ void draw(sf::RenderWindow &window, sf::View &view)
 	window.display();
 }
 
-void gui_load()
+void prepareInterface()
 {
 	logger::INFO("preparing graphics");
 
@@ -136,8 +137,8 @@ void gui_load()
 	framecounter.setFont(Arial);
 	framecounter.setScale(sf::Vector2f(.2f, .2f));
 
-	create_ent.setPosition(sf::Vector2f(30, -30));
-	delete_ent.setPosition(sf::Vector2f(80, -30));
+	create_ent_button.setPosition(sf::Vector2f(30, -30));
+	delete_ent_button.setPosition(sf::Vector2f(80, -30));
 
 	logger::INFO("done!");
 }
@@ -162,7 +163,7 @@ int main(int argc, char *argv[])
 
 	gameWindow.setFramerateLimit(120); // everything goes REALLY WICKED FAST without this. do not remove.
 
-	gui_load();
+	prepareInterface();
 
 	sf::Clock frame_time; // for fps
 	sf::Clock clock;
@@ -190,6 +191,11 @@ int main(int argc, char *argv[])
 
 				if (event.key.code == sf::Keyboard::F12)
 					should_screenshot = true;
+
+				if (event.key.code == sf::Keyboard::Delete && obMan.selected != obMan.entities[0])
+				{
+					obMan.deleteObject(obMan.selected);
+				}
 			}
 
 			if (event.type == sf::Event::KeyReleased)
@@ -203,12 +209,12 @@ int main(int argc, char *argv[])
 			{
 				if (event.key.code == sf::Mouse::Left)
 				{
-					if ( clicked(create_ent.m_shape, gameWindow, main_view) )
+					if ( didClick(create_ent_button.m_shape, gameWindow, main_view) )
 					{
 						obMan.createObject();
 						obMan.entities.back()->m_sprite.setTexture(player_tex); // TODO: load textures in ResourceManager, which ObjectManager will have access to.
 					}
-					else if ( clicked(delete_ent.m_shape, gameWindow, main_view) && obMan.selected != obMan.entities[0] )
+					else if ( didClick(delete_ent_button.m_shape, gameWindow, main_view) && obMan.selected != obMan.entities[0] )
 					{
 						obMan.deleteObject(obMan.selected);
 					}
@@ -218,7 +224,7 @@ int main(int argc, char *argv[])
 						{
 							bool entity_was_selected(false);
 
-							if (clicked(obMan.entities[i]->m_sprite, gameWindow, main_view))
+							if (didClick(obMan.entities[i]->m_sprite, gameWindow, main_view))
 							{
 								if (obMan.entities[i] == obMan.selected)
 								{
@@ -237,6 +243,7 @@ int main(int argc, char *argv[])
 							{
 								obMan.selected = obMan.entities[0];
 								logger::DEBUG("entity deselected");
+								break;
 							}
 						} // what entity did we click
 					} // what did we click
@@ -279,14 +286,23 @@ int main(int argc, char *argv[])
 			}
 
 			{ //FRAMES PER SECOND
-				float frames_per_second = frame_time.getElapsedTime().asSeconds();
+				float frames_per_second = frame_time.restart().asSeconds();
 
 				framecounter.setPosition(main_view.getCenter().x - 199, main_view.getCenter().y - 140);
 				framecounter.setString("FPS: " + std::to_string((int)(1.0f / frames_per_second)));
+			}
 
-				frame_time.restart().asSeconds();
+			if (obMan.selected == obMan.entities[0])
+			{
+				delete_ent_button.setButtonColor(sf::Color(150, 150, 150));
+			}
+			else
+			{
+				delete_ent_button.setButtonColor(sf::Color(255, 255, 255));
 			}
 		} // gameWindow.hasFocus()
+
+
 
 		draw(gameWindow, main_view);
 
