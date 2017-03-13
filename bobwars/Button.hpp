@@ -12,13 +12,13 @@ public:
 	~Button();
 
 	void setPosition(const sf::Vector2f &pos);
-	void setString(const std::string string);
+	void setButtonString(const std::string string);
 	void setButtonColor(const sf::Color &color);
-
+	void setStringColor(const sf::Color &color);
 	void draw(sf::RenderWindow &window);
 
 private:
-	sf::Text m_text;
+	sf::Text m_string;
 	sf::Font m_font;
 };
 

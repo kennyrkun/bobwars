@@ -4,25 +4,25 @@
 Button::Button(const sf::Vector2f &window_size, const sf::Vector2f &size, const std::string string)
 {
 	if (m_font.loadFromFile("resource\\fonts\\arial.ttf"))
-		m_text.setFont(m_font);
+		m_string.setFont(m_font);
 
-	m_text.setString(string);
-	m_text.setFillColor(sf::Color::Black);
+	m_string.setString(string);
+	m_string.setFillColor(sf::Color::Black);
 
 	m_shape.setFillColor(sf::Color::White);
 
 	m_shape.setSize(sf::Vector2f(size.x, size.y));
-	m_text.setCharacterSize((int)size.y);
+	m_string.setCharacterSize((int)size.y);
 
 	m_shape.setOrigin(m_shape.getLocalBounds().width / 2, m_shape.getLocalBounds().height / 2);
-	m_text.setOrigin(m_text.getLocalBounds().width / 2, m_text.getLocalBounds().height);
+	m_string.setOrigin(m_string.getLocalBounds().width / 2, m_string.getLocalBounds().height);
 
 	m_shape.setPosition(sf::Vector2f(window_size.x / 2, window_size.y / 2));
-	m_text.setPosition(m_shape.getOrigin());
+	m_string.setPosition(m_shape.getOrigin());
 
 	//TODO: not have this set in stone
 	m_shape.setScale(.2f, .2f);
-	m_text.setScale(.2f, .2f);
+	m_string.setScale(.2f, .2f);
 
 	logger::SILENT("Button class constructed.");
 }
@@ -35,15 +35,15 @@ Button::~Button()
 void Button::setPosition(const sf::Vector2f &pos)
 {
 	m_shape.setPosition(pos);
-	m_text.setPosition(m_shape.getPosition());
+	m_string.setPosition(m_shape.getPosition());
 }
 
-void Button::setString(const std::string string)
+void Button::setButtonString(const std::string string)
 {
-	m_text.setString(string);
+	m_string.setString(string);
 
-	m_shape.setSize(sf::Vector2f(m_text.getLocalBounds().width + 60, m_text.getLocalBounds().height + 13));
-	m_text.setPosition(sf::Vector2f(m_shape.getPosition().x, m_shape.getPosition().y + 1));
+	m_shape.setSize(sf::Vector2f(m_string.getLocalBounds().width + 60, m_string.getLocalBounds().height + 13));
+	m_string.setPosition(sf::Vector2f(m_shape.getPosition().x, m_shape.getPosition().y + 1));
 }
 
 void Button::setButtonColor(const sf::Color &color)
@@ -51,8 +51,13 @@ void Button::setButtonColor(const sf::Color &color)
 	m_shape.setFillColor(color);
 }
 
+void Button::setStringColor(const sf::Color &color)
+{
+	m_string.setFillColor(color);
+}
+
 void Button::draw(sf::RenderWindow &window)
 {
 	window.draw(m_shape);
-	window.draw(m_text);
+	window.draw(m_string);
 }
