@@ -56,6 +56,11 @@ void Button::setStringColor(const sf::Color &color)
 	m_string.setFillColor(color);
 }
 
+void Button::setStringStyle(const sf::Text::Style &style)
+{
+	m_string.setStyle(style);
+}
+
 void Button::draw(sf::RenderWindow &window)
 {
 	window.draw(m_shape);

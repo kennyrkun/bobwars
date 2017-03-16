@@ -15,6 +15,7 @@ public:
 	void setButtonString(const std::string string);
 	void setButtonColor(const sf::Color &color);
 	void setStringColor(const sf::Color &color);
+	void setStringStyle(const sf::Text::Style &style);
 	void draw(sf::RenderWindow &window);
 
 private:
