@@ -29,7 +29,7 @@ namespace engine
 
 	void screenshot(sf::RenderWindow &window);
 
-	std::string getTime();
+	std::string getTimestamp();
 }
 
 #include "logger.hpp"

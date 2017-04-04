@@ -1,8 +1,8 @@
+#include "engine_main.hpp"
+
 #include <fstream>
 #include <iostream>
 #include <string>
-
-#include "engine_main.hpp"
 
 void write_log(const std::string output)
 {
@@ -29,7 +29,7 @@ namespace logger
 {
 	void INFO(std::string output)
 	{
-		output = engine::getTime() + " INFO: " + output;
+		output = engine::getTimestamp() + " INFO: " + output;
 		std::cout << output << std::endl;
 
 		write_log(output);
@@ -37,7 +37,7 @@ namespace logger
 
 	void WARNING(std::string output)
 	{
-		output = engine::getTime() + " WARNING: " + output;
+		output = engine::getTimestamp() + " WARNING: " + output;
 		std::cout << output << std::endl;
 
 		write_log(output);
@@ -45,7 +45,7 @@ namespace logger
 
 	void ERROR(std::string output)
 	{
-		output = engine::getTime() + " ERROR: " + output;
+		output = engine::getTimestamp() + " ERROR: " + output;
 		std::cout << output << std::endl;
 
 		write_log(output);
@@ -53,7 +53,7 @@ namespace logger
 
 	void SILENT(std::string output)
 	{
-		output = engine::getTime() + " SILENT: " + output;
+		output = engine::getTimestamp() + " SILENT: " + output;
 
 		write_log(output);
 	}
@@ -62,7 +62,7 @@ namespace logger
 	{
 		if (engine::cl_debug)
 		{
-			output = engine::getTime() + " DEBUG: " + output;
+			output = engine::getTimestamp() + " DEBUG: " + output;
 			std::cout << output << std::endl;
 
 			write_log(output);

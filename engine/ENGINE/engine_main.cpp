@@ -8,7 +8,7 @@
 
 namespace engine
 {
-	std::string const version("1.0.8");
+	std::string const version("1.0.9");
 	CVar_B cl_debug(1);
 	CVar_I cl_debugoutput(2);
 
@@ -139,8 +139,7 @@ namespace engine
 		}
 	}
 
-
-	std::string getTime()
+	std::string getTimestamp()
 	{
 		time_t $time = time(0);
 
@@ -153,27 +152,21 @@ namespace engine
 		int hours = $time % 24;
 		$time /= 24;
 
-		std::string seconds_s;
-		std::string minutes_s;
+		std::string seconds_s(std::to_string(seconds));
+		std::string minutes_s(std::to_string(minutes));
 		std::string hours_s(std::to_string(hours));
 
 		if (seconds < 10)
-			seconds_s = "0" + std::to_string(seconds);
-		else
-			seconds_s = std::to_string(seconds);
+			seconds_s.insert(0, "0");
 
 		if (minutes < 10)
-			minutes_s = "0" + std::to_string(minutes);
-		else
-			minutes_s = std::to_string(minutes);
+			minutes_s.insert(0, "0");
 
 		if (hours < 10)
-				hours_s = "0" + std::to_string(hours);
-		else
-			hours_s = std::to_string(hours);
+			hours_s.insert(0, "0");
 
-		std::string time = hours_s + ":" + minutes_s + ":" + seconds_s;
+		std::string timestamp = hours_s + ":" + minutes_s + ":" + seconds_s;
 
-		return time;
+		return timestamp;
 	}
 }
