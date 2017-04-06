@@ -12,7 +12,7 @@ ObjectManager::ObjectManager()
 	entities.push_back(null);
 	selected = entities[0];
 
-	logger::SILENT("ObjectManager constructed.");
+	logger::DEBUG("ObjectManager constructed.");
 }
 
 ObjectManager::~ObjectManager()
@@ -21,7 +21,7 @@ ObjectManager::~ObjectManager()
 	//for (size_t i = 0; i < entities.size(); i++)
 		//delete &entities[i];
 
-	logger::SILENT("ObjectManager deconstructed.");
+	logger::DEBUG("ObjectManager deconstructed.");
 }
 
 void ObjectManager::createObject()

@@ -12,7 +12,7 @@ Button::Button(const sf::Vector2f &window_size, const sf::Vector2f &size, const 
 	m_shape.setFillColor(sf::Color::White);
 
 	m_shape.setSize(sf::Vector2f(size.x, size.y));
-	m_string.setCharacterSize((int)size.y);
+	m_string.setCharacterSize( static_cast<int>(size.y) );
 
 	m_shape.setOrigin(m_shape.getLocalBounds().width / 2, m_shape.getLocalBounds().height / 2);
 	m_string.setOrigin(m_string.getLocalBounds().width / 2, m_string.getLocalBounds().height);
@@ -24,12 +24,12 @@ Button::Button(const sf::Vector2f &window_size, const sf::Vector2f &size, const 
 	m_shape.setScale(.2f, .2f);
 	m_string.setScale(.2f, .2f);
 
-	logger::SILENT("Button class constructed.");
+	logger::DEBUG("Button class constructed.");
 }
 
 Button::~Button()
 {
-	logger::SILENT("Deconstructing button class");
+	logger::DEBUG("Deconstructing button class");
 }
 
 void Button::setPosition(const sf::Vector2f &pos)

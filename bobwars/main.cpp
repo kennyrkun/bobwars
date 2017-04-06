@@ -28,33 +28,25 @@ float player_speed = 2.5f;
 bool didClick(sf::Shape &object, sf::RenderWindow &window, sf::View &view)
 {
 	if (object.getGlobalBounds().contains(window.mapPixelToCoords(sf::Mouse::getPosition(window), view)))
-	{
 		return true;
-	}
 	else
-	{
 		return false;
-	}
 }
 
 bool didClick(sf::Sprite &object, sf::RenderWindow &window, sf::View &view)
 {
 	if (object.getGlobalBounds().contains(window.mapPixelToCoords(sf::Mouse::getPosition(window), view)))
-	{
 		return true;
-	}
 	else
-	{
 		return false;
-	}
 }
 
 void showObjectCoords(sf::RenderWindow &window, sf::Sprite &object)
 {
 	std::string coords = "X: " +
-		std::to_string((int)(object.getPosition().x)) +
+		std::to_string( static_cast<int>(object.getPosition().x) ) +
 		" Y: " +
-		std::to_string((int)(object.getPosition().y));
+		std::to_string( static_cast<int>(object.getPosition().y) );
 
 	float x = object.getPosition().x + object.getLocalBounds().width / 4;
 	float y = object.getPosition().y - 5;
@@ -83,8 +75,8 @@ void draw(sf::RenderWindow &window, sf::View &anchor, sf::View &view)
 		{ // main view coordinates
 			window.setView(anchor);
 
-			std::string x = "X: " + std::to_string((int)view.getCenter().x);
-			std::string y = "Y: " + std::to_string((int)view.getCenter().y);
+			std::string x = "X: " + std::to_string( static_cast<int>(view.getCenter().x) );
+			std::string y = "Y: " + std::to_string( static_cast<int>(view.getCenter().y) );
 
 			engine::text::draw(window, text, x + " " + y, sf::Vector2f(view.getCenter().x - 199, view.getCenter().y - 150));
 
@@ -162,11 +154,11 @@ int main(int argc, char *argv[])
 
 	logger::INFO("initializing");
 
-	sf::RenderWindow gameWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), ("bobwars 0.3.0-" + engine::version), sf::Style::Titlebar | sf::Style::Close);
+	sf::RenderWindow gameWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), ("bobwars 0.3.1-" + engine::version), sf::Style::Titlebar | sf::Style::Close);
 	sf::View main_view(sf::Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2), sf::Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2));
-	sf::View anchor(sf::Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2), sf::Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2)); // HACK: to keep text in place
+	sf::View anchor(sf::Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2), sf::Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2)); // HACK?: to keep text in place
 
-	gameWindow.setFramerateLimit(120); // everything goes REALLY WICKED FAST without this. do not remove.
+	gameWindow.setFramerateLimit(120); // everything goes REALLY WICKED FAST without this. do not remove until delta time is implemented
 
 	prepareInterface();
 
@@ -314,7 +306,7 @@ int main(int argc, char *argv[])
 				float frames_per_second = frame_time.restart().asSeconds();
 
 				framecounter.setPosition(main_view.getCenter().x - 199, main_view.getCenter().y - 140);
-				framecounter.setString("FPS: " + std::to_string((int)(1.0f / frames_per_second)));
+				framecounter.setString("FPS: " + std::to_string( static_cast<int>(1.0f / frames_per_second) ));
 			}
 
 			if (obMan.selected == obMan.entities[0])
@@ -333,12 +325,11 @@ int main(int argc, char *argv[])
 		if (should_screenshot)
 		{
 			engine::screenshot(gameWindow);
-
 			should_screenshot = false;
 		}
 	}
 
 	logger::INFO("exiting...");
 
-	return 0;
+	return EXIT_SUCCESS;
 }

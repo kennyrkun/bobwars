@@ -2,10 +2,10 @@
 
 BaseEntity::BaseEntity()
 {
-	logger::SILENT("entity base class constructed.");
+	logger::DEBUG("entity base class constructed.");
 }
 
 BaseEntity::~BaseEntity()
 {
-	logger::SILENT("entity base class deconstructed.");
+	logger::DEBUG("entity base class deconstructed.");
 }
