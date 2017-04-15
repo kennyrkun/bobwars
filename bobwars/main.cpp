@@ -106,7 +106,7 @@ void prepareInterface()
 {
 	logger::INFO("preparing graphics");
 
-	if (!Arial.loadFromFile("resource\\fonts\\arial.ttf"))
+	if (!Arial.loadFromFile("C:\\Windows\\Fonts\\Arial.ttf"))
 	{
 		std::cout << "unable to load font 'arial'." << std::endl;
 	}
@@ -243,7 +243,7 @@ int main(int argc, char *argv[])
 						} // what entity did we click
 					} // what did we click
 				} // left mouse button
-			} // mouseButtonPressedgit
+			} // mouseButtonPressed
 
 			if (event.type == sf::Event::MouseWheelMoved)
 			{
@@ -288,6 +288,11 @@ int main(int argc, char *argv[])
 					main_view.setCenter(0, main_view.getCenter().y);
 				if (main_view.getCenter().y < 0)
 					main_view.setCenter(main_view.getCenter().x, 0);
+
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
+				{
+					main_view.setCenter(obMan.selected->m_sprite.getPosition());
+				}
 			}
 
 			if (obMan.selected != obMan.entities[0])
@@ -306,7 +311,7 @@ int main(int argc, char *argv[])
 				float frames_per_second = frame_time.restart().asSeconds();
 
 				framecounter.setPosition(main_view.getCenter().x - 199, main_view.getCenter().y - 140);
-				framecounter.setString("FPS: " + std::to_string( static_cast<int>(1.0f / frames_per_second) ));
+				framecounter.setString("FPS: " + std::to_string(static_cast<int>(1.0f / frames_per_second)));
 			}
 
 			if (obMan.selected == obMan.entities[0])

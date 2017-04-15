@@ -15,9 +15,9 @@ Button::Button(const sf::Vector2f &window_size, const sf::Vector2f &size, const 
 	m_string.setCharacterSize( static_cast<int>(size.y) );
 
 	m_shape.setOrigin(m_shape.getLocalBounds().width / 2, m_shape.getLocalBounds().height / 2);
-	m_string.setOrigin(m_string.getLocalBounds().width / 2, m_string.getLocalBounds().height);
+	m_string.setOrigin(m_string.getLocalBounds().width / 2, m_string.getLocalBounds().height - (m_string.getLocalBounds().height / 6));
 
-	m_shape.setPosition(sf::Vector2f(window_size.x / 2, window_size.y / 2));
+//	m_shape.setPosition(sf::Vector2f(window_size.x / 2, window_size.y / 2));
 	m_string.setPosition(m_shape.getOrigin());
 
 	//TODO: not have this set in stone
