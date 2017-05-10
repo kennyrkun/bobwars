@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\engine\ENGINE\engine_main.hpp" />
+    <ClInclude Include="..\engine\ENGINE\Engine.hpp" />
     <ClInclude Include="..\engine\ENGINE\Logger.hpp" />
     <ClInclude Include="BaseEntity.hpp" />
     <ClInclude Include="Button.hpp">
@@ -34,9 +34,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="Text.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\engine\ENGINE\engine_main.cpp" />
+    <ClCompile Include="..\engine\ENGINE\Engine.cpp" />
     <ClCompile Include="..\engine\ENGINE\Logger.cpp" />
     <ClCompile Include="BaseEntity.cpp" />
     <ClCompile Include="Button.cpp">
@@ -52,6 +53,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\engine\ENGINE\Text.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{4AED59B2-9B61-4406-9C63-102E3343A182}</ProjectGuid>

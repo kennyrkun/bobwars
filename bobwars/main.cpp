@@ -1,4 +1,5 @@
 #include <ENGINE\Engine.hpp>
+#include "ENGINE\Text.hpp"
 #include <SFML\Audio.hpp>
 
 #include "ObjectManager.hpp"

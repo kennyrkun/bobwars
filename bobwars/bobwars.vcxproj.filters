@@ -30,9 +30,6 @@
     <ClInclude Include="BaseEntity.hpp">
       <Filter>BOBWARS\Classes\Entities</Filter>
     </ClInclude>
-    <ClInclude Include="..\engine\ENGINE\engine_main.hpp">
-      <Filter>ENGINE</Filter>
-    </ClInclude>
     <ClInclude Include="Button.hpp">
       <Filter>BOBWARS\Classes</Filter>
     </ClInclude>
@@ -45,6 +42,12 @@
     <ClInclude Include="..\engine\ENGINE\Logger.hpp">
       <Filter>ENGINE</Filter>
     </ClInclude>
+    <ClInclude Include="..\engine\ENGINE\Engine.hpp">
+      <Filter>ENGINE</Filter>
+    </ClInclude>
+    <ClInclude Include="Text.hpp">
+      <Filter>ENGINE</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -52,9 +55,6 @@
     </ClCompile>
     <ClCompile Include="BaseEntity.cpp">
       <Filter>BOBWARS\Classes\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\ENGINE\engine_main.cpp">
-      <Filter>ENGINE</Filter>
     </ClCompile>
     <ClCompile Include="Button.cpp">
       <Filter>BOBWARS\Classes</Filter>
@@ -66,6 +66,12 @@
       <Filter>BOBWARS\Classes</Filter>
     </ClCompile>
     <ClCompile Include="..\engine\ENGINE\Logger.cpp">
+      <Filter>ENGINE</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\ENGINE\Engine.cpp">
+      <Filter>ENGINE</Filter>
+    </ClCompile>
+    <ClCompile Include="Text.cpp">
       <Filter>ENGINE</Filter>
     </ClCompile>
   </ItemGroup>
