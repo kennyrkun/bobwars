@@ -90,6 +90,25 @@ namespace engine
 		}
 	}
 
+	namespace logic
+	{
+		bool didClick(sf::Shape &object, sf::RenderWindow &window, sf::View &view)
+		{
+			if (object.getGlobalBounds().contains(window.mapPixelToCoords(sf::Mouse::getPosition(window), view)))
+				return true;
+			else
+				return false;
+		}
+
+		bool didClick(sf::Sprite &object, sf::RenderWindow &window, sf::View &view)
+		{
+			if (object.getGlobalBounds().contains(window.mapPixelToCoords(sf::Mouse::getPosition(window), view)))
+				return true;
+			else
+				return false;
+		}
+	}
+
 	void screenshot(sf::RenderWindow &window)
 	{
 		sf::Vector2u windowSize = window.getSize();

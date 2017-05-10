@@ -28,6 +28,13 @@ namespace engine
 		void fade(sf::Shape &object, int opacity);
 	}
 
+	namespace logic
+	{
+		bool didClick(sf::Shape &object, sf::RenderWindow &window, sf::View &view);
+
+		bool didClick(sf::Sprite &object, sf::RenderWindow &window, sf::View &view);
+	}
+
 	void screenshot(sf::RenderWindow &window);
 
 	std::string getTimestamp();

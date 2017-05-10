@@ -25,22 +25,6 @@ ObjectManager obMan;
 float view_speed = 5.0f;
 float player_speed = 2.5f;
 
-bool didClick(sf::Shape &object, sf::RenderWindow &window, sf::View &view)
-{
-	if (object.getGlobalBounds().contains(window.mapPixelToCoords(sf::Mouse::getPosition(window), view)))
-		return true;
-	else
-		return false;
-}
-
-bool didClick(sf::Sprite &object, sf::RenderWindow &window, sf::View &view)
-{
-	if (object.getGlobalBounds().contains(window.mapPixelToCoords(sf::Mouse::getPosition(window), view)))
-		return true;
-	else
-		return false;
-}
-
 void showObjectCoords(sf::RenderWindow &window, sf::Sprite &object)
 {
 	std::string coords = "X: " +
@@ -204,12 +188,12 @@ int main(int argc, char *argv[])
 			{
 				if (event.key.code == sf::Mouse::Left)
 				{
-					if ( didClick(create_ent_button.m_shape, gameWindow, main_view) )
+					if ( engine::logic::didClick(create_ent_button.m_shape, gameWindow, main_view) )
 					{
 						obMan.createObject();
 						obMan.entities.back()->m_sprite.setTexture(player_tex); // TODO: load textures in ResourceManager, which ObjectManager will have access to.
 					}
-					else if ( didClick(delete_ent_button.m_shape, gameWindow, main_view) && obMan.selected != obMan.entities[0] )
+					else if (engine::logic::didClick(delete_ent_button.m_shape, gameWindow, main_view) && obMan.selected != obMan.entities[0] )
 					{
 						obMan.deleteObject(obMan.selected);
 					}
@@ -219,7 +203,7 @@ int main(int argc, char *argv[])
 						{
 							bool entity_was_selected(false);
 
-							if (didClick(obMan.entities[i]->m_sprite, gameWindow, main_view))
+							if (engine::logic::didClick(obMan.entities[i]->m_sprite, gameWindow, main_view))
 							{
 								if (obMan.entities[i] == obMan.selected)
 								{
