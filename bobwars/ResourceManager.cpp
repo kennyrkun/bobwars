@@ -9,7 +9,7 @@
 
 ResourceManager::ResourceManager()
 {
-//	logger::DEBUG("ResourceManager constructed.");
+//	logger::SILENT("ResourceManager constructed.");
 }
 
 ResourceManager::~ResourceManager()
@@ -23,7 +23,7 @@ ResourceManager::~ResourceManager()
 		it->second = NULL;
 	}
 
-//	logger::DEBUG("ResourceManager deconstructed.");
+//	logger::SILENT("ResourceManager deconstructed.");
 }
 
 void ResourceManager::load_texture(std::string filename)

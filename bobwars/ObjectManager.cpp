@@ -12,7 +12,7 @@ ObjectManager::ObjectManager()
 	entities.push_back(null);
 	selected = entities[0];
 
-	logger::DEBUG("ObjectManager constructed.");
+	logger::SILENT("DEBUG", "ObjectManager constructed.");
 }
 
 ObjectManager::~ObjectManager()
@@ -21,7 +21,7 @@ ObjectManager::~ObjectManager()
 	//for (size_t i = 0; i < entities.size(); i++)
 		//delete &entities[i];
 
-	logger::DEBUG("ObjectManager deconstructed.");
+	logger::SILENT("DEBUG", "ObjectManager deconstructed.");
 }
 
 void ObjectManager::createObject()
@@ -33,7 +33,7 @@ void ObjectManager::createObject()
 	entities.push_back(newEnt); // add it to the stack
 	selectObject(entities.back());
 
-	logger::DEBUG("creating new entity");
+	logger::SILENT("DEBUG", "creating new entity");
 }
 
 void ObjectManager::deleteObject(BaseEntity *ent)
@@ -51,7 +51,7 @@ void ObjectManager::deleteObject(BaseEntity *ent)
 	num_entities -= 1;
 	selected = entities.front();
 
-	logger::DEBUG("deleted entity");
+	logger::SILENT("DEBUG", "deleted entity");
 }
 
 inline void ObjectManager::selectObject(BaseEntity *ent)
