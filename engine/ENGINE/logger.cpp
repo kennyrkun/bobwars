@@ -1,12 +1,14 @@
-#include "engine_main.hpp"
+#include <ENGINE\engine_main.hpp>
 
 #include <fstream>
 #include <iostream>
 #include <string>
 
+std::string write_dir = "environment_default.log";
+
 void write_log(const std::string output)
 {
-	std::ofstream log("bobwars.log", std::ios::app);
+	std::ofstream log((write_dir), std::ios::app);
 
 	if (log.is_open())
 	{
@@ -30,8 +32,8 @@ namespace logger
 	void INFO(std::string output)
 	{
 		output = engine::getTimestamp() + " INFO: " + output;
-		std::cout << output << std::endl;
 
+		std::cout << output << std::endl;
 		write_log(output);
 	}
 
@@ -51,21 +53,33 @@ namespace logger
 		write_log(output);
 	}
 
-	void SILENT(std::string output)
+	void SILENT(std::string type, std::string output)
 	{
-		output = engine::getTimestamp() + " SILENT: " + output;
+		output = engine::getTimestamp() + " " + type + ": " + output;
 
 		write_log(output);
 	}
 
-	void DEBUG(std::string output)
+	void CUSTOM(std::string type, std::string output)
 	{
-		if (engine::cl_debug)
-		{
-			output = engine::getTimestamp() + " DEBUG: " + output;
-			std::cout << output << std::endl;
+		output = engine::getTimestamp() + " " + type + ": " + output;
+		std::cout << output << std::endl;
 
-			write_log(output);
-		}
+		write_log(output);
+	}
+
+	void BREAK()
+	{
+		std::cout << std::endl;
+	}
+
+	void setOutputDir(const std::string dir)
+	{
+		write_dir = dir;
+	}
+
+	void setOutputDir(const std::string dir, const std::string filename)
+	{
+		write_dir = dir + "//" + filename + ".log";
 	}
 }

@@ -33,9 +33,6 @@
     <ClInclude Include="..\engine\ENGINE\engine_main.hpp">
       <Filter>ENGINE</Filter>
     </ClInclude>
-    <ClInclude Include="..\engine\ENGINE\logger.hpp">
-      <Filter>ENGINE</Filter>
-    </ClInclude>
     <ClInclude Include="Button.hpp">
       <Filter>BOBWARS\Classes</Filter>
     </ClInclude>
@@ -44,6 +41,9 @@
     </ClInclude>
     <ClInclude Include="ResourceManager.hpp">
       <Filter>BOBWARS\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\ENGINE\Logger.hpp">
+      <Filter>ENGINE</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -56,9 +56,6 @@
     <ClCompile Include="..\engine\ENGINE\engine_main.cpp">
       <Filter>ENGINE</Filter>
     </ClCompile>
-    <ClCompile Include="..\engine\ENGINE\logger.cpp">
-      <Filter>ENGINE</Filter>
-    </ClCompile>
     <ClCompile Include="Button.cpp">
       <Filter>BOBWARS\Classes</Filter>
     </ClCompile>
@@ -67,6 +64,9 @@
     </ClCompile>
     <ClCompile Include="ResourceManager.cpp">
       <Filter>BOBWARS\Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\ENGINE\Logger.cpp">
+      <Filter>ENGINE</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
