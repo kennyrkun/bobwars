@@ -1,49 +1,57 @@
 #include "Button.hpp"
 #include <iostream>
 
-Button::Button(const sf::Vector2f &window_size, const sf::Vector2f &size, const std::string string)
+Button::Button(const sf::Vector2f &size, const std::string string)
 {
-	if (m_font.loadFromFile("resource\\fonts\\arial.ttf"))
+	if (m_font.loadFromFile("C:\\Windows\\Fonts\\Arial.ttf"))
 		m_string.setFont(m_font);
 
 	m_string.setString(string);
 	m_string.setFillColor(sf::Color::Black);
-
 	m_shape.setFillColor(sf::Color::White);
 
 	m_shape.setSize(sf::Vector2f(size.x, size.y));
-	m_string.setCharacterSize( static_cast<int>(size.y) );
+	m_string.setCharacterSize(static_cast<int>(size.y) - 6);
 
-	m_shape.setOrigin(m_shape.getLocalBounds().width / 2, m_shape.getLocalBounds().height / 2);
-	m_string.setOrigin(m_string.getLocalBounds().width / 2, m_string.getLocalBounds().height - (m_string.getLocalBounds().height / 6));
-
-//	m_shape.setPosition(sf::Vector2f(window_size.x / 2, window_size.y / 2));
-	m_string.setPosition(m_shape.getOrigin());
+	setString(string);
 
 	//TODO: not have this set in stone
-	m_shape.setScale(.2f, .2f);
-	m_string.setScale(.2f, .2f);
-
-	logger::DEBUG("Button class constructed.");
+	//m_shape.setScale(.2f, .2f);
+	//m_string.setScale(.2f, .2f);
 }
 
 Button::~Button()
 {
-	logger::DEBUG("Deconstructing button class");
+//	logger::SILENT("Deconstructing button class");
 }
 
-void Button::setPosition(const sf::Vector2f &pos)
+void Button::setPosition(const sf::Vector2f &newpos)
 {
-	m_shape.setPosition(pos);
+	m_shape.setPosition(newpos);
 	m_string.setPosition(m_shape.getPosition());
 }
 
-void Button::setButtonString(const std::string string)
+void Button::setString(const std::string string)
 {
 	m_string.setString(string);
 
-	m_shape.setSize(sf::Vector2f(m_string.getLocalBounds().width + 60, m_string.getLocalBounds().height + 13));
-	m_string.setPosition(sf::Vector2f(m_shape.getPosition().x, m_shape.getPosition().y + 1));
+	if (string.find('g') != std::string::npos ||
+		string.find('j') != std::string::npos ||
+		string.find('p') != std::string::npos ||
+		string.find('q') != std::string::npos ||
+		string.find('y') != std::string::npos)
+	{
+		m_shape.setSize(sf::Vector2f(m_string.getLocalBounds().width + 10, m_string.getLocalBounds().height + 6));
+		m_string.setOrigin(m_string.getLocalBounds().width / 2, m_string.getLocalBounds().height - 4); // middle of the text.
+	}
+	else
+	{
+		m_shape.setSize(sf::Vector2f(m_string.getLocalBounds().width + 10, m_string.getLocalBounds().height + 10));
+		m_string.setOrigin(m_string.getLocalBounds().width / 2, m_string.getLocalBounds().height - 1); // middle of the text.
+	}
+
+	m_shape.setOrigin(sf::Vector2f(m_shape.getLocalBounds().width / 2, m_shape.getLocalBounds().height / 2));
+	m_string.setPosition(m_shape.getPosition());
 }
 
 void Button::setButtonColor(const sf::Color &color)
@@ -59,6 +67,22 @@ void Button::setStringColor(const sf::Color &color)
 void Button::setStringStyle(const sf::Text::Style &style)
 {
 	m_string.setStyle(style);
+}
+
+void Button::disable()
+{
+	disabled = true;
+
+	m_shape.setFillColor(sf::Color(m_shape.getFillColor().r, m_shape.getFillColor().g, m_shape.getFillColor().b, 80));
+	m_string.setFillColor(sf::Color(m_string.getFillColor().r, m_string.getFillColor().g, m_string.getFillColor().b, 80));
+}
+
+void Button::enable()
+{
+	enabled = true;
+
+	m_shape.setFillColor(sf::Color(m_shape.getFillColor().r, m_shape.getFillColor().g, m_shape.getFillColor().b, 255));
+	m_string.setFillColor(sf::Color(m_string.getFillColor().r, m_string.getFillColor().g, m_string.getFillColor().b, 255));
 }
 
 void Button::draw(sf::RenderWindow &window)
