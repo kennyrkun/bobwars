@@ -74,10 +74,10 @@
     <ClCompile Include="..\engine\ENGINE\Engine.cpp">
       <Filter>ENGINE</Filter>
     </ClCompile>
-    <ClCompile Include="..\engine\ENGINE\Text.cpp">
-      <Filter>BOBWARS\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\engine\ENGINE\Graphics.cpp">
+      <Filter>ENGINE</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\ENGINE\Text.cpp">
       <Filter>ENGINE</Filter>
     </ClCompile>
   </ItemGroup>
