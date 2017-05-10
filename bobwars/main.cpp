@@ -90,45 +90,44 @@ void draw(sf::RenderWindow &window, sf::View &anchor, sf::View &view)
 
 void prepareInterface()
 {
-	logger::INFO("preparing graphics");
+	logger::INFO("Pre-game setup.");
 
 	if (!Arial.loadFromFile("C:\\Windows\\Fonts\\Arial.ttf"))
-	{
-		std::cout << "unable to load font 'arial'." << std::endl;
-	}
+		logger::ERROR("Failed to load font \"Arial\"!");
 	else
-	{
 		text.setFont(Arial);
-		text.setScale(sf::Vector2f(.2f, .2f));
-	}
 
-	logger::INFO("world texture...");
+	text.setScale(sf::Vector2f(.2f, .2f));
+
+	logger::INFO("Loading world texture...");
 
 	static sf::Texture world_tex;
 	if (!world_tex.loadFromFile("resource\\textures\\world.png"))
-		logger::ERROR("unable to load world textures!");
+		logger::ERROR("Failed to load world textures!");
 
-	logger::INFO("player texture...");
+	logger::INFO("Loading player texture...");
 	if (!player_tex.loadFromFile("resource\\textures\\bob.png"))
-		logger::ERROR("unable to load player textures!");
+		logger::ERROR("Failed to load player textures!");
 
 	world.setSize(sf::Vector2f(800, 600));
 	world.setTexture(&world_tex);
 
-	logger::INFO("ui elements");
+	logger::INFO("Preparing user interface elements...");
 	framecounter.setFont(Arial);
 	framecounter.setScale(sf::Vector2f(.2f, .2f));
 
 	create_ent_button.setPosition(sf::Vector2f(30, -30));
 	delete_ent_button.setPosition(sf::Vector2f(80, -30));
+	create_ent_button.setScale(sf::Vector2f(.6, .6));
+	delete_ent_button.setScale(sf::Vector2f(.6, .6));
 
-	logger::INFO("done!");
+	logger::INFO("Ready!");
 }
 
 int main(int argc, char *argv[])
 {
 	{
-		std::cout << "launched with " << argc << " arguments: " << std::endl;
+		std::cout << "Launched with " << argc << " arguments: " << std::endl;
 
 		for (int i = 0; i < argc; i++) // TODO: parse arguments
 		{
@@ -138,7 +137,7 @@ int main(int argc, char *argv[])
 		std::cout << std::endl;
 	}
 
-	logger::INFO("initializing");
+	logger::INFO("Initialising...");
 
 	sf::RenderWindow gameWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), ("bobwars 0.4.0-" + engine::version), sf::Style::Titlebar | sf::Style::Close);
 	sf::View main_view(sf::Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2), sf::Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2));
@@ -167,7 +166,7 @@ int main(int argc, char *argv[])
 			if (event.type == sf::Event::KeyPressed)
 			{
 				if (event.key.code == sf::Keyboard::Escape)
-					logger::SILENT("DEBUG", "pause function not yet implemented.");
+					logger::SILENT("DEBUG", "Pause function not yet implemented.");
 
 				if (event.key.code == sf::Keyboard::LShift)
 					view_speed = 2.5f;
@@ -190,43 +189,45 @@ int main(int argc, char *argv[])
 			{
 				if (event.key.code == sf::Mouse::Left)
 				{
-					if ( engine::logic::didClick(create_ent_button.m_shape, gameWindow, main_view) )
+					if (engine::logic::didClick(create_ent_button.m_shape, gameWindow, main_view))
 					{
 						obMan.createObject();
 						obMan.entities.back()->m_sprite.setTexture(player_tex); // TODO: load textures in ResourceManager, which ObjectManager will have access to.
 					}
-					else if (engine::logic::didClick(delete_ent_button.m_shape, gameWindow, main_view) && obMan.selected != obMan.entities[0] )
+					else if (engine::logic::didClick(delete_ent_button.m_shape, gameWindow, main_view) && obMan.selected != obMan.entities[0])
 					{
 						obMan.deleteObject(obMan.selected);
 					}
 					else // didn't click a button so let's see if they clicked an entity
 					{
+						bool entity_was_selected(false);
+						
 						for (size_t i = 0; i < obMan.entities.size(); i++)
 						{
-							bool entity_was_selected(false);
-
 							if (engine::logic::didClick(obMan.entities[i]->m_sprite, gameWindow, main_view))
 							{
 								if (obMan.entities[i] == obMan.selected)
 								{
-									logger::SILENT("DEBUG", "this entity is already selected");
+									logger::INFO("This entity is already selected.");
+									entity_was_selected = true;
 									break;
 								}
 								else
 								{
 									obMan.selectObject(obMan.entities[i]);
-									logger::SILENT("DEBUG", "selected an entity");
+									logger::INFO("Selected an entity.");
+									entity_was_selected = true;
 									break;
 								}
 							}
-
-							if (!entity_was_selected && (obMan.selected != obMan.entities[0]))
-							{
-								obMan.selected = obMan.entities[0];
-								logger::SILENT("DEBUG", "entity deselected");
-								break;
-							}
 						} // what entity did we click
+
+						if (!entity_was_selected && (obMan.selected != obMan.entities[0]))
+						{
+							obMan.selected = obMan.entities[0];
+							logger::INFO("Entity deselected.");
+							break;
+						}
 					} // what did we click
 				} // left mouse button
 			} // mouseButtonPressed

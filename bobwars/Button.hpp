@@ -15,11 +15,12 @@ public:
 	Button(const sf::Vector2f &size, const std::string string);
 	~Button();
 
-	void setPosition(const sf::Vector2f &pos);
+	void setPosition(const sf::Vector2f pos);
 	void setString(const std::string string);
-	void setButtonColor(const sf::Color &color);
-	void setStringColor(const sf::Color &color);
-	void setStringStyle(const sf::Text::Style &style);
+	void setButtonColor(const sf::Color color);
+	void setStringColor(const sf::Color color);
+	void setStringStyle(const sf::Text::Style style);
+	void setScale(const sf::Vector2f scale);
 	void disable();
 	void enable();
 

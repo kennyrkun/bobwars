@@ -25,7 +25,7 @@ Button::~Button()
 //	logger::SILENT("Deconstructing button class");
 }
 
-void Button::setPosition(const sf::Vector2f &newpos)
+void Button::setPosition(const sf::Vector2f newpos)
 {
 	m_shape.setPosition(newpos);
 	m_string.setPosition(m_shape.getPosition());
@@ -54,19 +54,25 @@ void Button::setString(const std::string string)
 	m_string.setPosition(m_shape.getPosition());
 }
 
-void Button::setButtonColor(const sf::Color &color)
+void Button::setButtonColor(const sf::Color color)
 {
 	m_shape.setFillColor(color);
 }
 
-void Button::setStringColor(const sf::Color &color)
+void Button::setStringColor(const sf::Color color)
 {
 	m_string.setFillColor(color);
 }
 
-void Button::setStringStyle(const sf::Text::Style &style)
+void Button::setStringStyle(const sf::Text::Style style)
 {
 	m_string.setStyle(style);
+}
+
+void Button::setScale(const sf::Vector2f scale)
+{
+	m_shape.setScale(scale);
+	m_string.setScale(scale);
 }
 
 void Button::disable()
