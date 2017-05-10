@@ -17,8 +17,8 @@ sf::Text framecounter;
 sf::Texture player_tex;
 sf::RectangleShape world;
 
-Button create_ent_button(sf::Vector2f(WINDOW_WIDTH, WINDOW_HEIGHT), sf::Vector2f(200, 50), "create");
-Button delete_ent_button(sf::Vector2f(WINDOW_WIDTH, WINDOW_HEIGHT), sf::Vector2f(200, 50), "delete");
+Button create_ent_button(sf::Vector2f(50, 25), "create");
+Button delete_ent_button(sf::Vector2f(50, 25), "delete");
 
 ObjectManager obMan;
 
@@ -154,7 +154,7 @@ int main(int argc, char *argv[])
 
 	logger::INFO("initializing");
 
-	sf::RenderWindow gameWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), ("bobwars 0.3.1-" + engine::version), sf::Style::Titlebar | sf::Style::Close);
+	sf::RenderWindow gameWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), ("bobwars 0.4.0-" + engine::version), sf::Style::Titlebar | sf::Style::Close);
 	sf::View main_view(sf::Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2), sf::Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2));
 	sf::View anchor(sf::Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2), sf::Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2)); // HACK?: to keep text in place
 
@@ -181,7 +181,7 @@ int main(int argc, char *argv[])
 			if (event.type == sf::Event::KeyPressed)
 			{
 				if (event.key.code == sf::Keyboard::Escape)
-					logger::DEBUG("pause function not yet implemented.");
+					logger::SILENT("DEBUG", "pause function not yet implemented.");
 
 				if (event.key.code == sf::Keyboard::LShift)
 					view_speed = 2.5f;
@@ -223,13 +223,13 @@ int main(int argc, char *argv[])
 							{
 								if (obMan.entities[i] == obMan.selected)
 								{
-									logger::DEBUG("this entity is already selected");
+									logger::SILENT("DEBUG", "this entity is already selected");
 									break;
 								}
 								else
 								{
 									obMan.selectObject(obMan.entities[i]);
-									logger::DEBUG("selected an entity");
+									logger::SILENT("DEBUG", "selected an entity");
 									break;
 								}
 							}
@@ -237,7 +237,7 @@ int main(int argc, char *argv[])
 							if (!entity_was_selected && (obMan.selected != obMan.entities[0]))
 							{
 								obMan.selected = obMan.entities[0];
-								logger::DEBUG("entity deselected");
+								logger::SILENT("DEBUG", "entity deselected");
 								break;
 							}
 						} // what entity did we click
