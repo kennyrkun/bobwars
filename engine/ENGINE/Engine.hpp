@@ -12,14 +12,6 @@ namespace engine
 	extern const std::string version;
 	extern CVar_B cl_debug;
 
-	namespace graphics
-	{
-		void outline(sf::RenderWindow &window, sf::Shape &object, float thickness, sf::Color color);
-		void outline(sf::RenderWindow &window, sf::Sprite &object, float thickness, sf::Color color);
-
-		void fade(sf::Shape &object, int opacity);
-	}
-
 	namespace logic
 	{
 		bool didClick(sf::Shape &object, sf::RenderWindow &window, sf::View &view);

@@ -48,6 +48,9 @@
     <ClInclude Include="Text.hpp">
       <Filter>ENGINE</Filter>
     </ClInclude>
+    <ClInclude Include="..\engine\ENGINE\Graphics.hpp">
+      <Filter>ENGINE</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -71,7 +74,10 @@
     <ClCompile Include="..\engine\ENGINE\Engine.cpp">
       <Filter>ENGINE</Filter>
     </ClCompile>
-    <ClCompile Include="Text.cpp">
+    <ClCompile Include="..\engine\ENGINE\Text.cpp">
+      <Filter>BOBWARS\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\ENGINE\Graphics.cpp">
       <Filter>ENGINE</Filter>
     </ClCompile>
   </ItemGroup>

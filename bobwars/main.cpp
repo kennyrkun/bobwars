@@ -1,5 +1,6 @@
 #include <ENGINE\Engine.hpp>
-#include "ENGINE\Text.hpp"
+#include <ENGINE\Text.hpp>
+#include <ENGINE\Graphics.hpp>
 #include <SFML\Audio.hpp>
 
 #include "ObjectManager.hpp"

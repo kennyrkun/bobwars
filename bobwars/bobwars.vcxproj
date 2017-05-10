@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\engine\ENGINE\Engine.hpp" />
+    <ClInclude Include="..\engine\ENGINE\Graphics.hpp" />
     <ClInclude Include="..\engine\ENGINE\Logger.hpp" />
     <ClInclude Include="BaseEntity.hpp" />
     <ClInclude Include="Button.hpp">
@@ -38,6 +39,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\engine\ENGINE\Engine.cpp" />
+    <ClCompile Include="..\engine\ENGINE\Graphics.cpp" />
     <ClCompile Include="..\engine\ENGINE\Logger.cpp" />
     <ClCompile Include="BaseEntity.cpp" />
     <ClCompile Include="Button.cpp">
