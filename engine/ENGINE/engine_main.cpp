@@ -8,7 +8,7 @@
 
 namespace engine
 {
-	std::string const version("1.0.9");
+	std::string const version("1.1.0");
 	CVar_B cl_debug(1);
 	CVar_I cl_debugoutput(2);
 
@@ -77,7 +77,7 @@ namespace engine
 
 		void fade(sf::Shape &object, int opacity) // TODO: run this in another thread
 		{
-			logger::DEBUG("fading to " + std::to_string(opacity));
+			logger::SILENT("DEBUG", "fading to " + std::to_string(opacity));
 
 			if (opacity < object.getFillColor().a) // 255 0
 			{

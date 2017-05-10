@@ -2,6 +2,7 @@
 #define ENGINE_MAIN_HPP
 
 #include <SFML\Graphics.hpp>
+#include <ENGINE\Logger.hpp>
 
 using CVar_B = bool;
 using CVar_I = int;
