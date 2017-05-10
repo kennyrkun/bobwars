@@ -1,5 +1,5 @@
-#ifndef ENGINE_MAIN_HPP
-#define ENGINE_MAIN_HPP
+#ifndef ENGINE_HPP
+#define ENGINE_HPP
 
 #include <SFML\Graphics.hpp>
 #include <ENGINE\Logger.hpp>

@@ -1,7 +1,7 @@
 #ifndef BASE_ENTITY_HPP
 #define BASE_ENTITY_HPP
 
-#include <ENGINE\engine_main.hpp>
+#include <ENGINE\Engine.hpp>
 
 class BaseEntity
 {
