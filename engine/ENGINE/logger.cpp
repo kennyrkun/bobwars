@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 
-std::string write_dir = "environment_default.log";
+std::string write_dir = "bobwars.log";
 
 void write_log(const std::string output)
 {

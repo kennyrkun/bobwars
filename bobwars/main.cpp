@@ -118,8 +118,8 @@ void prepareInterface()
 
 	create_ent_button.setPosition(sf::Vector2f(30, -30));
 	delete_ent_button.setPosition(sf::Vector2f(80, -30));
-	create_ent_button.setScale(sf::Vector2f(.6, .6));
-	delete_ent_button.setScale(sf::Vector2f(.6, .6));
+	create_ent_button.setScale(sf::Vector2f(.6f, .6f));
+	delete_ent_button.setScale(sf::Vector2f(.6f, .6f));
 
 	logger::INFO("Ready!");
 }
@@ -166,7 +166,7 @@ int main(int argc, char *argv[])
 			if (event.type == sf::Event::KeyPressed)
 			{
 				if (event.key.code == sf::Keyboard::Escape)
-					logger::SILENT("DEBUG", "Pause function not yet implemented.");
+					logger::SILENT("DEBUG", "Pause has function not yet been implemented.");
 
 				if (event.key.code == sf::Keyboard::LShift)
 					view_speed = 2.5f;
@@ -215,7 +215,7 @@ int main(int argc, char *argv[])
 								else
 								{
 									obMan.selectObject(obMan.entities[i]);
-									logger::INFO("Selected an entity.");
+									logger::INFO("Selected an entity. (" + std::to_string(obMan.entities[i]->m_id) + ")");
 									entity_was_selected = true;
 									break;
 								}
@@ -224,8 +224,8 @@ int main(int argc, char *argv[])
 
 						if (!entity_was_selected && (obMan.selected != obMan.entities[0]))
 						{
+							logger::INFO("Entity deselected. (" + std::to_string(obMan.selected->m_id) + ")");
 							obMan.selected = obMan.entities[0];
-							logger::INFO("Entity deselected.");
 							break;
 						}
 					} // what did we click
@@ -302,13 +302,9 @@ int main(int argc, char *argv[])
 			}
 
 			if (obMan.selected == obMan.entities[0])
-			{
 				delete_ent_button.setButtonColor(sf::Color(150, 150, 150));
-			}
 			else
-			{
 				delete_ent_button.setButtonColor(sf::Color(255, 255, 255));
-			}
 		} // gameWindow.hasFocus()
 
 		anchor.setCenter(main_view.getCenter());
@@ -321,7 +317,7 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	logger::INFO("exiting...");
+	logger::INFO("Exiting...");
 
 	return EXIT_SUCCESS;
 }
