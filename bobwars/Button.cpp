@@ -1,5 +1,6 @@
 #include "Button.hpp"
-#include <iostream>
+
+#include <ENGINE\Logger.hpp>
 
 Button::Button(const sf::Vector2f &size, const std::string string)
 {
@@ -15,9 +16,18 @@ Button::Button(const sf::Vector2f &size, const std::string string)
 
 	setString(string);
 
-	//TODO: not have this set in stone
-	//m_shape.setScale(.2f, .2f);
-	//m_string.setScale(.2f, .2f);
+	logger::SILENT("DEBUG", "New button created.");
+}
+
+Button::Button()
+{
+	if (m_font.loadFromFile("C:\\Windows\\Fonts\\Arial.ttf"))
+		m_string.setFont(m_font);
+
+	m_string.setFillColor(sf::Color::Black);
+	m_shape.setFillColor(sf::Color::White);
+
+	logger::SILENT("debug", "New button created.");
 }
 
 Button::~Button()
@@ -75,6 +85,12 @@ void Button::setScale(const sf::Vector2f scale)
 	m_string.setScale(scale);
 }
 
+void Button::setSize(const sf::Vector2f size)
+{
+	m_shape.setSize(sf::Vector2f(size.x, size.y));
+	m_string.setCharacterSize(static_cast<int>(size.y) - 6);
+}
+
 void Button::disable()
 {
 	disabled = true;
@@ -91,8 +107,8 @@ void Button::enable()
 	m_string.setFillColor(sf::Color(m_string.getFillColor().r, m_string.getFillColor().g, m_string.getFillColor().b, 255));
 }
 
-void Button::draw(sf::RenderWindow &window)
+void Button::draw(sf::RenderWindow *window)
 {
-	window.draw(m_shape);
-	window.draw(m_string);
+	window->draw(m_shape);
+	window->draw(m_string);
 }

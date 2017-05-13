@@ -2,10 +2,13 @@
 
 BaseEntity::BaseEntity()
 {
-	logger::SILENT("DEBUG", "entity base class constructed.");
+	logger::SILENT("DEBUG", "Entity base class constructed.");
+
+	m_texture.loadFromFile("resource\\textures\\bob.png");
+	m_sprite.setTexture(m_texture);
 }
 
 BaseEntity::~BaseEntity()
 {
-	logger::SILENT("DEBUG", "entity base class deconstructed.");
+	logger::SILENT("DEBUG", "Entity base class deconstructed.");
 }

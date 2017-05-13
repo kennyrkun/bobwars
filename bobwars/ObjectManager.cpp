@@ -8,6 +8,7 @@ ObjectManager::ObjectManager()
 
 	num_entities += 1;
 	null->m_id = num_entities;
+	null->m_sprite.setColor(sf::Color::Red);
 
 	entities.push_back(null);
 	selected = entities[0];

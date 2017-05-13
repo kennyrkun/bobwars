@@ -14,6 +14,9 @@ public:
 
 	BaseEntity();
 	~BaseEntity();
+
+private:
+	sf::Texture m_texture;
 };
 
 #endif // BASE_ENTITY_HPP
