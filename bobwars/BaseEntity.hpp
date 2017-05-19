@@ -10,7 +10,7 @@ public:
 	int m_id;
 	int m_team;
 	sf::Sprite m_sprite;
-	//bool m_active;
+	bool m_moving;
 
 	BaseEntity();
 	~BaseEntity();

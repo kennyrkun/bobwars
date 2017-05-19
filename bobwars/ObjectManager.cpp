@@ -1,10 +1,10 @@
 #include "ObjectManager.hpp"
 
-#include <algorithm>
+#include <algorithm> // std::remove
 
 ObjectManager::ObjectManager()
 {
-	BaseEntity *null = new BaseEntity();
+	BaseEntity *null = new BaseEntity;
 
 	num_entities += 1;
 	null->m_id = num_entities;
@@ -43,16 +43,18 @@ void ObjectManager::deleteObject(BaseEntity *ent)
 	{
 		if (ent == entities[i])
 		{
+			delete entities[i];
+
 			entities.erase(std::remove(entities.begin(), entities.end(), ent), entities.end());
 
-			break;
+			num_entities -= 1;
+			selected = entities.front();
+
+			logger::SILENT("DEBUG", "deleted entity");
+
+			return;
 		}
 	}
-
-	num_entities -= 1;
-	selected = entities.front();
-
-	logger::SILENT("DEBUG", "deleted entity");
 }
 
 inline void ObjectManager::selectObject(BaseEntity *ent)

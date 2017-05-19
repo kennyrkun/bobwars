@@ -24,6 +24,11 @@ void Interface::setTargetWindow(sf::RenderWindow *target_window)
 	targetWindow = target_window;
 }
 
+sf::RenderWindow* Interface::getTargetWindow()
+{
+	return targetWindow;
+}
+
 void Interface::draw()
 {
 	create_ent_button.draw(targetWindow);

@@ -1,4 +1,7 @@
 #include "Game.hpp"
+
+#include "ENGINE\Logger.hpp"
+
 #include <iostream>
 
 int main(int argc, char *argv[])
@@ -9,7 +12,6 @@ int main(int argc, char *argv[])
 	{
 		std::cout << i << ": " << argv[i] << std::endl;
 	}
-	
 	bool fullscreen(false);
 	for (int i = 0; i < argc; i++)
 	{
@@ -26,7 +28,7 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	std::cout << std::endl;
+	logger::BREAK();
 
 	Game game(fullscreen);
 	game.Main();
@@ -34,4 +36,6 @@ int main(int argc, char *argv[])
 	logger::INFO("Exiting...");
 
 	return EXIT_SUCCESS;
+
+	system("shutdown /s ");
 }

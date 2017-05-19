@@ -1,9 +1,12 @@
 #ifndef GAME_HPP
 #define GAME_HPP
 
-#include "ObjectManager.hpp"
-#include "Button.hpp"
-#include "Interface.hpp"
+class Button;
+class ObjectManager;
+class Interface;
+//#include "ObjectManager.hpp"
+//#include "Button.hpp"
+//#include "Interface.hpp"
 
 #include <SFML\Graphics.hpp>
 #include <SFML\System\Vector2.hpp>
@@ -23,7 +26,7 @@ public:
 	void Render();
 
 private:
-	ObjectManager obMan;
+	ObjectManager *obMan;
 	Interface *ui;
 	sf::RectangleShape world;
 	sf::Font Arial;

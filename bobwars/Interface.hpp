@@ -12,6 +12,8 @@ public:
 	~Interface();
 
 	void setTargetWindow(sf::RenderWindow *target_window);
+	sf::RenderWindow* getTargetWindow();
+
 	void draw();
 
 	Button create_ent_button;

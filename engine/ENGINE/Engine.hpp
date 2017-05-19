@@ -14,9 +14,9 @@ namespace engine
 
 	namespace logic
 	{
-		bool didClick(sf::Shape &object, sf::RenderWindow &window, sf::View &view);
+		bool mouseIsOver(sf::Shape &object, sf::RenderWindow &window, sf::View &view);
 
-		bool didClick(sf::Sprite &object, sf::RenderWindow &window, sf::View &view);
+		bool mouseIsOver(sf::Sprite &object, sf::RenderWindow &window, sf::View &view);
 	}
 
 	void screenshot(sf::RenderWindow &window);
