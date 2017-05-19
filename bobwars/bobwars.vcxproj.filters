@@ -37,9 +37,6 @@
     <ClInclude Include="..\engine\ENGINE\Engine.hpp">
       <Filter>ENGINE</Filter>
     </ClInclude>
-    <ClInclude Include="Text.hpp">
-      <Filter>ENGINE</Filter>
-    </ClInclude>
     <ClInclude Include="..\engine\ENGINE\Graphics.hpp">
       <Filter>ENGINE</Filter>
     </ClInclude>
@@ -48,6 +45,9 @@
     </ClInclude>
     <ClInclude Include="Interface.hpp">
       <Filter>BOBWARS\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\ENGINE\Text.hpp">
+      <Filter>ENGINE</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -22,6 +22,7 @@
     <ClInclude Include="..\engine\ENGINE\Engine.hpp" />
     <ClInclude Include="..\engine\ENGINE\Graphics.hpp" />
     <ClInclude Include="..\engine\ENGINE\Logger.hpp" />
+    <ClInclude Include="..\engine\ENGINE\Text.hpp" />
     <ClInclude Include="BaseEntity.hpp" />
     <ClInclude Include="Button.hpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
@@ -37,7 +38,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="Text.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\engine\ENGINE\Engine.cpp" />
