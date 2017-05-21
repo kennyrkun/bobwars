@@ -69,6 +69,7 @@ Game::Game(bool fullscreen, bool vsync)
 	ui->delete_ent_button.setPosition(sf::Vector2f(100, -30));
 	ui->delete_ent_button.setScale(sf::Vector2f(.6f, .6f));
 	ui->delete_ent_button.setString("delete");
+	ui->delete_ent_button.disable();
 
 	logger::INFO("New Game created. (Ready!)");
 }
@@ -82,8 +83,8 @@ Game::~Game()
 
 void Game::Main()
 {
-	sf::Time timePerFrame = sf::seconds(1.0f / 60.0f); // 60 frames per second
-	sf::Time timeSinceLastUpdate = sf::Time::Zero;
+	timePerFrame = sf::seconds(1.0f / 60.0f); // 60 frames per second
+	timeSinceLastUpdate = sf::Time::Zero;
 	sf::Clock deltaClock;  // tracks how much time has past since the last frame
 
 	sf::Clock framesClock; // for fps
@@ -136,7 +137,14 @@ void Game::Main()
 					}
 
 					if (event.key.code == sf::Keyboard::Key::Delete && obMan->selected != obMan->entities[0])
+					{
 						obMan->deleteObject(obMan->selected);
+						ui->delete_ent_button.disable();
+
+						if (ui->create_ent_button.disabled && obMan->entities.size() < 100)
+							ui->create_ent_button.enable();
+					}
+
 				}
 
 				else if (event.type == sf::Event::EventType::KeyReleased)
@@ -155,51 +163,74 @@ void Game::Main()
 							if (ui->create_ent_button.disabled)
 							{
 								logger::INFO("Cannot create anymore units; you have too many.");
+								break;
 							}
 							else
 							{
 								obMan->createObject();
+								ui->delete_ent_button.enable();
 
 								if (obMan->entities.size() >= 100)
+								{
 									ui->create_ent_button.disable();
+								}
+
+								break;
 							}
 						}
 						else if (engine::logic::mouseIsOver(ui->delete_ent_button.m_shape, *gameWindow, main_view) && obMan->selected != obMan->entities[0])
 						{
 							obMan->deleteObject(obMan->selected);
+							ui->delete_ent_button.disable();
+
+							break;
 						}
-						else // didn't click a button so let's see if they clicked an entity
+
+						// if we haven't broken the loop already, it means we either clicked an entity or clicked nothing
+						bool entity_was_selected(false);
+						for (size_t i = 1; i < obMan->entities.size(); i++)
 						{
-							bool entity_was_selected(false);
-
-							for (size_t i = 1; i < obMan->entities.size(); i++)
+							if (engine::logic::mouseIsOver(obMan->entities[i]->m_sprite, *gameWindow, main_view))
 							{
-								if (engine::logic::mouseIsOver(obMan->entities[i]->m_sprite, *gameWindow, main_view))
+								if (obMan->entities[i] == obMan->selected)
 								{
-									if (obMan->entities[i] == obMan->selected)
-									{
-										logger::INFO("This entity is already selected.");
-										entity_was_selected = true;
-										break;
-									}
-									else
-									{
-										obMan->selectObject(obMan->entities[i]);
-										logger::INFO("Selected an entity. (" + std::to_string(obMan->entities[i]->m_id) + ")");
-										entity_was_selected = true;
-										break;
-									}
+									logger::INFO("This entity is already selected.");
+									entity_was_selected = true;
+									break;
 								}
-							} // what entity did we click
+								else
+								{
+									obMan->selectObject(obMan->entities[i]);
+									logger::INFO("Selected an entity. (" + std::to_string(obMan->entities[i]->m_id) + ")");
+									entity_was_selected = true;
+									ui->delete_ent_button.enable();
 
-							if (!entity_was_selected && (obMan->selected != obMan->entities[0]))
-							{
-								logger::INFO("Entity deselected. (" + std::to_string(obMan->selected->m_id) + ")");
-								obMan->selected = obMan->entities[0];
-								break;
+									break;
+								}
 							}
-						} // what did we click
+						} // what entity did we click
+
+						if (entity_was_selected)
+							break;
+
+						if (!entity_was_selected && (obMan->selected != obMan->entities[0])) // selected nothing and didn't already have nothing
+						{
+							logger::INFO("Entity deselected. (" + std::to_string(obMan->selected->m_id) + ")");
+							obMan->selected = obMan->entities[0];
+							ui->delete_ent_button.disable();
+							break;
+						}
 					} // left mouse button
+
+					if (event.key.code == sf::Mouse::Button::Right)
+					{
+						if (obMan->selected != obMan->entities[0])
+						{
+							// if we haven't broken the loop already, it means we've clicked nothing.
+							sf::Vector2f movePos(gameWindow->mapPixelToCoords(sf::Mouse::getPosition(*gameWindow), main_view));
+							obMan->selected->moveTo(movePos);
+						}
+					}
 				} // mouseButtonPressed
 
 				else if (event.type == sf::Event::EventType::MouseWheelMoved)
@@ -245,12 +276,9 @@ void Game::Main()
 						main_view.setCenter(0, main_view.getCenter().y);
 					if (main_view.getCenter().y < 0)
 						main_view.setCenter(main_view.getCenter().x, 0);
-
-					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
-						main_view.setCenter(obMan->selected->m_sprite.getPosition());
 				}
 
-				if (obMan->selected != obMan->entities[0])
+				if (engine::cl_debug && obMan->selected != obMan->entities[0])
 				{
 					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
 						obMan->selected->m_sprite.move(0, -player_speed * timePerFrame.asSeconds());
@@ -268,13 +296,10 @@ void Game::Main()
 					frameCounter.setPosition(main_view.getCenter().x - 199, main_view.getCenter().y - 140);
 					frameCounter.setString("FPS: " + std::to_string(static_cast<int>(1.0f / frames_per_second)));
 				}
-
-				if (obMan->selected == obMan->entities[0])
-					ui->delete_ent_button.setButtonColor(sf::Color(150, 150, 150));
-				else
-					ui->delete_ent_button.setButtonColor(sf::Color(255, 255, 255));
 			} // gameWindow.hasFocus()
 		}
+
+		Update();
 
 		anchor.setCenter(main_view.getCenter());
 		Render();
@@ -291,7 +316,13 @@ void Game::Main()
 
 void Game::Update()
 {
-
+	for (size_t i = 0; i < obMan->entities.size(); i++)
+	{
+		if (obMan->entities[i]->m_moving)
+		{
+			obMan->entities[i]->Update();
+		}
+	}
 }
 
 void Game::Render()
@@ -317,6 +348,9 @@ void Game::Render()
 				showObjectCoords(*gameWindow, obMan->entities[i]->m_sprite);
 				engine::graphics::outline(*gameWindow, obMan->entities[i]->m_sprite, 2, sf::Color::Red);
 				engine::text::draw(*gameWindow, text, std::to_string(obMan->entities[i]->m_id) + "/" + std::to_string(obMan->entities.size()), sf::Vector2f(obMan->entities[i]->m_sprite.getPosition().x, obMan->entities[i]->m_sprite.getPosition().y));
+
+				if (obMan->entities[i]->m_moving)
+					gameWindow->draw(obMan->entities[i]->move_dest);
 			}
 		}
 	}
@@ -338,6 +372,7 @@ void Game::Render()
 
 	// ------------ MAIN VIEW
 	gameWindow->setView(main_view);
+
 	gameWindow->display();
 }
 
