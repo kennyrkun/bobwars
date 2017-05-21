@@ -9,7 +9,7 @@
 #include <ENGINE\Graphics.hpp>
 #include <ENGINE\Text.hpp>
 
-Game::Game(bool $fullscreen)
+Game::Game(bool fullscreen, bool vsync)
 {
 	logger::INFO("Initialising...");
 
@@ -19,12 +19,13 @@ Game::Game(bool $fullscreen)
 
 		gameWindow = new sf::RenderWindow;
 
-		if ($fullscreen)
+		if (fullscreen)
 			gameWindow->create(gameWindowDimensions, gameWindowTitle, sf::Style::Fullscreen);
 		else
 			gameWindow->create(gameWindowDimensions, gameWindowTitle, sf::Style::Titlebar | sf::Style::Close);
 
-//		gameWindow->setVerticalSyncEnabled(true);
+		if (vsync)
+			gameWindow->setVerticalSyncEnabled(true);
 	}
 
 	logger::INFO("Pre-game setup.");

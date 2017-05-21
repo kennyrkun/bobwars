@@ -15,7 +15,7 @@ class Interface;
 class Game
 {
 public:
-	Game(bool $fullscreen);
+	Game(bool fullscreen, bool vsync);
 	~Game();
 
 	std::string gameVersion = "0.4.6";
