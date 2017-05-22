@@ -4,9 +4,6 @@
 class Button;
 class ObjectManager;
 class Interface;
-//#include "ObjectManager.hpp"
-//#include "Button.hpp"
-//#include "Interface.hpp"
 
 #include <SFML\Graphics.hpp>
 #include <SFML\System\Vector2.hpp>

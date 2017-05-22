@@ -6,22 +6,23 @@
 class BaseEntity
 {
 public:
-	sf::CircleShape move_dest;
-	sf::Sprite m_sprite;
-	int m_health;
-	int m_id;
-	int m_team;
-	bool m_moving;
+	sf::CircleShape moveDest;
+	sf::Sprite sprite;
+	int id;
+	int team;
+	int armor;
+	int hitpoints;
+	bool moving;
 
 	BaseEntity();
 	~BaseEntity();
 
-	void moveTo(const sf::Vector2f &pos);
+	void moveTo(const sf::Vector2f &dest);
 	void Update();
 
 private:
 	sf::Vector2f movePos;
-	sf::Texture m_texture;
+	sf::Texture texture;
 };
 
 #endif // BASE_ENTITY_HPP

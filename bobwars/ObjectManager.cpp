@@ -7,8 +7,8 @@ ObjectManager::ObjectManager()
 	BaseEntity *null = new BaseEntity;
 
 	num_entities += 1;
-	null->m_id = num_entities;
-	null->m_sprite.setColor(sf::Color::Red);
+	null->id = num_entities;
+	null->sprite.setColor(sf::Color::Red);
 
 	entities.push_back(null);
 	selected = entities[0];
@@ -29,7 +29,7 @@ void ObjectManager::createObject()
 {
 	BaseEntity *newEnt = new BaseEntity();
 	num_entities += 1;
-	newEnt->m_id = num_entities;
+	newEnt->id = num_entities;
 
 	entities.push_back(newEnt); // add it to the stack
 	selectObject(entities.back());

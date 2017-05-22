@@ -190,7 +190,7 @@ void Game::Main()
 						bool entity_was_selected(false);
 						for (size_t i = 1; i < obMan->entities.size(); i++)
 						{
-							if (engine::logic::mouseIsOver(obMan->entities[i]->m_sprite, *gameWindow, main_view))
+							if (engine::logic::mouseIsOver(obMan->entities[i]->sprite, *gameWindow, main_view))
 							{
 								if (obMan->entities[i] == obMan->selected)
 								{
@@ -201,7 +201,7 @@ void Game::Main()
 								else
 								{
 									obMan->selectObject(obMan->entities[i]);
-									logger::INFO("Selected an entity. (" + std::to_string(obMan->entities[i]->m_id) + ")");
+									logger::INFO("Selected an entity. (" + std::to_string(obMan->entities[i]->id) + ")");
 									entity_was_selected = true;
 									ui->delete_ent_button.enable();
 
@@ -215,7 +215,7 @@ void Game::Main()
 
 						if (!entity_was_selected && (obMan->selected != obMan->entities[0])) // selected nothing and didn't already have nothing
 						{
-							logger::INFO("Entity deselected. (" + std::to_string(obMan->selected->m_id) + ")");
+							logger::INFO("Entity deselected. (" + std::to_string(obMan->selected->id) + ")");
 							obMan->selected = obMan->entities[0];
 							ui->delete_ent_button.disable();
 							break;
@@ -281,13 +281,13 @@ void Game::Main()
 				if (engine::cl_debug && obMan->selected != obMan->entities[0])
 				{
 					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
-						obMan->selected->m_sprite.move(0, -player_speed * timePerFrame.asSeconds());
+						obMan->selected->sprite.move(0, -player_speed * timePerFrame.asSeconds());
 					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
-						obMan->selected->m_sprite.move(-player_speed * timePerFrame.asSeconds(), 0);
+						obMan->selected->sprite.move(-player_speed * timePerFrame.asSeconds(), 0);
 					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))
-						obMan->selected->m_sprite.move(0, player_speed * timePerFrame.asSeconds());
+						obMan->selected->sprite.move(0, player_speed * timePerFrame.asSeconds());
 					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
-						obMan->selected->m_sprite.move(player_speed * timePerFrame.asSeconds(), 0);
+						obMan->selected->sprite.move(player_speed * timePerFrame.asSeconds(), 0);
 				}
 
 				{ //FRAMES PER SECOND
@@ -318,7 +318,7 @@ void Game::Update()
 {
 	for (size_t i = 0; i < obMan->entities.size(); i++)
 	{
-		if (obMan->entities[i]->m_moving)
+		if (obMan->entities[i]->moving)
 		{
 			obMan->entities[i]->Update();
 		}
@@ -334,7 +334,7 @@ void Game::Render()
 	gameWindow->draw(world);
 
 	for (size_t i = 1; i < obMan->entities.size(); i++)
-		gameWindow->draw(obMan->entities[i]->m_sprite);
+		gameWindow->draw(obMan->entities[i]->sprite);
 
 	ui->create_ent_button.draw(gameWindow);
 	ui->delete_ent_button.draw(gameWindow);
@@ -345,18 +345,18 @@ void Game::Render()
 		{
 			if (obMan->entities[i] != obMan->entities[0])
 			{
-				showObjectCoords(*gameWindow, obMan->entities[i]->m_sprite);
-				engine::graphics::outline(*gameWindow, obMan->entities[i]->m_sprite, 2, sf::Color::Red);
-				engine::text::draw(*gameWindow, text, std::to_string(obMan->entities[i]->m_id) + "/" + std::to_string(obMan->entities.size()), sf::Vector2f(obMan->entities[i]->m_sprite.getPosition().x, obMan->entities[i]->m_sprite.getPosition().y));
+				showObjectCoords(*gameWindow, obMan->entities[i]->sprite);
+				engine::graphics::outline(*gameWindow, obMan->entities[i]->sprite, 2, sf::Color::Red);
+				engine::text::draw(*gameWindow, text, std::to_string(obMan->entities[i]->id) + "/" + std::to_string(obMan->entities.size()), sf::Vector2f(obMan->entities[i]->sprite.getPosition().x, obMan->entities[i]->sprite.getPosition().y));
 
-				if (obMan->entities[i]->m_moving)
-					gameWindow->draw(obMan->entities[i]->move_dest);
+				if (obMan->entities[i]->moving)
+					gameWindow->draw(obMan->entities[i]->moveDest);
 			}
 		}
 	}
 
 	if (obMan->selected != obMan->entities[0])
-		engine::graphics::outline(*gameWindow, obMan->selected->m_sprite, 2, sf::Color::Yellow);
+		engine::graphics::outline(*gameWindow, obMan->selected->sprite, 2, sf::Color::Yellow);
 
 	// ------------- ANCHOR
 	gameWindow->setView(anchor);
