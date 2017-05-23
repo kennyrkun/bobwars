@@ -15,7 +15,7 @@ public:
 	Game(bool fullscreen, bool vsync);
 	~Game();
 
-	std::string gameVersion = "0.5.0";
+	std::string gameVersion = "0.6.1";
 	sf::RenderWindow *gameWindow;
 	sf::Time timePerFrame; // 60 frames per second
 	sf::Time timeSinceLastUpdate;

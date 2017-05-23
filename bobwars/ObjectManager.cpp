@@ -4,23 +4,13 @@
 
 ObjectManager::ObjectManager()
 {
-	BaseEntity *null = new BaseEntity;
-
-	num_entities += 1;
-	null->id = num_entities;
-	null->sprite.setColor(sf::Color::Red);
-
-	entities.push_back(null);
-	selected = entities[0];
-
 	logger::SILENT("DEBUG", "ObjectManager constructed.");
 }
 
 ObjectManager::~ObjectManager()
 {
-	// this breaks things. don't do it.
-	//for (size_t i = 0; i < entities.size(); i++)
-		//delete &entities[i];
+	for (size_t i = 0; i < entities.size(); i++)
+		delete entities[i];
 
 	logger::SILENT("DEBUG", "ObjectManager deconstructed.");
 }
@@ -28,13 +18,17 @@ ObjectManager::~ObjectManager()
 void ObjectManager::createObject()
 {
 	BaseEntity *newEnt = new BaseEntity();
-	num_entities += 1;
-	newEnt->id = num_entities;
+	newEnt->id = entities.size() + 1;
 
 	entities.push_back(newEnt); // add it to the stack
-	selectObject(entities.back());
+	selectedEnts.push_back(newEnt); // select it
 
 	logger::SILENT("DEBUG", "creating new entity");
+}
+
+void ObjectManager::clearSelected()
+{
+	selectedEnts.clear();
 }
 
 void ObjectManager::deleteObject(BaseEntity *ent)
@@ -44,20 +38,26 @@ void ObjectManager::deleteObject(BaseEntity *ent)
 		if (ent == entities[i])
 		{
 			delete entities[i];
-
 			entities.erase(std::remove(entities.begin(), entities.end(), ent), entities.end());
 
-			num_entities -= 1;
-			selected = entities.front();
-
-			logger::SILENT("DEBUG", "deleted entity");
+			logger::SILENT("DEBUG", "Deleted entity " + std::to_string(ent->id));
 
 			return;
 		}
 	}
 }
 
-inline void ObjectManager::selectObject(BaseEntity *ent)
+int ObjectManager::selectObject(BaseEntity *ent)
 {
-	selected = ent;
+	for (size_t i = 0; i < selectedEnts.size(); i++)
+	{
+		if (ent == selectedEnts[i])
+		{
+			logger::WARNING("This entity was already selected!");
+			return 0;
+		}
+	}
+
+	selectedEnts.push_back(ent);
+	return 1;
 }

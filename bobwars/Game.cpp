@@ -136,13 +136,33 @@ void Game::Main()
 						}
 					}
 
-					if (event.key.code == sf::Keyboard::Key::Delete && obMan->selected != obMan->entities[0])
+					if (event.key.code == sf::Keyboard::Key::Delete)
 					{
-						obMan->deleteObject(obMan->selected);
-						ui->delete_ent_button.disable();
+						if (!obMan->selectedEnts.empty())
+						{
+							// delete the thing
+							if (obMan->selectedEnts.size() > 1)
+							{
+								for (size_t i = 0; i < obMan->selectedEnts.size(); i++)
+								{
+									obMan->deleteObject(obMan->selectedEnts[i]);
+								}
 
-						if (ui->create_ent_button.disabled && obMan->entities.size() < 100)
-							ui->create_ent_button.enable();
+								obMan->clearSelected();
+							}
+							else
+							{
+								obMan->deleteObject(obMan->selectedEnts.front());
+								obMan->clearSelected();
+							}
+
+							ui->delete_ent_button.disable();
+
+							if (ui->create_ent_button.disabled && obMan->entities.size() < 100)
+								ui->create_ent_button.enable();
+
+							// TODO: tell us which ones were deleted (e.g. Deleted entities 1-6. or Deleted entities 1, 4, 5, 6, and 7.)
+						}
 					}
 
 				}
@@ -178,34 +198,51 @@ void Game::Main()
 								break;
 							}
 						}
-						else if (engine::logic::mouseIsOver(ui->delete_ent_button.m_shape, *gameWindow, main_view) && obMan->selected != obMan->entities[0])
+						else if (engine::logic::mouseIsOver(ui->delete_ent_button.m_shape, *gameWindow, main_view) && !obMan->selectedEnts.empty())
 						{
-							obMan->deleteObject(obMan->selected);
+							// delete the thing
+							if (obMan->selectedEnts.size() > 1)
+							{
+								for (size_t i = 0; i < obMan->selectedEnts.size(); i++)
+								{
+									obMan->deleteObject(obMan->selectedEnts[i]);
+								}
+
+								obMan->clearSelected();
+							}
+							else
+							{
+								obMan->deleteObject(obMan->selectedEnts.front());
+								obMan->clearSelected();
+							}
+
 							ui->delete_ent_button.disable();
 
 							break;
+
+							// TODO: tell us which ones were deleted (e.g. Deleted entities 1-6. or Deleted entities 1, 4, 5, 6, and 7.)
 						}
 
 						// if we haven't broken the loop already, it means we either clicked an entity or clicked nothing
 						bool entity_was_selected(false);
-						for (size_t i = 1; i < obMan->entities.size(); i++)
+						for (size_t i = 0; i < obMan->entities.size(); i++)
 						{
 							if (engine::logic::mouseIsOver(obMan->entities[i]->sprite, *gameWindow, main_view))
 							{
-								if (obMan->entities[i] == obMan->selected)
+								if (obMan->selectObject(obMan->entities[i]))
 								{
-									logger::INFO("This entity is already selected.");
-									entity_was_selected = true;
-									break;
-								}
-								else
-								{
-									obMan->selectObject(obMan->entities[i]);
 									logger::INFO("Selected an entity. (" + std::to_string(obMan->entities[i]->id) + ")");
 									entity_was_selected = true;
 									ui->delete_ent_button.enable();
 
+//									logger::INFO("Ents = " + std::to_string(obMan->entities.size()));
+//									logger::INFO("SelE = " + std::to_string(obMan->selectedEnts.size()));
+
 									break;
+								}
+								else // returned 0, meaning it was already seleceted
+								{
+									entity_was_selected = true;
 								}
 							}
 						} // what entity did we click
@@ -213,10 +250,15 @@ void Game::Main()
 						if (entity_was_selected)
 							break;
 
-						if (!entity_was_selected && (obMan->selected != obMan->entities[0])) // selected nothing and didn't already have nothing
+						if (!entity_was_selected && (!obMan->selectedEnts.empty())) // selected nothing and didn't already have nothing
 						{
-							logger::INFO("Entity deselected. (" + std::to_string(obMan->selected->id) + ")");
-							obMan->selected = obMan->entities[0];
+							logger::INFO("Entity(s) deselected.");
+
+							obMan->selectedEnts.clear();
+
+//							logger::INFO("Ents = " + std::to_string(obMan->entities.size()));
+//							logger::INFO("SelE = " + std::to_string(obMan->selectedEnts.size()));
+
 							ui->delete_ent_button.disable();
 							break;
 						}
@@ -224,11 +266,15 @@ void Game::Main()
 
 					if (event.key.code == sf::Mouse::Button::Right)
 					{
-						if (obMan->selected != obMan->entities[0])
+						if (!obMan->selectedEnts.empty())
 						{
 							// if we haven't broken the loop already, it means we've clicked nothing.
 							sf::Vector2f movePos(gameWindow->mapPixelToCoords(sf::Mouse::getPosition(*gameWindow), main_view));
-							obMan->selected->moveTo(movePos);
+
+							for (size_t i = 0; i < obMan->selectedEnts.size(); i++)
+							{
+								obMan->selectedEnts[i]->moveTo(movePos);
+							}
 						}
 					}
 				} // mouseButtonPressed
@@ -278,16 +324,16 @@ void Game::Main()
 						main_view.setCenter(main_view.getCenter().x, 0);
 				}
 
-				if (engine::cl_debug && obMan->selected != obMan->entities[0])
+				if (engine::cl_debug && !obMan->selectedEnts.empty())
 				{
-					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
-						obMan->selected->sprite.move(0, -player_speed * timePerFrame.asSeconds());
-					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
-						obMan->selected->sprite.move(-player_speed * timePerFrame.asSeconds(), 0);
-					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))
-						obMan->selected->sprite.move(0, player_speed * timePerFrame.asSeconds());
-					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
-						obMan->selected->sprite.move(player_speed * timePerFrame.asSeconds(), 0);
+//					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
+//						obMan->selected->sprite.move(0, -player_speed * timePerFrame.asSeconds());
+//					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
+//						obMan->selected->sprite.move(-player_speed * timePerFrame.asSeconds(), 0);
+//					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))
+//						obMan->selected->sprite.move(0, player_speed * timePerFrame.asSeconds());
+//					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
+//						obMan->selected->sprite.move(player_speed * timePerFrame.asSeconds(), 0);
 				}
 
 				{ //FRAMES PER SECOND
@@ -333,7 +379,7 @@ void Game::Render()
 	gameWindow->setView(main_view);
 	gameWindow->draw(world);
 
-	for (size_t i = 1; i < obMan->entities.size(); i++)
+	for (size_t i = 0; i < obMan->entities.size(); i++)
 		gameWindow->draw(obMan->entities[i]->sprite);
 
 	ui->create_ent_button.draw(gameWindow);
@@ -341,9 +387,9 @@ void Game::Render()
 
 	if (engine::cl_debug)
 	{
-		for (size_t i = 1; i < obMan->entities.size(); i++) // outline entities
+		for (size_t i = 0; i < obMan->entities.size(); i++) // outline entities
 		{
-			if (obMan->entities[i] != obMan->entities[0])
+			if (!obMan->entities.empty())
 			{
 				showObjectCoords(*gameWindow, obMan->entities[i]->sprite);
 				engine::graphics::outline(*gameWindow, obMan->entities[i]->sprite, 2, sf::Color::Red);
@@ -358,8 +404,13 @@ void Game::Render()
 		}
 	}
 
-	if (obMan->selected != obMan->entities[0])
-		engine::graphics::outline(*gameWindow, obMan->selected->sprite, 2, sf::Color::Yellow);
+	if (!obMan->selectedEnts.empty())
+	{
+		for (size_t i = 0; i < obMan->selectedEnts.size(); i++)
+		{
+			engine::graphics::outline(*gameWindow, obMan->selectedEnts[i]->sprite, 2, sf::Color::Yellow);
+		}
+	}
 
 	// ------------- ANCHOR
 	gameWindow->setView(anchor);
@@ -367,14 +418,16 @@ void Game::Render()
 	// debug info like coordinates and stuff
 	if (engine::cl_debug)
 	{
+		// view coordinates
 		std::string x = "X: " + std::to_string(static_cast<int>(main_view.getCenter().x));
 		std::string y = "Y: " + std::to_string(static_cast<int>(main_view.getCenter().y));
 		engine::text::draw(*gameWindow, text, x + " " + y, sf::Vector2f(main_view.getCenter().x - 199, main_view.getCenter().y - 150));
+
+		// entities
+		engine::text::draw(*gameWindow, text, "ENTITIES: " + std::to_string(obMan->entities.size()), sf::Vector2f(main_view.getCenter().x - 199, main_view.getCenter().y - 132));
+
 		gameWindow->draw(frameCounter);
 	}
-
-	// ------------ MAIN VIEW
-	gameWindow->setView(main_view);
 
 	gameWindow->display();
 }
@@ -383,14 +436,14 @@ void Game::Render()
 
 void Game::showObjectCoords(sf::RenderWindow &window, sf::Sprite &object)
 {
-	std::string coords = "X: " +
+	std::string coords =
+		"X: " +
 		std::to_string(static_cast<int>(object.getPosition().x)) +
 		" Y: " +
 		std::to_string(static_cast<int>(object.getPosition().y));
 
 	float x = object.getPosition().x + object.getLocalBounds().width / 4;
 	float y = object.getPosition().y - 5;
-
 	sf::Vector2f position(x, y);
 
 	engine::text::draw(window, text, coords, position, 34);

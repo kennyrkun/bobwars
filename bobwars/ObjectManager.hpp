@@ -2,7 +2,6 @@
 #define GAME_OBJECT_MANAGER_HPP
 
 #include "BaseEntity.hpp"
-//#include "ResourceManager.hpp"
 #include <vector>
 
 class ObjectManager
@@ -12,13 +11,12 @@ public:
 	~ObjectManager();
 
 	std::vector<BaseEntity*> entities;
-	int num_entities = 0; // number of entites in the stack
-
-	BaseEntity *selected;
+	std::vector<BaseEntity*> selectedEnts;
 
 	void createObject();
+	void clearSelected();
 	void deleteObject(BaseEntity *ent);
-	void selectObject(BaseEntity *ent);  //inline
+	int selectObject(BaseEntity *ent);
 
 private:
 	// nothing

@@ -15,6 +15,7 @@ public:
 	sf::RenderWindow* getTargetWindow();
 
 	void draw();
+	void clicked();
 
 	Button create_ent_button;
 	Button delete_ent_button;

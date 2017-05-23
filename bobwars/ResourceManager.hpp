@@ -1,5 +1,5 @@
-#ifndef __RESOURCE_MANAGER_HPP__
-#define __RESOURCE_MANAGER_HPP__
+#ifndef RESOURCE_MANAGER_HPP
+#define RESOURCE_MANAGER_HPP
 
 #include <SFML/Graphics.hpp>
 #include <map>

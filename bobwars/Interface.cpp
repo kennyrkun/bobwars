@@ -34,3 +34,8 @@ void Interface::draw()
 	create_ent_button.draw(targetWindow);
 	create_ent_button.draw(targetWindow);
 }
+
+void Interface::clicked()
+{
+
+}
