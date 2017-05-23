@@ -93,7 +93,7 @@ void Game::Main()
 	// game loop
 	while(gameWindow->isOpen())
 	{
-		sf::Time deltaTime = deltaClock.restart();  // get elapsed time and reset
+		sf::Time deltaTime = deltaClock.restart();  // get elapsed time and reset clock
 		timeSinceLastUpdate += deltaTime;
 
 		bool should_screenshot(false);

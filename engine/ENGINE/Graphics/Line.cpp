@@ -54,8 +54,3 @@ void Line::setThickness(const float $thickness)
 {
 	thickness = $thickness;
 }
-
-void Line::draw(sf::RenderTarget &target)
-{
-	target.draw(vertices, 4, sf::Quads);
-}
