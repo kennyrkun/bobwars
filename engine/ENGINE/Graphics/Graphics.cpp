@@ -20,16 +20,17 @@ namespace graphics
 
 	void outline(sf::RenderWindow &window, sf::Sprite &object, float thickness, sf::Color color)
 	{
-		sf::RectangleShape line;
+		sf::RectangleShape outline;
 
-		line.setPosition(object.getPosition());
-		line.setSize(sf::Vector2f(object.getLocalBounds().width, object.getLocalBounds().height));
-		line.setFillColor(sf::Color(0, 0, 0, 0));
+		outline.setPosition(object.getPosition());
+		outline.setSize(sf::Vector2f(object.getLocalBounds().width, object.getLocalBounds().height));
+		outline.setOrigin(sf::Vector2f(outline.getLocalBounds().width / 2, object.getLocalBounds().height / 2));
+		outline.setFillColor(sf::Color(0, 0, 0, 0));
 
-		line.setOutlineColor(color);
-		line.setOutlineThickness(thickness);
+		outline.setOutlineColor(color);
+		outline.setOutlineThickness(thickness);
 
-		window.draw(line);
+		window.draw(outline);
 	}
 
 	void fade(sf::Shape &object, int opacity) // TODO: run this in another thread
