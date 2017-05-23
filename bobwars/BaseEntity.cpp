@@ -4,13 +4,13 @@ BaseEntity::BaseEntity()
 {
 	logger::SILENT("DEBUG", "Entity base class constructed.");
 
-	texture.loadFromFile("resource\\textures\\bob.png");
+	texture.loadFromFile("resource\\textures\\bob.png"); // no point in logging failure, as SFML does this for us (I wish it didn't!)
 	sprite.setTexture(texture);
-
 	sprite.setOrigin(sf::Vector2f(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2));
 
 	moveDest.setRadius(5);
 	moveDest.setFillColor(sf::Color::Red);
+	moveDest.setOrigin(sf::Vector2f(moveDest.getLocalBounds().width / 2, moveDest.getLocalBounds().height / 2));
 }
 
 BaseEntity::~BaseEntity()
@@ -23,6 +23,7 @@ void BaseEntity::moveTo(const sf::Vector2f &pos)
 	logger::INFO("Moving to X: " + std::to_string(pos.x) + ", Y: " + std::to_string(pos.y) + ". (" + std::to_string(this->id) + ")");
 	movePos = pos;
 	moveDest.setPosition(pos);
+	line.setPoints(sprite.getPosition(), moveDest.getPosition());
 	moving = true;
 }
 
@@ -30,10 +31,10 @@ void BaseEntity::Update()
 {
 	if (moving)
 	{
-		int sX = sprite.getPosition().x;
-		int sY = sprite.getPosition().y;
-		int gX = movePos.x;
-		int gY = movePos.y;
+		int sX = static_cast<int>(sprite.getPosition().x);
+		int sY = static_cast<int>(sprite.getPosition().y);
+		int gX = static_cast<int>(movePos.x);
+		int gY = static_cast<int>(movePos.y);
 
 		if (sX > gX)
 			sprite.move(-.1f, 0);
@@ -50,6 +51,10 @@ void BaseEntity::Update()
 			logger::INFO("Done moving! (" + std::to_string(id) + ")");
 
 			moving = false;
+		}
+		else
+		{
+			line.setPoints(sprite.getPosition(), moveDest.getPosition());
 		}
 	}
 }

@@ -1,5 +1,5 @@
 #include "Graphics.hpp"
-#include "Logger.hpp"
+#include "..\Logger.hpp"
 
 namespace engine {
 namespace graphics

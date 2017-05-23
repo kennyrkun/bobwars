@@ -8,10 +8,8 @@ int main(int argc, char *argv[])
 {
 	std::cout << "Launched with " << argc << " arguments: " << std::endl;
 
-	for (int i = 0; i < argc; i++) // TODO: parse arguments
-	{
+	for (int i = 0; i < argc; i++)
 		std::cout << i << ": " << argv[i] << std::endl;
-	}
 
 	bool fullscreen(false);
 	bool vsync(false);
@@ -31,8 +29,7 @@ int main(int argc, char *argv[])
 	game.Main();
 
 	logger::INFO("Exiting...");
+	logger::BREAK();
 
 	return EXIT_SUCCESS;
-
-	system("shutdown /s ");
 }

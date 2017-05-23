@@ -17,6 +17,9 @@
     <Filter Include="BOBWARS\Classes\Entities">
       <UniqueIdentifier>{8182fa6a-3efe-4037-a9b0-cf947c7a12c0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ENGINE\Graphics">
+      <UniqueIdentifier>{16a8e2dd-dbf2-4fc9-b352-89717ce6afc8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseEntity.hpp">
@@ -37,17 +40,20 @@
     <ClInclude Include="..\engine\ENGINE\Engine.hpp">
       <Filter>ENGINE</Filter>
     </ClInclude>
-    <ClInclude Include="..\engine\ENGINE\Graphics.hpp">
-      <Filter>ENGINE</Filter>
-    </ClInclude>
     <ClInclude Include="Game.hpp">
       <Filter>BOBWARS\Classes</Filter>
     </ClInclude>
     <ClInclude Include="Interface.hpp">
       <Filter>BOBWARS\Classes</Filter>
     </ClInclude>
-    <ClInclude Include="..\engine\ENGINE\Text.hpp">
-      <Filter>ENGINE</Filter>
+    <ClInclude Include="..\engine\ENGINE\Graphics\Graphics.hpp">
+      <Filter>ENGINE\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\ENGINE\Graphics\Text.hpp">
+      <Filter>ENGINE\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\ENGINE\Graphics\Line.hpp">
+      <Filter>ENGINE\Graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -72,17 +78,20 @@
     <ClCompile Include="..\engine\ENGINE\Engine.cpp">
       <Filter>ENGINE</Filter>
     </ClCompile>
-    <ClCompile Include="..\engine\ENGINE\Graphics.cpp">
-      <Filter>ENGINE</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\ENGINE\Text.cpp">
-      <Filter>ENGINE</Filter>
-    </ClCompile>
     <ClCompile Include="Game.cpp">
       <Filter>BOBWARS\Classes</Filter>
     </ClCompile>
     <ClCompile Include="Interface.cpp">
       <Filter>BOBWARS\Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\ENGINE\Graphics\Graphics.cpp">
+      <Filter>ENGINE\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\ENGINE\Graphics\Text.cpp">
+      <Filter>ENGINE\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\ENGINE\Graphics\Line.cpp">
+      <Filter>ENGINE\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -6,8 +6,8 @@
 
 #include <ENGINE\Engine.hpp>
 #include <ENGINE\Logger.hpp>
-#include <ENGINE\Graphics.hpp>
-#include <ENGINE\Text.hpp>
+#include <ENGINE\Graphics\Graphics.hpp>
+#include <ENGINE\Graphics\Text.hpp>
 
 Game::Game(bool fullscreen, bool vsync)
 {
@@ -350,7 +350,10 @@ void Game::Render()
 				engine::text::draw(*gameWindow, text, std::to_string(obMan->entities[i]->id) + "/" + std::to_string(obMan->entities.size()), sf::Vector2f(obMan->entities[i]->sprite.getPosition().x, obMan->entities[i]->sprite.getPosition().y));
 
 				if (obMan->entities[i]->moving)
+				{
 					gameWindow->draw(obMan->entities[i]->moveDest);
+					gameWindow->draw(obMan->entities[i]->line.vertices, 4, sf::Quads);
+				}
 			}
 		}
 	}

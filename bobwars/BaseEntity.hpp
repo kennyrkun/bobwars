@@ -2,12 +2,16 @@
 #define BASE_ENTITY_HPP
 
 #include <ENGINE\Engine.hpp>
+#include <SFML\Graphics.hpp>
+#include <ENGINE\Graphics\Line.hpp>
 
 class BaseEntity
 {
 public:
-	sf::CircleShape moveDest;
 	sf::Sprite sprite;
+	sf::CircleShape moveDest;
+	Line line;
+
 	int id;
 	int team;
 	int armor;
