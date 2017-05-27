@@ -15,7 +15,7 @@ public:
 	Game(bool fullscreen, bool vsync);
 	~Game();
 
-	std::string gameVersion = "0.6.1";
+	std::string gameVersion = "0.6.75";
 	sf::RenderWindow *gameWindow;
 	sf::Time timePerFrame; // 60 frames per second
 	sf::Time timeSinceLastUpdate;
@@ -31,8 +31,8 @@ private:
 	sf::Font Arial;
 	sf::Text frameCounter;
 	sf::Text text;
-	sf::View main_view;
-	sf::View anchor;
+	sf::View *mainView;
+	sf::View *viewAnchor;
 	int view_speed = 500;
 	int player_speed = 250;
 
