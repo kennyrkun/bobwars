@@ -34,7 +34,6 @@ private:
 	sf::View *mainView;
 	sf::View *viewAnchor;
 	int view_speed = 500;
-	int player_speed = 250;
 
 	void showObjectCoords(sf::RenderWindow &window, sf::Sprite &object);
 };
