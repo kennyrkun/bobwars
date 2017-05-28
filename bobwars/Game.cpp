@@ -34,7 +34,7 @@ Game::Game(bool fullscreen, bool vsync)
 
 	if (!Arial.loadFromFile("C:\\Windows\\Fonts\\Arial.ttf"))
 	{
-		logger::ERROR("Failed to load font \"Arial\"!");
+		logger::SILENT("ERROR", "Failed to load font \"Arial\"!");
 	}
 	else
 	{
@@ -46,7 +46,7 @@ Game::Game(bool fullscreen, bool vsync)
 
 	static sf::Texture world_tex;
 	if (!world_tex.loadFromFile("resource\\textures\\world.png"))
-		logger::ERROR("Failed to load world textures!");
+		logger::SILENT("ERROR", "Failed to load world textures!");
 
 	world.setSize(sf::Vector2f(800, 600));
 	world.setTexture(&world_tex);
@@ -55,23 +55,12 @@ Game::Game(bool fullscreen, bool vsync)
 	frameCounter.setFont(Arial);
 	frameCounter.setScale(sf::Vector2f(.2f, .2f));
 
-	sf::Vector2f screendimensions(gameWindow->getSize().x / 2, gameWindow->getSize().y / 2);
+	sf::Vector2f screendimensions;
+	screendimensions.x = std::size_t(gameWindow->getSize().x) / 2.0f;
+	screendimensions.y = std::size_t(gameWindow->getSize().y) / 2.0f;
 	mainView = new sf::View(screendimensions, screendimensions);
 	viewAnchor = new sf::View(screendimensions, screendimensions);
-
-	//mainView->setCenter(sf::Vector2f(800 / 2, 600 / 2));
-	//mainView->setSize(sf::Vector2f(800 / 2, 600 / 2));
-	//viewAnchor.setCenter(sf::Vector2f(800 / 2, 600 / 2));
-	//viewAnchor.setSize(sf::Vector2f(800 / 2, 600 / 2));
-
 	ui = new Interface(this->gameWindow, this->viewAnchor, this->mainView);
-
-	ui->create_ent_button.setScale(sf::Vector2f(.4f, .4f));
-	ui->create_ent_button.setString("create");
-
-	ui->delete_ent_button.setScale(sf::Vector2f(.4f, .4f));
-	ui->delete_ent_button.setString("delete");
-	ui->delete_ent_button.disable();
 
 	logger::INFO("New Game created. (Ready!)");
 }
@@ -166,7 +155,6 @@ void Game::Main()
 							// TODO: tell us which ones were deleted (e.g. Deleted entities 1-6. or Deleted entities 1, 4, 5, 6, and 7.)
 						}
 					}
-
 				}
 
 				else if (event.type == sf::Event::EventType::KeyReleased)
@@ -180,7 +168,7 @@ void Game::Main()
 				{
 					if (event.key.code == sf::Mouse::Button::Left)
 					{
-						if (engine::logic::mouseIsOver(ui->create_ent_button.m_shape, *gameWindow, *mainView))
+						if (engine::logic::mouseIsOver(ui->create_ent_button.m_shape, *gameWindow, *viewAnchor))
 						{
 							if (obMan->entities.size() >= 100)
 							{
@@ -200,7 +188,7 @@ void Game::Main()
 								break;
 							}
 						}
-						else if (engine::logic::mouseIsOver(ui->delete_ent_button.m_shape, *gameWindow, *mainView) && !obMan->selectedEnts.empty())
+						else if (engine::logic::mouseIsOver(ui->delete_ent_button.m_shape, *gameWindow, *viewAnchor) && !obMan->selectedEnts.empty())
 						{
 							// delete the thing
 							if (obMan->selectedEnts.size() > 1)
@@ -352,8 +340,6 @@ void Game::Main()
 			}
 		}
 	}
-
-	logger::INFO("Exiting...");
 }
 
 void Game::Update()

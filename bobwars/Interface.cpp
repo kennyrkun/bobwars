@@ -39,6 +39,13 @@ Interface::Interface(sf::RenderWindow *_targetWindow, sf::View *_viewAnchor, sf:
 	unitCounterText.setString("0");
 	unitCounterText.setOrigin(sf::Vector2f(unitCounterText.getLocalBounds().width / 2, unitCounterText.getLocalBounds().height / 2));
 
+	create_ent_button.setScale(sf::Vector2f(.4f, .4f));
+	create_ent_button.setString("create");
+
+	delete_ent_button.setScale(sf::Vector2f(.4f, .4f));
+	delete_ent_button.setString("delete");
+	delete_ent_button.disable();
+
 	logger::INFO("New interface created.");
 }
 

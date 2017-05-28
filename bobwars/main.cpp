@@ -13,6 +13,7 @@ int main(int argc, char *argv[])
 
 	bool fullscreen(false);
 	bool vsync(false);
+	int fpsLimit(60); // default 60
 
 	for (int i = 0; i < argc; i++)
 	{
@@ -21,6 +22,11 @@ int main(int argc, char *argv[])
 
 		if (std::string(argv[i]) == "-vsync")
 			vsync = true;
+
+//		if (std::string(argv[i]) == "-fps")
+//		{
+//			fpsLimit == std::stoi(argv[i + 1]);
+//		}
 	}
 
 	logger::BREAK();
