@@ -21,6 +21,7 @@ public:
 
 	Button create_ent_button;
 	Button delete_ent_button;
+	sf::Text unitCounterText;
 	BaseEntity selectedEntity;
 	bool hasSelected;
 		
@@ -36,7 +37,6 @@ private:
 	sf::RectangleShape unitCounterIcon;
 	sf::Texture unitCounterIcon_tex;
 	sf::RectangleShape unitCounterBackground;
-	sf::Text unitCounterText;
 
 	void reanchor();
 };

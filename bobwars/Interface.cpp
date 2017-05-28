@@ -33,6 +33,12 @@ Interface::Interface(sf::RenderWindow *_targetWindow, sf::View *_viewAnchor, sf:
 	unitCounterBackground.setOutlineColor(sf::Color(50, 50, 50));
 	unitCounterText.setFont(arial);
 
+	unitCounterText.setFont(arial);
+	unitCounterText.setCharacterSize(34);
+	unitCounterText.setScale(sf::Vector2f(.25f, .25f));
+	unitCounterText.setString("0");
+	unitCounterText.setOrigin(sf::Vector2f(unitCounterText.getLocalBounds().width / 2, unitCounterText.getLocalBounds().height / 2));
+
 	logger::INFO("New interface created.");
 }
 
@@ -65,12 +71,13 @@ sf::View* Interface::getViewAnchor()
 
 void Interface::Render()
 {
-	reanchor();
+	Update();
 	
 	targetWindow->draw(topui_background);
 
 	targetWindow->draw(unitCounterBackground);
 	targetWindow->draw(unitCounterIcon);
+	targetWindow->draw(unitCounterText);
 
 //	targetWindow->draw(bottomui_background);
 
@@ -80,7 +87,9 @@ void Interface::Render()
 
 void Interface::Update()
 {
+	unitCounterText.setOrigin(sf::Vector2f(unitCounterText.getLocalBounds().width / 2, unitCounterText.getLocalBounds().height / 2));
 
+	reanchor();
 }
 
 // private:
@@ -90,7 +99,7 @@ void Interface::reanchor()
 	topui_background.setPosition(sf::Vector2f(mainView->getCenter().x, mainView->getCenter().y - 140));
 	unitCounterBackground.setPosition(sf::Vector2f(mainView->getCenter().x - 115, mainView->getCenter().y - 145.5f));
 	unitCounterIcon.setPosition(sf::Vector2f((mainView->getCenter().x - 114) + (unitCounterIcon.getLocalBounds().width / 2), (mainView->getCenter().y - 145) + (unitCounterIcon.getLocalBounds().height / 2)));
-	unitCounterText.setPosition(sf::Vector2f((mainView->getCenter().x - 114) + (unitCounterIcon.getLocalBounds().width / 2), (mainView->getCenter().y - 145) + (unitCounterIcon.getLocalBounds().height / 2)));
+	unitCounterText.setPosition(sf::Vector2f((mainView->getCenter().x - 102) + (unitCounterIcon.getLocalBounds().width / 2), (mainView->getCenter().y - 147) + (unitCounterIcon.getLocalBounds().height / 2)));
 
 	bottomui_background.setPosition(sf::Vector2f(mainView->getCenter().x, mainView->getCenter().y + 120));
 

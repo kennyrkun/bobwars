@@ -182,7 +182,7 @@ void Game::Main()
 					{
 						if (engine::logic::mouseIsOver(ui->create_ent_button.m_shape, *gameWindow, *mainView))
 						{
-							if (ui->create_ent_button.disabled)
+							if (obMan->entities.size() >= 100)
 							{
 								logger::INFO("Cannot create anymore units; you have too many.");
 								break;
@@ -339,17 +339,17 @@ void Game::Main()
 					frameCounter.setString("FPS: " + std::to_string(static_cast<int>(1.0f / frames_per_second)));
 				}
 			} // gameWindow.hasFocus()
-		}
 
-		viewAnchor->setCenter(mainView->getCenter());
+			viewAnchor->setCenter(mainView->getCenter());
 
-		Update();
-		Render();
+			Update();
+			Render();
 
-		if (should_screenshot)
-		{
-			engine::screenshot(*gameWindow);
-			should_screenshot = false;
+			if (should_screenshot)
+			{
+				engine::screenshot(*gameWindow);
+				should_screenshot = false;
+			}
 		}
 	}
 
@@ -412,7 +412,8 @@ void Game::Render()
 	sf::Vector2f pos;
 	pos.x = (mainView->getCenter().x - 98.5f);
 	pos.y = (mainView->getCenter().y - 144.5f);
-	engine::text::draw(*gameWindow, text, std::to_string(obMan->entities.size()), pos);
+//	engine::text::draw(*gameWindow, text, std::to_string(obMan->entities.size()), pos);
+	ui->unitCounterText.setString(std::to_string(obMan->entities.size()));
 
 	// debug info like coordinates and stuff
 	if (engine::cl_debug)
