@@ -310,7 +310,7 @@ void Game::Main()
 
 				if (engine::cl_debug && !obMan->selectedEnts.size() == 1)
 				{
-					#define PLAYER_SPEED 250
+#define PLAYER_SPEED 250
 
 					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
 						obMan->selectedEnts[0]->sprite.move(0, -PLAYER_SPEED * timePerFrame.asSeconds());
@@ -321,7 +321,7 @@ void Game::Main()
 					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
 						obMan->selectedEnts[0]->sprite.move(PLAYER_SPEED * timePerFrame.asSeconds(), 0);
 
-					#undef PLAYER_SPEED	
+#undef PLAYER_SPEED	
 				}
 
 				{ //FRAMES PER SECOND

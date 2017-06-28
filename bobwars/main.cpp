@@ -25,6 +25,7 @@ int main(int argc, char *argv[])
 
 //		if (std::string(argv[i]) == "-fps")
 //		{
+			// next arg should be an int (the fps)
 //			fpsLimit == std::stoi(argv[i + 1]);
 //		}
 	}

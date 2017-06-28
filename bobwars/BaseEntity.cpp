@@ -37,14 +37,14 @@ void BaseEntity::Update()
 		int gY = static_cast<int>(movePos.y);
 
 		if (sX > gX)
-			sprite.move(-.1f, 0);
+			sprite.move(-1.f, 0);
 		else if (sX < gX)
-			sprite.move(.1f, 0);
+			sprite.move(1.f, 0);
 
 		if (sY > gY)
-			sprite.move(0, -.1f);
+			sprite.move(0, -1.f);
 		else if (sY < gY)
-			sprite.move(0, .1f);
+			sprite.move(0, 1.f);
 
 		if (sX == gX && sY == gY)
 		{

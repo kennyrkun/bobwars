@@ -39,9 +39,7 @@ void ObjectManager::deleteObject(BaseEntity *ent)
 		{
 			delete entities[i];
 			entities.erase(std::remove(entities.begin(), entities.end(), ent), entities.end());
-
 			logger::SILENT("DEBUG", "Deleted entity " + std::to_string(ent->id));
-
 			return;
 		}
 	}
