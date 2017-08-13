@@ -8,7 +8,7 @@
 
 namespace engine
 {
-	std::string const version("1.1.1");
+	std::string const version("1.2.1");
 	CVar_B cl_debug(0);
 
 	namespace logic
@@ -43,7 +43,7 @@ namespace engine
 
 			if (fs::exists("screenshots"))
 			{
-				int screenshots = 0;
+				int screenshots = 1;
 
 				for (fs::directory_iterator it("screenshots"); it != fs::directory_iterator(); ++it)
 				{
