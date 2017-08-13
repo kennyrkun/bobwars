@@ -7,44 +7,34 @@
     <Filter Include="BOBWARS">
       <UniqueIdentifier>{dd8c5868-6c01-4eb6-a632-06173d2931ee}</UniqueIdentifier>
     </Filter>
-    <Filter Include="BOBWARS\Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="BOBWARS\Classes">
-      <UniqueIdentifier>{d0e709c4-2ae6-45de-aa2d-1eb16649a0b5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="BOBWARS\Classes\Entities">
-      <UniqueIdentifier>{8182fa6a-3efe-4037-a9b0-cf947c7a12c0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ENGINE\Graphics">
       <UniqueIdentifier>{16a8e2dd-dbf2-4fc9-b352-89717ce6afc8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BOBWARS\Systems">
+      <UniqueIdentifier>{d0e709c4-2ae6-45de-aa2d-1eb16649a0b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BOBWARS\Systems\Entities">
+      <UniqueIdentifier>{8182fa6a-3efe-4037-a9b0-cf947c7a12c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BOBWARS\Systems\Graphical">
+      <UniqueIdentifier>{371f4bb8-4ecb-4516-8845-55265c76a8b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BOBWARS\Systems\GameStates">
+      <UniqueIdentifier>{f1a42a54-de3b-40dc-9d0d-289da8ba3beb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BOBWARS\Systems\GameStates\Manager &amp; Base">
+      <UniqueIdentifier>{b0e65a1e-d8f1-4afe-9a89-ea101c211d7f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseEntity.hpp">
-      <Filter>BOBWARS\Classes\Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="Button.hpp">
-      <Filter>BOBWARS\Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectManager.hpp">
-      <Filter>BOBWARS\Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="ResourceManager.hpp">
-      <Filter>BOBWARS\Classes</Filter>
+      <Filter>BOBWARS\Systems\Entities</Filter>
     </ClInclude>
     <ClInclude Include="..\engine\ENGINE\Logger.hpp">
       <Filter>ENGINE</Filter>
     </ClInclude>
     <ClInclude Include="..\engine\ENGINE\Engine.hpp">
       <Filter>ENGINE</Filter>
-    </ClInclude>
-    <ClInclude Include="Game.hpp">
-      <Filter>BOBWARS\Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="Interface.hpp">
-      <Filter>BOBWARS\Classes</Filter>
     </ClInclude>
     <ClInclude Include="..\engine\ENGINE\Graphics\Graphics.hpp">
       <Filter>ENGINE\Graphics</Filter>
@@ -55,34 +45,38 @@
     <ClInclude Include="..\engine\ENGINE\Graphics\Line.hpp">
       <Filter>ENGINE\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Interface.hpp">
+      <Filter>BOBWARS\Systems\Graphical</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.hpp">
+      <Filter>BOBWARS\Systems\Graphical</Filter>
+    </ClInclude>
+    <ClInclude Include="GamePlayState.hpp">
+      <Filter>BOBWARS\Systems\GameStates</Filter>
+    </ClInclude>
+    <ClInclude Include="StateMachine.hpp">
+      <Filter>BOBWARS\Systems\GameStates\Manager &amp; Base</Filter>
+    </ClInclude>
+    <ClInclude Include="StateBase.hpp">
+      <Filter>BOBWARS\Systems\GameStates\Manager &amp; Base</Filter>
+    </ClInclude>
+    <ClInclude Include="MainMenuState.hpp">
+      <Filter>BOBWARS\Systems\GameStates</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectManager.hpp">
+      <Filter>BOBWARS\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Button.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>BOBWARS\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="BaseEntity.cpp">
-      <Filter>BOBWARS\Classes\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Button.cpp">
-      <Filter>BOBWARS\Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="ObjectManager.cpp">
-      <Filter>BOBWARS\Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="ResourceManager.cpp">
-      <Filter>BOBWARS\Classes</Filter>
+      <Filter>BOBWARS\Systems\Entities</Filter>
     </ClCompile>
     <ClCompile Include="..\engine\ENGINE\Logger.cpp">
       <Filter>ENGINE</Filter>
     </ClCompile>
     <ClCompile Include="..\engine\ENGINE\Engine.cpp">
       <Filter>ENGINE</Filter>
-    </ClCompile>
-    <ClCompile Include="Game.cpp">
-      <Filter>BOBWARS\Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="Interface.cpp">
-      <Filter>BOBWARS\Classes</Filter>
     </ClCompile>
     <ClCompile Include="..\engine\ENGINE\Graphics\Graphics.cpp">
       <Filter>ENGINE\Graphics</Filter>
@@ -93,5 +87,27 @@
     <ClCompile Include="..\engine\ENGINE\Graphics\Line.cpp">
       <Filter>ENGINE\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Interface.cpp">
+      <Filter>BOBWARS\Systems\Graphical</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
+      <Filter>BOBWARS\Systems\Graphical</Filter>
+    </ClCompile>
+    <ClCompile Include="MainMenuState.cpp">
+      <Filter>BOBWARS\Systems\GameStates</Filter>
+    </ClCompile>
+    <ClCompile Include="GamePlayState.cpp">
+      <Filter>BOBWARS\Systems\GameStates</Filter>
+    </ClCompile>
+    <ClCompile Include="StateMachine.cpp">
+      <Filter>BOBWARS\Systems\GameStates\Manager &amp; Base</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectManager.cpp">
+      <Filter>BOBWARS\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>BOBWARS</Filter>
+    </ClCompile>
+    <ClCompile Include="Button.cpp" />
   </ItemGroup>
 </Project>

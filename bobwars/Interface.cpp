@@ -61,22 +61,16 @@ void Interface::setTargetWindow(sf::RenderWindow *_targetWindow)
 	targetWindow = _targetWindow;
 }
 
-sf::RenderWindow* Interface::getTargetWindow()
-{
-	return this->targetWindow;
-}
+// sf::RenderWindow* Interface::getTargetWindow()
 
 void Interface::setViewAnchor(sf::View *_viewAnchor)
 {
 	viewAnchor = _viewAnchor;
 }
 
-sf::View* Interface::getViewAnchor()
-{
-	return this->viewAnchor;
-}
+// sf::View* Interface::getViewAnchor()
 
-void Interface::Render()
+void Interface::Draw()
 {
 	Update();
 	

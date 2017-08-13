@@ -12,11 +12,11 @@ public:
 	~Interface();
 
 	void setTargetWindow(sf::RenderWindow *target_window);
-	sf::RenderWindow* getTargetWindow();
+	sf::RenderWindow* getTargetWindow() { return targetWindow; }
 	void setViewAnchor(sf::View *viewAnchor);
-	sf::View* getViewAnchor();
+	sf::View* getViewAnchor() { return viewAnchor; }
 
-	void Render();
+	void Draw();
 	void Update();
 
 	Button create_ent_button;

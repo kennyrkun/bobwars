@@ -15,8 +15,10 @@ public:
 
 	void createObject();
 	void clearSelected();
+
 	void deleteObject(BaseEntity *ent);
 	int selectObject(BaseEntity *ent);
+	// add selectedBool to entity, check if it's selected without looping.
 
 private:
 	// nothing
