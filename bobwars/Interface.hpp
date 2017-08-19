@@ -21,6 +21,8 @@ public:
 
 	Button create_ent_button;
 	Button delete_ent_button;
+	// TODO: replace these with SFUI::Button
+
 	sf::Text unitCounterText;
 	BaseEntity selectedEntity;
 	bool hasSelected;

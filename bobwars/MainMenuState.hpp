@@ -4,6 +4,7 @@
 #include "GamePlayState.hpp"
 #include "ENGINE\Logger.hpp"
 #include <SFUI\Button.hpp>
+#include "ResourceManager.hpp"
 
 #include "StateMachine.hpp"
 #include "StateBase.hpp"
@@ -25,6 +26,8 @@ private:
 	bool mouseIsOver(sf::Shape &object);
 
 	AppEngine2* app;
+
+	ResourceManager resMan;
 
 	sf::RectangleShape logoShape;
 	sf::Texture		   logoTexture;

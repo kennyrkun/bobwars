@@ -8,7 +8,9 @@ MainMenuState::MainMenuState(AppEngine2* app_)
 {
 	app = app_;
 
-	logoTexture.loadFromFile(".\\resource\\textures\\logo.png");
+	resMan.loadTexture(".\\resource\\textures\\logo.png");
+
+	logoTexture = *resMan.getTexture(".\\resource\\textures\\logo.png");
 	logoShape.setSize(sf::Vector2f(logoTexture.getSize().x, logoTexture.getSize().y));
 	logoShape.setTexture(&logoTexture);
 	logoTexture.setSmooth(true);
@@ -37,7 +39,10 @@ MainMenuState::MainMenuState(AppEngine2* app_)
 
 MainMenuState::~MainMenuState()
 {
+	resMan.freeAllTextures();
 	delete app;
+
+	std::cout << "menu gone" << std::endl;
 }
 
 void MainMenuState::Pause()

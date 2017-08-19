@@ -2,17 +2,44 @@
 #include <map>
 #include <string>
 #include <iostream>
-#include "ResourceManager.hpp"
 
-//extern std::string IMAGE_PATHS[];
-//extern std::string SOUND_PATHS[];
+#include "ResourceManager.hpp"
+#include <ENGINE\Logger.hpp>
 
 ResourceManager::ResourceManager()
 {
-//	logger::SILENT("ResourceManager constructed.");
+	logger::INFO("ResourceManager created.");
 }
 
 ResourceManager::~ResourceManager()
+{
+	freeAllTextures();
+
+	logger::INFO("ResourceManager deconstructed.");
+}
+
+void ResourceManager::loadTexture(std::string filename)
+{
+	if (!textureLoaded(filename))
+	{
+		// If the texture is not in the map, load it
+		sf::Texture* new_tex = new sf::Texture;
+		new_tex->loadFromFile(filename);
+		loaded_textures[filename] = new_tex;
+
+		logger::INFO("Loaded texture \"" + filename + "\"");
+	}
+}
+
+void ResourceManager::freeTexture(std::string filename)
+{
+	delete loaded_textures[filename];
+	loaded_textures[filename] = nullptr;
+
+	logger::INFO("Freed texture \"" + filename + "\"");
+}
+
+void ResourceManager::freeAllTextures()
 {
 	// Iterate through all the loaded textures, free them, and delete the pointers
 	std::map<std::string, sf::Texture*>::iterator it;
@@ -23,45 +50,21 @@ ResourceManager::~ResourceManager()
 		it->second = nullptr;
 	}
 
-//	logger::SILENT("ResourceManager deconstructed.");
+	logger::INFO("Freed all textures.");
 }
 
-void ResourceManager::load_texture(std::string filename)
+bool ResourceManager::textureLoaded(std::string filename)
 {
-	if (!texture_loaded(filename))
-	{
-		// If the texture is not in the map, load it
-		sf::Texture* new_tex = new sf::Texture;
-		new_tex->loadFromFile(filename);
-		loaded_textures[filename] = new_tex;
-	}
-}
+	// how does this work
 
-void ResourceManager::load_texture(ResourceImage rimage)
-{
-	load_texture(IMAGE_PATHS[rimage]);
-}
-
-bool ResourceManager::texture_loaded(std::string filename)
-{
 	if (loaded_textures.find(filename) == loaded_textures.end())
 		return false;
 	else
 		return true;
 }
 
-bool ResourceManager::texture_loaded(ResourceImage rimage)
+sf::Texture* ResourceManager::getTexture(std::string filename)
 {
-	return texture_loaded(IMAGE_PATHS[rimage]);
-}
-
-sf::Texture* ResourceManager::get_texture(std::string filename)
-{
-	load_texture(filename);
+//	loadTexture(filename);
 	return loaded_textures[filename];
-}
-
-sf::Texture* ResourceManager::get_texture(ResourceImage rimage)
-{
-	return get_texture(IMAGE_PATHS[rimage]);
 }

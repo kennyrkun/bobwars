@@ -10,7 +10,6 @@ class BaseEntity
 public:
 	sf::Sprite sprite;
 	sf::CircleShape moveDest;
-	Line line;
 
 	int id;
 	int team;

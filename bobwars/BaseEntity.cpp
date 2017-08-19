@@ -23,7 +23,6 @@ void BaseEntity::moveTo(const sf::Vector2f &pos)
 	logger::INFO("Moving to X: " + std::to_string(pos.x) + ", Y: " + std::to_string(pos.y) + ". (" + std::to_string(id) + ")");
 	movePos = pos;
 	moveDest.setPosition(pos);
-	line.setPoints(sprite.getPosition(), moveDest.getPosition());
 	moving = true;
 }
 
@@ -54,7 +53,7 @@ void BaseEntity::Update()
 		}
 		else
 		{
-			line.setPoints(sprite.getPosition(), moveDest.getPosition());
+			//line.setPoints(sprite.getPosition(), moveDest.getPosition());
 		}
 	}
 }

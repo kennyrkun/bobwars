@@ -28,15 +28,12 @@
     <ClInclude Include="Button.hpp" />
     <ClInclude Include="GamePlayState.hpp" />
     <ClInclude Include="MainMenuState.hpp" />
+    <ClInclude Include="ResourceManager.hpp" />
     <ClInclude Include="StateBase.hpp" />
     <ClInclude Include="Interface.hpp" />
     <ClInclude Include="ObjectManager.hpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="ResourceManager.hpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="StateMachine.hpp" />
   </ItemGroup>
@@ -56,10 +53,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="ResourceManager.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="StateMachine.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
