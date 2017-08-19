@@ -18,10 +18,7 @@ GamePlayState::GamePlayState(AppEngine2* app_, bool fullscreen, bool vsync)
 	logger::INFO("Initialising...");
 
 	{
-//		sf::VideoMode app->windowDimensions(800, 600);
 		app->window->setTitle("bobwars " + gameVersion + "-" + engine::version);
-
-//		app->window = new sf::RenderWindow;
 
 //		if (fullscreen)
 //			app->window->create(app->windowDimensions, app->windowTitle, sf::Style::Fullscreen);
@@ -121,9 +118,20 @@ void GamePlayState::HandleEvents()
 			{
 				if (event.key.code == sf::Keyboard::Key::Escape)
 				{
-					//logger::SILENT("DEBUG", "Pause has function not yet been implemented.");
+					logger::INFO("Pause has function not yet been implemented.");
 
-					app->Quit();
+//					app->Quit();
+				}
+
+				if (event.key.code == sf::Keyboard::Key::Space)
+				{
+					if (!obMan->selectedEnts.empty())
+					{
+						logger::INFO("centering mainview on selected entity");
+
+						mainView->setCenter(obMan->selectedEnts[0]->sprite.getPosition());
+						viewAnchor->setCenter(obMan->selectedEnts[0]->sprite.getPosition());
+					}
 				}
 
 				if (event.key.code == sf::Keyboard::Key::LShift)
@@ -406,7 +414,10 @@ void GamePlayState::Draw()
 				if (obMan->entities[i]->moving)
 				{
 					app->window->draw(obMan->entities[i]->moveDest);
-					app->window->draw(obMan->entities[i]->line.vertices, 4, sf::Quads);
+
+					static Line line;
+					line.setPoints(obMan->entities[i]->sprite.getPosition(), obMan->entities[i]->moveDest.getPosition());
+					app->window->draw(line.vertices, 4, sf::Quads);
 				}
 			}
 		}
