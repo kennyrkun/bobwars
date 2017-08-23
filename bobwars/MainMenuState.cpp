@@ -8,12 +8,11 @@ MainMenuState::MainMenuState(AppEngine2* app_)
 {
 	app = app_;
 
-	resMan.loadTexture(".\\resource\\textures\\logo.png");
-
-	logoTexture = *resMan.getTexture(".\\resource\\textures\\logo.png");
-	logoShape.setSize(sf::Vector2f(logoTexture.getSize().x, logoTexture.getSize().y));
-	logoShape.setTexture(&logoTexture);
-	logoTexture.setSmooth(true);
+	app->resMan->loadTexture("title_screen_logo", ".\\resource\\textures\\logo.png");
+	app->resMan->getTexture("title_screen_logo")->setSmooth(true);
+	logoShape.setSize(sf::Vector2f(app->resMan->getTexture("title_screen_logo")->getSize().x, app->resMan->getTexture("title_screen_logo")->getSize().y));
+	logoShape.setTexture(&*app->resMan->getTexture("title_screen_logo"));
+//	logoTexture.setSmooth(true);
 	logoShape.setOrigin(logoShape.getLocalBounds().width / 2, logoShape.getLocalBounds().height / 2);
 	logoShape.setPosition(app->window->getDefaultView().getCenter().x, app->window->getSize().y / 2 - ((app->window->getSize().y / 2) / 2));
 
@@ -39,7 +38,7 @@ MainMenuState::MainMenuState(AppEngine2* app_)
 
 MainMenuState::~MainMenuState()
 {
-	resMan.freeAllTextures();
+	app->resMan->freeTexture("title_screen_logo");
 	delete app;
 
 	std::cout << "menu gone" << std::endl;
@@ -71,7 +70,7 @@ void MainMenuState::HandleEvents()
 				logger::INFO("Starting a new game...");
 
 				GamePlayState* game = new GamePlayState(this->app, false, false);
-				app->PushState(game);
+				app->ChangeState(game);
 			}
 			else if (mouseIsOver(loadButton.m_shape))
 			{

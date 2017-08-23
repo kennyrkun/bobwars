@@ -23,14 +23,11 @@ public:
 	void Draw();
 
 private:
-	bool mouseIsOver(sf::Shape &object);
-
 	AppEngine2* app;
 
-	ResourceManager resMan;
+	bool mouseIsOver(sf::Shape &object);
 
 	sf::RectangleShape logoShape;
-	sf::Texture		   logoTexture;
 
 	SFUI::Button playButton;
 	SFUI::Button loadButton;

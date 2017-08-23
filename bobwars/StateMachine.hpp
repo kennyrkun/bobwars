@@ -1,6 +1,8 @@
 #ifndef PROGRAM_ENGINE_HPP
 #define PROGRAM_ENGINE_HPP
 
+#include "ResourceManager.hpp"
+
 #include <SFML\Graphics.hpp>
 #include <vector>
 #include <string>
@@ -11,6 +13,7 @@ struct LaunchOptions
 {
 	bool fullscreen = false;
 	bool vsync = false;
+	int fps    = 60;
 	int width  = 800;
 	int height = 600;
 };
@@ -36,6 +39,8 @@ public:
 	LaunchOptions options;
 
 	std::vector<AppState2*> states;
+
+	ResourceManager* resMan;
 
 private:
 

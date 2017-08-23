@@ -14,6 +14,8 @@ AppEngine2::AppEngine2(std::string title, LaunchOptions launchOptions_)
 	window = new sf::RenderWindow(sf::VideoMode(options.width, options.height), title);
 	window->setVerticalSyncEnabled(true);
 
+	resMan = new ResourceManager;
+
 	running = true;
 }
 
@@ -22,6 +24,7 @@ AppEngine2::~AppEngine2()
 	logger::INFO("deleting AppEngine");
 
 	delete window;
+	delete resMan;
 }
 
 void AppEngine2::ChangeState(AppState2* state)
@@ -31,6 +34,7 @@ void AppEngine2::ChangeState(AppState2* state)
 	// cleanup the current state
 	if (!states.empty())
 	{
+//		delete states.back();
 		states.pop_back();
 	}
 
