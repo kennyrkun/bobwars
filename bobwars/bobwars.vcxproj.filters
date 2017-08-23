@@ -63,9 +63,11 @@
     <ClInclude Include="ObjectManager.hpp">
       <Filter>BOBWARS\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="Button.hpp" />
     <ClInclude Include="ResourceManager.hpp">
       <Filter>BOBWARS\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Button.hpp">
+      <Filter>BOBWARS\Systems\Graphical</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -105,9 +107,11 @@
     <ClCompile Include="main.cpp">
       <Filter>BOBWARS</Filter>
     </ClCompile>
-    <ClCompile Include="Button.cpp" />
     <ClCompile Include="ResourceManager.cpp">
       <Filter>BOBWARS\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Button.cpp">
+      <Filter>BOBWARS\Systems\Graphical</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
