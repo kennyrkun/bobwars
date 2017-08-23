@@ -11,7 +11,7 @@ public:
 	ResourceManager();
 	~ResourceManager();
 
-	void loadTexture(std::string filename);
+	void loadTexture(std::string resourceName, std::string fileLocation);
 	void freeTexture(std::string filename);
 	void freeAllTextures();
 	bool textureLoaded(std::string filename);

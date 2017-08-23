@@ -18,16 +18,15 @@ ResourceManager::~ResourceManager()
 	logger::INFO("ResourceManager deconstructed.");
 }
 
-void ResourceManager::loadTexture(std::string filename)
+void ResourceManager::loadTexture(std::string resourceName, std::string fileLocation)
 {
-	if (!textureLoaded(filename))
+	if (!textureLoaded(resourceName))
 	{
-		// If the texture is not in the map, load it
 		sf::Texture* new_tex = new sf::Texture;
-		new_tex->loadFromFile(filename);
-		loaded_textures[filename] = new_tex;
+		new_tex->loadFromFile(fileLocation);
+		loaded_textures[resourceName] = new_tex;
 
-		logger::INFO("Loaded texture \"" + filename + "\"");
+		logger::INFO("Loaded \"" + resourceName + "\" from \"" + fileLocation + "\"");
 	}
 }
 
@@ -55,7 +54,7 @@ void ResourceManager::freeAllTextures()
 
 bool ResourceManager::textureLoaded(std::string filename)
 {
-	// how does this work
+	// how does this even what
 
 	if (loaded_textures.find(filename) == loaded_textures.end())
 		return false;
@@ -65,6 +64,6 @@ bool ResourceManager::textureLoaded(std::string filename)
 
 sf::Texture* ResourceManager::getTexture(std::string filename)
 {
-//	loadTexture(filename);
+//	loadTexture(filename); // no
 	return loaded_textures[filename];
 }
