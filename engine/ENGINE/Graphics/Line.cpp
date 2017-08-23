@@ -2,8 +2,7 @@
 
 Line::Line()
 {
-	thickness = 2.5f;
-	color = sf::Color::Red;
+
 }
 
 Line::~Line()
