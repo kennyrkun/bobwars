@@ -281,12 +281,18 @@ void GamePlayState::HandleEvents()
 				{
 					if (!obMan->selectedEnts.empty())
 					{
-						// if we haven't broken the loop already, it means we've clicked nothing.
 						sf::Vector2f movePos(app->window->mapPixelToCoords(sf::Mouse::getPosition(*app->window), *mainView));
 
-						for (size_t i = 0; i < obMan->selectedEnts.size(); i++)
+						if (!world.getGlobalBounds().contains(movePos))
 						{
-							obMan->selectedEnts[i]->moveTo(movePos);
+							logger::ERROR("Move target out of bounds!");
+						}
+						else
+						{
+							for (size_t i = 0; i < obMan->selectedEnts.size(); i++)
+							{
+								obMan->selectedEnts[i]->moveTo(movePos);
+							}
 						}
 					}
 				}

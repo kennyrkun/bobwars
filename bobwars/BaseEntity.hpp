@@ -8,6 +8,9 @@
 class BaseEntity
 {
 public:
+	BaseEntity();
+	~BaseEntity();
+
 	sf::Sprite sprite;
 	sf::CircleShape moveDest;
 
@@ -15,10 +18,7 @@ public:
 	int team;
 	int armor;
 	int hitpoints;
-	bool moving;
-
-	BaseEntity();
-	~BaseEntity();
+	bool moving = false;
 
 	void moveTo(const sf::Vector2f &dest);
 	void Update();

@@ -32,22 +32,19 @@ int main(int argc, char *argv[])
 
 	logger::BREAK();
 
-	AppEngine2* stateMachine = new AppEngine2("bobwars", options);
+	AppEngine2* appEngine = new AppEngine2("bobwars", options);
 
-	MainMenuState* mainMenu = new MainMenuState(stateMachine);
-	stateMachine->ChangeState(mainMenu);
+	MainMenuState* mainMenuState = new MainMenuState(appEngine);
+	appEngine->ChangeState(mainMenuState);
 
-	while (stateMachine->Running())
+	while (appEngine->Running())
 	{
-		stateMachine->HandleEvents();
-		stateMachine->Update();
-		stateMachine->Draw();
+		appEngine->HandleEvents();
+		appEngine->Update();
+		appEngine->Draw();
 	}
 
-	delete stateMachine;
-
-//	Game bobwars(fullscreen, vsync);
-//	bobwars.Main();
+	delete appEngine;
 
 	logger::INFO("Exiting...");
 	return EXIT_SUCCESS;
