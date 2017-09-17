@@ -37,6 +37,7 @@ public:
 
 	sf::RenderWindow* window;
 	LaunchOptions options;
+	bool debugModeActive = false;
 
 	std::vector<AppState2*> states;
 
@@ -44,8 +45,8 @@ public:
 
 private:
 
-	bool running;
-	bool fullscreen;
+	bool running = false;
+	bool fullscreen = false;
 };
 
 #endif // !PROGRAM_ENGINE_HPP

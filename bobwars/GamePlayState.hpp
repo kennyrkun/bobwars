@@ -25,7 +25,7 @@ public:
 	void Update();
 	void Draw();
 
-	std::string gameVersion = "0.7.1";
+	std::string gameVersion = "0.7.2";
 //	sf::RenderWindow *app->window;
 	sf::Time timePerFrame; // 60 frames per second
 	sf::Time timeSinceLastUpdate;

@@ -9,7 +9,6 @@
 namespace engine
 {
 	std::string const version("1.2.1");
-	CVar_B cl_debug(0);
 
 	namespace logic
 	{

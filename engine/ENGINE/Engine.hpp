@@ -4,13 +4,9 @@
 #include <SFML\Graphics.hpp>
 #include <ENGINE\Logger.hpp>
 
-using CVar_B = bool;
-using CVar_I = int;
-
 namespace engine
 {
 	extern const std::string version;
-	extern CVar_B cl_debug;
 
 	namespace logic
 	{

@@ -11,8 +11,6 @@
 
 GamePlayState::GamePlayState(AppEngine2* app_, bool fullscreen, bool vsync)
 {
-	engine::cl_debug = true;
-
 	app = app_;
 
 	logger::INFO("Initialising...");
@@ -142,18 +140,9 @@ void GamePlayState::HandleEvents()
 
 				if (event.key.code == sf::Keyboard::Key::Tilde)
 				{
-					if (engine::cl_debug == true)
-					{
-						engine::cl_debug = false;
+					app->debugModeActive = !app->debugModeActive;
 
-						logger::INFO("Toggled debug information OFF.");
-					}
-					else
-					{
-						engine::cl_debug = true;
-
-						logger::INFO("Toggled debug information ON.");
-					}
+					logger::INFO("cl_debug set to " + std::to_string(app->debugModeActive));
 				}
 
 				if (event.key.code == sf::Keyboard::Key::Delete)
@@ -343,7 +332,7 @@ void GamePlayState::HandleEvents()
 					mainView->setCenter(mainView->getCenter().x, 0);
 			}
 
-			if (engine::cl_debug && !obMan->selectedEnts.size() == 1)
+			if (app->debugModeActive && !obMan->selectedEnts.size() == 1)
 			{
 				#define PLAYER_SPEED 250
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
@@ -407,7 +396,7 @@ void GamePlayState::Draw()
 	for (size_t i = 0; i < obMan->entities.size(); i++)
 		app->window->draw(obMan->entities[i]->sprite);
 
-	if (engine::cl_debug)
+	if (app->debugModeActive)
 	{
 		for (size_t i = 0; i < obMan->entities.size(); i++) // outline entities
 		{
@@ -448,7 +437,7 @@ void GamePlayState::Draw()
 	ui->unitCounterText.setString(std::to_string(obMan->entities.size()));
 
 	// debug info like coordinates and stuff
-	if (engine::cl_debug)
+	if (app->debugModeActive)
 	{
 		// view coordinates
 		std::string x = "X: " + std::to_string(static_cast<int>(mainView->getCenter().x));

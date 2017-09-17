@@ -23,6 +23,7 @@ MainMenuState::MainMenuState(AppEngine2* app_)
 	loadButton.setString("load game");
 	loadButton.setSizeMultiplier(1);
 	loadButton.setPosition(sf::Vector2f(app->window->getDefaultView().getCenter().x, playButton.m_shape.getPosition().y + 50));
+
 	loadButton.disable();
 
 	settingsButton.setString("settings");
