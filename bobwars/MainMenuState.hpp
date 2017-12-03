@@ -3,7 +3,7 @@
 
 #include "GamePlayState.hpp"
 #include "ENGINE\Logger.hpp"
-#include <SFUI\Button.hpp>
+#include <SFUI\TextButton.hpp>
 #include "ResourceManager.hpp"
 
 #include "StateMachine.hpp"
@@ -27,12 +27,14 @@ private:
 
 	bool mouseIsOver(sf::Shape &object);
 
+	int dr, dg , db;
+	sf::Uint8 r = 255, g = 0, b = 0;
 	sf::RectangleShape logoShape;
 
-	SFUI::Button playButton;
-	SFUI::Button loadButton;
-	SFUI::Button settingsButton;
-	SFUI::Button exitButton;
+	SFUI::TextButton playButton;
+	SFUI::TextButton loadButton;
+	SFUI::TextButton settingsButton;
+	SFUI::TextButton exitButton;
 };
 
 #endif // !MAIN_MENU_STATE

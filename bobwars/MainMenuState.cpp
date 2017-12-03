@@ -93,18 +93,52 @@ void MainMenuState::HandleEvents()
 
 void MainMenuState::Update()
 {
+	r += dr;
+	g += dg;
+	b += db;
 
+	if (r == 255 && g == 0 && b == 0)
+	{
+		dr = 0; dg = 1; db = 0;
+	}
+
+	if (r == 255 && g == 255 && b == 0)
+	{
+		dr = -1; dg = 0; db = 0;
+	}
+
+	if (r == 0 && g == 255 && b == 0)
+	{
+		dr = 0; dg = 0; db = 1;
+	}
+
+	if (r == 0 && g == 255 && b == 255)
+	{
+		dr = 0; dg = -1; db = 0;
+	}
+
+	if (r == 0 && g == 0 && b == 255)
+	{
+		dr = 1; dg = 0; db = 0;
+	}
+
+	if (r == 255 && g == 0 && b == 255)
+	{
+		dr = 0; dg = 0; db = -1;
+	}
+
+	logoShape.setFillColor(sf::Color(r, g, b));
 }
 
 void MainMenuState::Draw()
 {
 	app->window->clear(sf::Color(100, 100, 100));
 
-	playButton.draw(*app->window);
-	loadButton.draw(*app->window);
-	settingsButton.draw(*app->window);
-	exitButton.draw(*app->window);
 	app->window->draw(logoShape);
+	app->window->draw(playButton);
+	app->window->draw(loadButton);
+	app->window->draw(settingsButton);
+	app->window->draw(exitButton);
 
 	app->window->display();
 }
