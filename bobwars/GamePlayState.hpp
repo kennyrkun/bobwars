@@ -37,9 +37,11 @@ private:
 	Interface *ui;
 	sf::RectangleShape world;
 	sf::Texture		   worldTexture;
+
 	sf::Font Arial;
-	sf::Text frameCounter;
-	sf::Text text;
+	sf::Text debugFrameCounter;
+	sf::Text debugText;
+
 	sf::View *mainView;
 	sf::View *viewAnchor;
 	int baseViewSpeed = 500;

@@ -18,7 +18,8 @@ public:
 
 	void deleteObject(BaseEntity *ent);
 	int selectObject(BaseEntity *ent);
-	// add selectedBool to entity, check if it's selected without looping.
+	void deselectObject(BaseEntity *ent);
+	// add selected bool to entity, check if it's selected without looping.
 
 private:
 	// nothing

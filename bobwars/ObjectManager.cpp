@@ -17,17 +17,27 @@ void ObjectManager::createNewEntity()
 {
 	BaseEntity *newEnt = new BaseEntity();
 	newEnt->id = entities.size() + 1;
+	newEnt->isSelected = true;
 
 	entities.push_back(newEnt); // add it to the stack
 	selectedEnts.push_back(newEnt); // select it
 
-	logger::SILENT("DEBUG", "creating new entity (" + std::to_string(newEnt->id) + ")");
+	logger::INFO("creating new entity (" + std::to_string(newEnt->id) + ")");
 }
 
 void ObjectManager::clearSelected()
 {
+	logger::INFO("selectedEntities: " + std::to_string(selectedEnts.size()));
+
 	for (size_t i = 0; i < selectedEnts.size(); i++)
+	{
+		logger::INFO("deselecting entity" + std::to_string(selectedEnts[i]->id));
+
+		//delesectEnt(selectedEnts[i]); // broken
 		selectedEnts[i]->isSelected = false;
+	}
+
+	logger::INFO("selectedEntities: " + std::to_string(selectedEnts.size()));
 
 	selectedEnts.clear();
 }
@@ -40,7 +50,7 @@ void ObjectManager::deleteObject(BaseEntity *ent)
 		{
 			delete entities[i];
 			entities.erase(std::remove(entities.begin(), entities.end(), ent), entities.end());
-			logger::SILENT("DEBUG", "Deleted entity " + std::to_string(ent->id));
+			logger::INFO("Deleted entity " + std::to_string(ent->id));
 			return;
 		}
 	}
@@ -65,4 +75,14 @@ int ObjectManager::selectObject(BaseEntity *ent)
 	ent->isSelected = true;
 	selectedEnts.push_back(ent);
 	return 1;
+}
+
+void ObjectManager::deselectObject(BaseEntity *ent)
+{
+	// FIXME: this function doesn't work?
+
+	ent->isSelected = false;
+	selectedEnts.erase(std::remove(selectedEnts.begin(), selectedEnts.end(), ent), selectedEnts.end());
+
+	logger::INFO("deselected entity" + std::to_string(ent->id));
 }

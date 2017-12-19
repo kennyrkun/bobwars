@@ -18,14 +18,14 @@ GamePlayState::GamePlayState(AppEngine2* app_, bool fullscreen, bool vsync)
 	{
 		app->window->setTitle("bobwars " + gameVersion + "-" + engine::version);
 
-//		if (fullscreen)
-//			app->window->create(app->windowDimensions, app->windowTitle, sf::Style::Fullscreen);
+		//		if (fullscreen)
+		//			app->window->create(app->windowDimensions, app->windowTitle, sf::Style::Fullscreen);
 
-//		else
-//			app->window->create(app->windowDimensions, app->windowTitle, sf::Style::Titlebar | sf::Style::Close);
+		//		else
+		//			app->window->create(app->windowDimensions, app->windowTitle, sf::Style::Titlebar | sf::Style::Close);
 
-//		if (vsync)
-//			app->window->setVerticalSyncEnabled(true);
+		//		if (vsync)
+		//			app->window->setVerticalSyncEnabled(true);
 	}
 
 	logger::INFO("Pre-game setup.");
@@ -38,8 +38,8 @@ GamePlayState::GamePlayState(AppEngine2* app_, bool fullscreen, bool vsync)
 	}
 	else
 	{
-		text.setFont(Arial);
-		text.setScale(sf::Vector2f(.2f, .2f));
+		debugText.setFont(Arial);
+		debugText.setScale(sf::Vector2f(.2f, .2f));
 	}
 
 	logger::INFO("Loading world texture...");
@@ -51,8 +51,8 @@ GamePlayState::GamePlayState(AppEngine2* app_, bool fullscreen, bool vsync)
 	world.setTexture(&worldTexture);
 
 	logger::INFO("Preparing user interface elements...");
-	frameCounter.setFont(Arial);
-	frameCounter.setScale(sf::Vector2f(.2f, .2f));
+	debugFrameCounter.setFont(Arial);
+	debugFrameCounter.setScale(sf::Vector2f(.2f, .2f));
 
 	sf::Vector2f screendimensions;
 	screendimensions.x = app->window->getSize().x / 2.0f;
@@ -75,7 +75,7 @@ GamePlayState::~GamePlayState()
 	delete ui;
 
 	delete world.getTexture();
-	delete text.getFont();
+	delete debugText.getFont();
 
 	delete app;
 
@@ -123,7 +123,7 @@ void GamePlayState::HandleEvents()
 				{
 					logger::INFO("Pause has function not yet been implemented.");
 
-//					app->Quit();
+					//					app->Quit();
 				}
 				else if (event.key.code == sf::Keyboard::Key::Space)
 				{
@@ -234,33 +234,42 @@ void GamePlayState::HandleEvents()
 					}
 
 					// if we haven't broken the loop already, it means we either clicked an entity or clicked nothing
-					bool entity_was_selected(false);
+					bool selectedNothing(true);
 					for (size_t i = 0; i < obMan->entities.size(); i++)
 					{
 						if (engine::logic::mouseIsOver(obMan->entities[i]->sprite, *app->window, *mainView))
 						{
+							logger::INFO("mouse is over entity" + std::to_string(obMan->entities[i]->id));
+
 							if (obMan->entities[i]->isSelected)
 							{
-								logger::INFO("entity" + std::to_string(i) + " is already selected");
-								entity_was_selected = false;
+								if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl))
+								{
+									obMan->deselectObject(obMan->entities[i]);
+									selectedNothing = false;
+								}
+								else
+								{
+									logger::INFO("entity" + std::to_string(obMan->entities[i]->id) + " is already selected");
+								}
 							}
 							else
 							{
 								obMan->selectObject(obMan->entities[i]);
 
-								logger::INFO("Selected an entity. (" + std::to_string(obMan->entities[i]->id) + ")");
-								entity_was_selected = true;
+								logger::INFO("selected entity" + std::to_string(obMan->entities[i]->id));
 								ui->delete_ent_button.enable();
+
+								selectedNothing = false;
 							}
+
+							break;
 						}
 					} // what entity did we click
 
-					if (entity_was_selected)
-						break;
-
-					if (!entity_was_selected && (!obMan->selectedEnts.empty())) // selected nothing and didn't already have nothing
+					if (selectedNothing && !obMan->selectedEnts.empty()) // selected nothing and didn't already have nothing
 					{
-						obMan->selectedEnts.clear();
+						obMan->clearSelected();
 						ui->delete_ent_button.disable();
 
 						logger::INFO("All entities deselected");
@@ -276,7 +285,7 @@ void GamePlayState::HandleEvents()
 
 						if (!world.getGlobalBounds().contains(movePos))
 						{
-							logger::ERROR("Move target out of bounds!");
+							logger::ERROR("Cannot move target out of bounds!");
 						}
 						else
 						{
@@ -351,8 +360,8 @@ void GamePlayState::HandleEvents()
 			{ //FRAMES PER SECOND
 				float frames_per_second = framesClock.restart().asSeconds();
 
-				frameCounter.setPosition(mainView->getCenter().x - 199, mainView->getCenter().y - 130);
-				frameCounter.setString("FPS: " + std::to_string(static_cast<int>(1.0f / frames_per_second)));
+				debugFrameCounter.setPosition(mainView->getCenter().x - 199, mainView->getCenter().y - 130);
+				debugFrameCounter.setString("FPS: " + std::to_string(static_cast<int>(1.0f / frames_per_second)));
 			}
 		} // app->window.hasFocus()
 
@@ -406,7 +415,7 @@ void GamePlayState::Draw()
 			{
 				showObjectCoords(obMan->entities[i]->sprite);
 				engine::graphics::outline(*app->window, obMan->entities[i]->sprite, 2, sf::Color::Red);
-				engine::text::draw(*app->window, text, std::to_string(obMan->entities[i]->id) + "/" + std::to_string(obMan->entities.size()), sf::Vector2f(obMan->entities[i]->sprite.getPosition().x, obMan->entities[i]->sprite.getPosition().y));
+				engine::text::draw(*app->window, debugText, std::to_string(obMan->entities[i]->id) + "/" + std::to_string(obMan->entities.size()), sf::Vector2f(obMan->entities[i]->sprite.getPosition().x, obMan->entities[i]->sprite.getPosition().y));
 
 				if (obMan->entities[i]->moving)
 				{
@@ -432,10 +441,10 @@ void GamePlayState::Draw()
 	app->window->setView(*viewAnchor);
 
 	ui->Draw();
-//	sf::Vector2f pos;
-//	pos.x = (mainView->getCenter().x - 98.5f);
-//	pos.y = (mainView->getCenter().y - 144.5f);
-//	engine::text::draw(*app->window, text, std::to_string(obMan->entities.size()), pos);
+	//	sf::Vector2f pos;
+	//	pos.x = (mainView->getCenter().x - 98.5f);
+	//	pos.y = (mainView->getCenter().y - 144.5f);
+	//	engine::text::draw(*app->window, text, std::to_string(obMan->entities.size()), pos);
 	ui->unitCounterText.setString(std::to_string(obMan->entities.size()));
 
 	// debug info like coordinates and stuff
@@ -444,9 +453,11 @@ void GamePlayState::Draw()
 		// view coordinates
 		std::string x = "X: " + std::to_string(static_cast<int>(mainView->getCenter().x));
 		std::string y = "Y: " + std::to_string(static_cast<int>(mainView->getCenter().y));
-		engine::text::draw(*app->window, text, x + " " + y, sf::Vector2f(frameCounter.getPosition().x, frameCounter.getPosition().y + 6));
+		engine::text::draw(*app->window, debugText, x + " " + y, sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 6));
+		engine::text::draw(*app->window, debugText, "selectedEntities: " + std::to_string(obMan->selectedEnts.size()), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 12));
+		engine::text::draw(*app->window, debugText, "totalEntities: " + std::to_string(obMan->entities.size()), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 18));
 
-		app->window->draw(frameCounter);
+		app->window->draw(debugFrameCounter);
 	}
 
 	app->window->display();
@@ -466,5 +477,5 @@ void GamePlayState::showObjectCoords(sf::Sprite &object)
 	float y = object.getPosition().y - 5;
 	sf::Vector2f position(x, y);
 
-	engine::text::draw(*app->window, text, coords, position, 34);
+	engine::text::draw(*app->window, debugText, coords, position, 34);
 }
