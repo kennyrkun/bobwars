@@ -173,19 +173,19 @@ namespace loggerv2
 
 // class Loggerv3
 
-Logger3::Logger3(std::string logOutputDir_)
+Logger::Logger(std::string logOutputDir_)
 {
-	logOutputDir = logOutputDir_;
+	outputfile = logOutputDir_;
 
-	std::cout << "Logger created" << std::endl;
+	std::cout << "Logger created (at \"" + outputfile + "\")" << std::endl;
 }
 
-Logger3::~Logger3()
+Logger::~Logger()
 {
 	std::cout << "Logger destroyed" << std::endl;
 }
 
-void Logger3::log(std::string type, std::string message)
+void Logger::log(std::string type, std::string message)
 {
 	message = engine::getTimestamp() + " " + type + ": " + message;
 
@@ -193,7 +193,7 @@ void Logger3::log(std::string type, std::string message)
 	writeLog(message);
 }
 
-void Logger3::info(std::string message)
+void Logger::info(std::string message)
 {
 	message = engine::getTimestamp() + " INFO: " + message;
 
@@ -201,7 +201,7 @@ void Logger3::info(std::string message)
 	writeLog(message);
 }
 
-void Logger3::warn(std::string message)
+void Logger::warn(std::string message)
 {
 	message = engine::getTimestamp() + " WARNING: " + message;
 
@@ -209,7 +209,7 @@ void Logger3::warn(std::string message)
 	writeLog(message);
 }
 
-void Logger3::error(std::string message)
+void Logger::error(std::string message)
 {
 	message = engine::getTimestamp() + " ERROR: " + message;
 
@@ -219,15 +219,18 @@ void Logger3::error(std::string message)
 
 //private
 
-void Logger3::writeLog(const std::string output)
+void Logger::printLog(std::string log)
+{
+	std::cout << log << std::endl;
+}
+
+void Logger::writeLog(const std::string output)
 {
 	std::ofstream log((write_dir), std::ios::app);
 
 	if (log.is_open())
 	{
 		log << output << std::endl;
-
-		log.close();
 
 		if (log.bad())
 		{
@@ -238,4 +241,6 @@ void Logger3::writeLog(const std::string output)
 	{
 		std::cerr << "\n" << "unable to open log file for writing!" << std::endl;
 	}
+
+	log.close();
 }

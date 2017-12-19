@@ -46,20 +46,23 @@ namespace loggerv2
 	void log(std::string type, std::string message, int level);
 }
 
-class Logger3
+class Logger
 {
 public:
-	Logger3(std::string logOutputDir_);
-	~Logger3();
+	Logger(std::string loggerOutputDirectory);
+	~Logger();
 
 	void log(std::string type, std::string message);
 	void info(std::string message);
 	void warn(std::string message);
 	void error(std::string message);
 
+	std::string outputfile = ".//bobwars.log";
+	int loglevel;
+
 private:
+	void printLog(std::string log);
 	void writeLog(std::string monitor);
-	std::string logOutputDir;
 };
 
-#endif /* LOGGER_HPP */
+#endif // !LOGGER_HPP 
