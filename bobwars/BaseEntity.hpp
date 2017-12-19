@@ -5,6 +5,14 @@
 #include <SFML\Graphics.hpp>
 #include <ENGINE\Graphics\Line.hpp>
 
+enum EntType
+{
+	bob,
+	bobSpawn,
+	goog,
+	googSpawn
+};
+
 class BaseEntity
 {
 public:
@@ -15,17 +23,22 @@ public:
 	sf::CircleShape moveDest;
 
 	int id;
+
 	int team;
 	int armor;
 	int hitpoints;
-	bool moving = false;
 
+	bool movable;
+	bool moving = false;
 	void moveTo(const sf::Vector2f &dest);
+
 	void Update();
+
+	EntType type;
 
 private:
 	sf::Vector2f movePos;
 	sf::Texture texture;
 };
 
-#endif // BASE_ENTITY_HPP
+#endif // !BASE_ENTITY_HPP

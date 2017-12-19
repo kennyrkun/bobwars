@@ -11,6 +11,8 @@ BaseEntity::BaseEntity()
 	moveDest.setRadius(5);
 	moveDest.setFillColor(sf::Color::Red);
 	moveDest.setOrigin(sf::Vector2f(moveDest.getLocalBounds().width / 2, moveDest.getLocalBounds().height / 2));
+
+//	type = entityType;
 }
 
 BaseEntity::~BaseEntity()
