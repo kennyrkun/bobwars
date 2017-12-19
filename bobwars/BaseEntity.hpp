@@ -36,6 +36,8 @@ public:
 
 	EntType type;
 
+	bool isSelected;
+
 private:
 	sf::Vector2f movePos;
 	sf::Texture texture;

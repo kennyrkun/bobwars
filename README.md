@@ -19,4 +19,4 @@ The zoom level of the camera can be changed with the middle mouse wheel.
 ## Built With
 * [Simple and Fast Media Library (SFML)](http://www.sfml-dev.org) - The Graphics library used.
 * some bits of the [Create Me Engine](https://github.com/roglew/CreateMeEngine)
-* anyone who had their code copied from StackOverflow (indicated by comments in the source code)
+* anyone who had their code copied from StackOverflow

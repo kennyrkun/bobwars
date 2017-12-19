@@ -3,6 +3,8 @@
 
 #include <string>
 
+//TODO: logger using format of std::cout
+
 namespace logger
 {
 	void INFO(std::string output);

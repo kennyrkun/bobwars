@@ -117,8 +117,6 @@ void GamePlayState::HandleEvents()
 			{
 				app->Quit();
 			}
-
-			//---------------KEYBOARD
 			else if (event.type == sf::Event::EventType::KeyPressed)
 			{
 				if (event.key.code == sf::Keyboard::Key::Escape)
@@ -138,9 +136,13 @@ void GamePlayState::HandleEvents()
 					}
 				}
 				else if (event.key.code == sf::Keyboard::Key::LShift)
+				{
 					baseViewSpeed = 250;
+				}
 				else if (event.key.code == sf::Keyboard::Key::F12)
+				{
 					should_screenshot = true;
+				}
 				else if (event.key.code == sf::Keyboard::Key::Tilde)
 				{
 					app->debugModeActive = !app->debugModeActive;
@@ -149,6 +151,7 @@ void GamePlayState::HandleEvents()
 				}
 				else if (event.key.code == sf::Keyboard::Key::Delete)
 				{
+					//TODO: make this all a function so that it isn't duplicated from the interface, or the keyboard, and both do the same
 					if (!obMan->selectedEnts.empty())
 					{
 						if (obMan->selectedEnts.size() > 1)
@@ -172,15 +175,15 @@ void GamePlayState::HandleEvents()
 
 						if (ui->create_ent_button.disabled && obMan->entities.size() < 100)
 							ui->create_ent_button.enable();
-
-						// TODO: tell us which ones were deleted (e.g. Deleted entities 1-6. or Deleted entities 1, 4, 5, 6, and 7.)
 					}
 				}
 			}
 			else if (event.type == sf::Event::EventType::KeyReleased)
 			{
 				if (event.key.code == sf::Keyboard::Key::LShift)
+				{
 					baseViewSpeed = 500;
+				}
 			}
 			else if (event.type == sf::Event::EventType::MouseButtonPressed)
 			{
@@ -191,29 +194,30 @@ void GamePlayState::HandleEvents()
 						if (obMan->entities.size() >= 100)
 						{
 							logger::INFO("Cannot create anymore units; you have too many.");
-							break;
 						}
 						else
 						{
-							obMan->createObject();
+							obMan->createNewEntity();
 							ui->delete_ent_button.enable();
 
 							if (obMan->entities.size() >= 100)
 							{
 								ui->create_ent_button.disable();
 							}
-
-							break;
 						}
+
+						break; //TODO: do we need this?
 					}
 					else if (engine::logic::mouseIsOver(ui->delete_ent_button.m_shape, *app->window, *viewAnchor) && !obMan->selectedEnts.empty())
 					{
-						// delete the thing
+						//TODO: make this all a function so that it isn't duplicated from the interface, or the keyboard, and both do the same
 						if (obMan->selectedEnts.size() > 1)
 						{
 							for (size_t i = 0; i < obMan->selectedEnts.size(); i++)
 							{
 								obMan->deleteObject(obMan->selectedEnts[i]);
+
+								logger::INFO("deleted entity " + std::to_string(obMan->selectedEnts[i]->id));
 							}
 
 							obMan->clearSelected();
@@ -226,9 +230,7 @@ void GamePlayState::HandleEvents()
 
 						ui->delete_ent_button.disable();
 
-						break;
-
-						// TODO: tell us which ones were deleted (e.g. Deleted entities 1-6. or Deleted entities 1, 4, 5, 6, and 7.)
+						break; //TODO: do we need this?
 					}
 
 					// if we haven't broken the loop already, it means we either clicked an entity or clicked nothing
@@ -237,17 +239,18 @@ void GamePlayState::HandleEvents()
 					{
 						if (engine::logic::mouseIsOver(obMan->entities[i]->sprite, *app->window, *mainView))
 						{
-							if (obMan->selectObject(obMan->entities[i]))
+							if (obMan->entities[i]->isSelected)
 							{
+								logger::INFO("entity" + std::to_string(i) + " is already selected");
+								entity_was_selected = false;
+							}
+							else
+							{
+								obMan->selectObject(obMan->entities[i]);
+
 								logger::INFO("Selected an entity. (" + std::to_string(obMan->entities[i]->id) + ")");
 								entity_was_selected = true;
 								ui->delete_ent_button.enable();
-
-								break;
-							}
-							else // returned 0, meaning it was already seleceted
-							{
-								entity_was_selected = true;
 							}
 						}
 					} // what entity did we click
@@ -257,11 +260,10 @@ void GamePlayState::HandleEvents()
 
 					if (!entity_was_selected && (!obMan->selectedEnts.empty())) // selected nothing and didn't already have nothing
 					{
-						logger::INFO("Entity(s) deselected.");
-
 						obMan->selectedEnts.clear();
-
 						ui->delete_ent_button.disable();
+
+						logger::INFO("All entities deselected");
 						break;
 					}
 				} // left mouse button

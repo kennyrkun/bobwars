@@ -13,7 +13,7 @@ public:
 	std::vector<BaseEntity*> entities;
 	std::vector<BaseEntity*> selectedEnts;
 
-	void createObject();
+	void createNewEntity();
 	void clearSelected();
 
 	void deleteObject(BaseEntity *ent);
