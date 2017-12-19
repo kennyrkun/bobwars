@@ -62,6 +62,8 @@ GamePlayState::GamePlayState(AppEngine2* app_, bool fullscreen, bool vsync)
 
 	ui = new Interface(app->window, viewAnchor, mainView);
 
+	baseViewSpeed = 500;
+
 	logger::INFO("New Game created. (Ready!)");
 }
 
@@ -71,6 +73,9 @@ GamePlayState::~GamePlayState()
 	delete mainView;
 	delete obMan;
 	delete ui;
+
+	delete world.getTexture();
+	delete text.getFont();
 
 	delete app;
 
@@ -106,6 +111,8 @@ void GamePlayState::HandleEvents()
 		sf::Event event;
 		while (app->window->pollEvent(event))
 		{
+			app->events.push_back(event);
+
 			if (event.type == sf::Event::EventType::Closed)
 			{
 				app->Quit();
@@ -120,8 +127,7 @@ void GamePlayState::HandleEvents()
 
 //					app->Quit();
 				}
-
-				if (event.key.code == sf::Keyboard::Key::Space)
+				else if (event.key.code == sf::Keyboard::Key::Space)
 				{
 					if (!obMan->selectedEnts.empty())
 					{
@@ -131,30 +137,27 @@ void GamePlayState::HandleEvents()
 						viewAnchor->setCenter(obMan->selectedEnts[0]->sprite.getPosition());
 					}
 				}
-
-				if (event.key.code == sf::Keyboard::Key::LShift)
+				else if (event.key.code == sf::Keyboard::Key::LShift)
 					baseViewSpeed = 250;
-
-				if (event.key.code == sf::Keyboard::Key::F12)
+				else if (event.key.code == sf::Keyboard::Key::F12)
 					should_screenshot = true;
-
-				if (event.key.code == sf::Keyboard::Key::Tilde)
+				else if (event.key.code == sf::Keyboard::Key::Tilde)
 				{
 					app->debugModeActive = !app->debugModeActive;
 
 					logger::INFO("cl_debug set to " + std::to_string(app->debugModeActive));
 				}
-
-				if (event.key.code == sf::Keyboard::Key::Delete)
+				else if (event.key.code == sf::Keyboard::Key::Delete)
 				{
 					if (!obMan->selectedEnts.empty())
 					{
-						// delete the thing
 						if (obMan->selectedEnts.size() > 1)
 						{
 							for (size_t i = 0; i < obMan->selectedEnts.size(); i++)
 							{
 								obMan->deleteObject(obMan->selectedEnts[i]);
+
+								logger::INFO("deleted entity " + std::to_string(obMan->selectedEnts[i]->id));
 							}
 
 							obMan->clearSelected();
@@ -174,19 +177,16 @@ void GamePlayState::HandleEvents()
 					}
 				}
 			}
-
 			else if (event.type == sf::Event::EventType::KeyReleased)
 			{
 				if (event.key.code == sf::Keyboard::Key::LShift)
 					baseViewSpeed = 500;
 			}
-
-			//---------------MOUSE
 			else if (event.type == sf::Event::EventType::MouseButtonPressed)
 			{
 				if (event.key.code == sf::Mouse::Button::Left)
 				{
-					if (engine::logic::mouseIsOver(ui->create_ent_button.m_shape, *app->window, *viewAnchor))
+					if (engine::logic::mouseIsOver(ui->create_ent_button.m_shape, *app->window, *viewAnchor)) // create new entity
 					{
 						if (obMan->entities.size() >= 100)
 						{

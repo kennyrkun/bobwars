@@ -13,6 +13,8 @@ struct LaunchOptions
 {
 	bool fullscreen = false;
 	bool vsync = false;
+	bool debug = false;
+	bool console = false;
 	int fps    = 60;
 	int width  = 800;
 	int height = 600;
@@ -40,6 +42,8 @@ public:
 	bool debugModeActive = false;
 
 	std::vector<AppState2*> states;
+
+	std::vector<sf::Event> events;
 
 	ResourceManager* resMan;
 
