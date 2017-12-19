@@ -9,6 +9,7 @@ BaseEntity::BaseEntity()
 	sprite.setOrigin(sf::Vector2f(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2));
 
 	moveDest.setRadius(5);
+	moveDest.setPointCount(8);
 	moveDest.setFillColor(sf::Color::Red);
 	moveDest.setOrigin(sf::Vector2f(moveDest.getLocalBounds().width / 2, moveDest.getLocalBounds().height / 2));
 

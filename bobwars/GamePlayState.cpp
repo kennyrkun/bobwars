@@ -272,6 +272,9 @@ void GamePlayState::HandleEvents()
 							}
 							else
 							{
+								if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl))
+									obMan->deselectAllObjects();
+
 								obMan->selectObject(obMan->entities[i]);
 
 								logger::INFO("selected entity" + std::to_string(obMan->entities[i]->id));
