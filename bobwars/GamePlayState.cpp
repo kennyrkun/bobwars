@@ -177,6 +177,23 @@ void GamePlayState::HandleEvents()
 							ui->create_ent_button.enable();
 					}
 				}
+				else if (event.key.code == sf::Keyboard::Key::LControl || event.key.code == sf::Keyboard::Key::A)
+				{
+					//TODO: this probably isn't the best way to handle key combinations
+
+					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl) && sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
+					{
+						for (size_t i = 0; i < obMan->entities.size(); i++)
+						{
+							obMan->entities[i]->isSelected = true;
+							obMan->selectedEnts.push_back(obMan->entities[i]);
+
+							logger::INFO("selected entity" + std::to_string(obMan->entities[i]->id));
+						}
+
+						logger::INFO("selected all entities");
+					}
+				}
 			}
 			else if (event.type == sf::Event::EventType::KeyReleased)
 			{
@@ -297,7 +314,6 @@ void GamePlayState::HandleEvents()
 					}
 				}
 			} // mouseButtonPressed
-
 			else if (event.type == sf::Event::EventType::MouseWheelMoved)
 			{
 				static float zoomlevel = 2.0f;
