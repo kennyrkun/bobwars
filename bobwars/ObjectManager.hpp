@@ -13,12 +13,12 @@ public:
 	std::vector<BaseEntity*> entities;
 	std::vector<BaseEntity*> selectedEnts;
 
-	void createNewEntity();
-	void clearSelected();
-
+	void createNewObject();
 	void deleteObject(BaseEntity *ent);
+
 	int selectObject(BaseEntity *ent);
 	void deselectObject(BaseEntity *ent);
+	void deselectAllObjects();
 	// add selected bool to entity, check if it's selected without looping.
 
 private:

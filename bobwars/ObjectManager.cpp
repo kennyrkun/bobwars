@@ -13,7 +13,7 @@ ObjectManager::~ObjectManager()
 	logger::SILENT("DEBUG", "ObjectManager deconstructed.");
 }
 
-void ObjectManager::createNewEntity()
+void ObjectManager::createNewObject()
 {
 	BaseEntity *newEnt = new BaseEntity();
 	newEnt->id = entities.size() + 1;
@@ -25,7 +25,7 @@ void ObjectManager::createNewEntity()
 	logger::INFO("creating new entity (" + std::to_string(newEnt->id) + ")");
 }
 
-void ObjectManager::clearSelected()
+void ObjectManager::deselectAllObjects()
 {
 	logger::INFO("selectedEntities: " + std::to_string(selectedEnts.size()));
 

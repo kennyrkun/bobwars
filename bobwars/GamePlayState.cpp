@@ -123,7 +123,7 @@ void GamePlayState::HandleEvents()
 				{
 					logger::INFO("Pause has function not yet been implemented.");
 
-					//					app->Quit();
+//					app->Quit();
 				}
 				else if (event.key.code == sf::Keyboard::Key::Space)
 				{
@@ -163,12 +163,12 @@ void GamePlayState::HandleEvents()
 								logger::INFO("deleted entity " + std::to_string(obMan->selectedEnts[i]->id));
 							}
 
-							obMan->clearSelected();
+							obMan->deselectAllObjects();
 						}
 						else
 						{
 							obMan->deleteObject(obMan->selectedEnts.front());
-							obMan->clearSelected();
+							obMan->deselectAllObjects();
 						}
 
 						ui->delete_ent_button.disable();
@@ -214,7 +214,7 @@ void GamePlayState::HandleEvents()
 						}
 						else
 						{
-							obMan->createNewEntity();
+							obMan->createNewObject();
 							ui->delete_ent_button.enable();
 
 							if (obMan->entities.size() >= 100)
@@ -237,12 +237,12 @@ void GamePlayState::HandleEvents()
 								logger::INFO("deleted entity " + std::to_string(obMan->selectedEnts[i]->id));
 							}
 
-							obMan->clearSelected();
+							obMan->deselectAllObjects();
 						}
 						else
 						{
 							obMan->deleteObject(obMan->selectedEnts.front());
-							obMan->clearSelected();
+							obMan->deselectAllObjects();
 						}
 
 						ui->delete_ent_button.disable();
@@ -286,7 +286,7 @@ void GamePlayState::HandleEvents()
 
 					if (selectedNothing && !obMan->selectedEnts.empty()) // selected nothing and didn't already have nothing
 					{
-						obMan->clearSelected();
+						obMan->deselectAllObjects();
 						ui->delete_ent_button.disable();
 
 						logger::INFO("All entities deselected");
