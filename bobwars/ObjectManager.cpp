@@ -27,8 +27,6 @@ void ObjectManager::createNewObject()
 
 void ObjectManager::deselectAllObjects()
 {
-	logger::INFO("selectedEntities: " + std::to_string(selectedEnts.size()));
-
 	for (size_t i = 0; i < selectedEnts.size(); i++)
 	{
 		logger::INFO("deselecting entity" + std::to_string(selectedEnts[i]->id));
@@ -36,8 +34,6 @@ void ObjectManager::deselectAllObjects()
 		//delesectEnt(selectedEnts[i]); // broken
 		selectedEnts[i]->isSelected = false;
 	}
-
-	logger::INFO("selectedEntities: " + std::to_string(selectedEnts.size()));
 
 	selectedEnts.clear();
 }

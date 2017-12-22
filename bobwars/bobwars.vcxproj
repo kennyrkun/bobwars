@@ -24,18 +24,20 @@
     <ClInclude Include="..\engine\ENGINE\Graphics\Line.hpp" />
     <ClInclude Include="..\engine\ENGINE\Graphics\Text.hpp" />
     <ClInclude Include="..\engine\ENGINE\Logger.hpp" />
+    <ClInclude Include="AppEngine.hpp" />
+    <ClInclude Include="AppState.hpp" />
     <ClInclude Include="BaseEntity.hpp" />
     <ClInclude Include="Button.hpp" />
+    <ClInclude Include="GameCreationState.hpp" />
+    <ClInclude Include="GamePauseState.hpp" />
     <ClInclude Include="GamePlayState.hpp" />
     <ClInclude Include="MainMenuState.hpp" />
     <ClInclude Include="ResourceManager.hpp" />
-    <ClInclude Include="StateBase.hpp" />
     <ClInclude Include="Interface.hpp" />
     <ClInclude Include="ObjectManager.hpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="StateMachine.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\engine\ENGINE\Engine.cpp" />
@@ -43,8 +45,11 @@
     <ClCompile Include="..\engine\ENGINE\Graphics\Line.cpp" />
     <ClCompile Include="..\engine\ENGINE\Graphics\Text.cpp" />
     <ClCompile Include="..\engine\ENGINE\Logger.cpp" />
+    <ClCompile Include="AppEngine.cpp" />
     <ClCompile Include="BaseEntity.cpp" />
     <ClCompile Include="Button.cpp" />
+    <ClCompile Include="GameCreationState.cpp" />
+    <ClCompile Include="GamePauseState.cpp" />
     <ClCompile Include="GamePlayState.cpp" />
     <ClCompile Include="Interface.cpp" />
     <ClCompile Include="MainMenuState.cpp" />
@@ -54,7 +59,6 @@
     </ClCompile>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
-    <ClCompile Include="StateMachine.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{4AED59B2-9B61-4406-9C63-102E3343A182}</ProjectGuid>

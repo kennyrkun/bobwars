@@ -4,8 +4,12 @@
 
 // public:
 
-MainMenuState::MainMenuState(AppEngine2* app_)
+MainMenuState MainMenuState::MainMenuState_dontfuckwithme;
+
+void MainMenuState::Init(AppEngine* app_)
 {
+	logger::INFO("MainMenuState Init...");
+
 	app = app_;
 
 	app->resMan->loadTexture("title_screen_logo", ".\\resource\\textures\\logo.png");
@@ -34,25 +38,26 @@ MainMenuState::MainMenuState(AppEngine2* app_)
 	exitButton.setSizeMultiplier(2);
 	exitButton.setPosition(sf::Vector2f(app->window->getDefaultView().getCenter().x, settingsButton.m_shape.getPosition().y + 50));
 
-	logger::INFO("title screen state created");
+	logger::INFO("MainMenuState ready");
 }
 
-MainMenuState::~MainMenuState()
+void MainMenuState::Cleanup()
 {
-	app->resMan->freeTexture("title_screen_logo");
-	delete app;
+	logger::INFO("MainMenuState cleaning up");
 
-	std::cout << "menu gone" << std::endl;
+	app->resMan->freeTexture("title_screen_logo");
+
+	logger::INFO("MainMenuState cleaned up");
 }
 
 void MainMenuState::Pause()
 {
-
+	logger::INFO("MainMenuState paused");
 }
 
 void MainMenuState::Resume()
 {
-
+	logger::INFO("MainMenuState resumed");
 }
 
 void MainMenuState::HandleEvents()
@@ -70,8 +75,7 @@ void MainMenuState::HandleEvents()
 			{
 				logger::INFO("Starting a new game...");
 
-				GamePlayState* game = new GamePlayState(this->app, false, false);
-				app->ChangeState(game);
+				app->PushState(GamePlayState::Instance());
 			}
 			else if (mouseIsOver(loadButton.m_shape))
 			{

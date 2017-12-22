@@ -1,8 +1,8 @@
 #ifndef GAME_HPP
 #define GAME_HPP
 
-#include "StateMachine.hpp"
-#include "StateBase.hpp"
+#include "AppEngine.hpp"
+#include "AppState.hpp"
 
 #include <SFML\Graphics.hpp>
 #include <SFML\System\Vector2.hpp>
@@ -12,11 +12,11 @@ class Button;
 class ObjectManager;
 class Interface;
 
-class GamePlayState : public AppState2
+class GamePlayState : public AppState
 {
 public:
-	GamePlayState(AppEngine2* app_, bool fullscreen, bool vsync);
-	~GamePlayState();
+	void Init(AppEngine* app_);
+	void Cleanup();
 
 	void Pause();
 	void Resume();
@@ -25,13 +25,19 @@ public:
 	void Update();
 	void Draw();
 
+	static GamePlayState* Instance()
+	{
+		return &GamePlayState_dontfuckwithme;
+	}
+
 	std::string gameVersion = "0.8.0";
 //	sf::RenderWindow *app->window;
 	sf::Time timePerFrame; // 60 frames per second
 	sf::Time timeSinceLastUpdate;
 
 private:
-	AppEngine2* app;
+	static GamePlayState GamePlayState_dontfuckwithme;
+	AppEngine* app;
 
 	ObjectManager *obMan;
 	Interface *ui;

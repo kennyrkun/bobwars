@@ -51,12 +51,6 @@
     <ClInclude Include="GamePlayState.hpp">
       <Filter>BOBWARS\Systems\GameStates</Filter>
     </ClInclude>
-    <ClInclude Include="StateMachine.hpp">
-      <Filter>BOBWARS\Systems\GameStates\Manager &amp; Base</Filter>
-    </ClInclude>
-    <ClInclude Include="StateBase.hpp">
-      <Filter>BOBWARS\Systems\GameStates\Manager &amp; Base</Filter>
-    </ClInclude>
     <ClInclude Include="MainMenuState.hpp">
       <Filter>BOBWARS\Systems\GameStates</Filter>
     </ClInclude>
@@ -69,6 +63,16 @@
     <ClInclude Include="Button.hpp">
       <Filter>BOBWARS\Systems\Graphical</Filter>
     </ClInclude>
+    <ClInclude Include="AppState.hpp">
+      <Filter>BOBWARS\Systems\GameStates\Manager &amp; Base</Filter>
+    </ClInclude>
+    <ClInclude Include="AppEngine.hpp">
+      <Filter>BOBWARS\Systems\GameStates\Manager &amp; Base</Filter>
+    </ClInclude>
+    <ClInclude Include="GameCreationState.hpp">
+      <Filter>BOBWARS\Systems\GameStates</Filter>
+    </ClInclude>
+    <ClInclude Include="GamePauseState.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseEntity.cpp">
@@ -98,9 +102,6 @@
     <ClCompile Include="GamePlayState.cpp">
       <Filter>BOBWARS\Systems\GameStates</Filter>
     </ClCompile>
-    <ClCompile Include="StateMachine.cpp">
-      <Filter>BOBWARS\Systems\GameStates\Manager &amp; Base</Filter>
-    </ClCompile>
     <ClCompile Include="ObjectManager.cpp">
       <Filter>BOBWARS\Systems</Filter>
     </ClCompile>
@@ -113,5 +114,12 @@
     <ClCompile Include="Button.cpp">
       <Filter>BOBWARS\Systems\Graphical</Filter>
     </ClCompile>
+    <ClCompile Include="AppEngine.cpp">
+      <Filter>BOBWARS\Systems\GameStates\Manager &amp; Base</Filter>
+    </ClCompile>
+    <ClCompile Include="GameCreationState.cpp">
+      <Filter>BOBWARS\Systems\GameStates</Filter>
+    </ClCompile>
+    <ClCompile Include="GamePauseState.cpp" />
   </ItemGroup>
 </Project>

@@ -1,6 +1,7 @@
-#include "GamePlayState.hpp"
+#include "AppEngine.hpp"
 #include "MainMenuState.hpp"
-#include "StateMachine.hpp"
+
+#include "ENGINE\Logger.hpp"
 
 #include <iostream>
 
@@ -11,7 +12,7 @@ int main(int argc, char *argv[])
 	for (int i = 0; i < argc; i++)
 		std::cout << i << ": " << argv[i] << std::endl;
 
-	LaunchOptions options;
+	AppSettings options;
 
 	int fpsLimit(60); // default 60
 
@@ -32,19 +33,22 @@ int main(int argc, char *argv[])
 
 	logger::BREAK();
 
-	AppEngine2* appEngine = new AppEngine2("bobwars", options);
+	AppEngine app;
+	app.Init("bobwars", options);
 
-	MainMenuState* mainMenuState = new MainMenuState(appEngine);
-	appEngine->ChangeState(mainMenuState);
+	app.PushState(MainMenuState::Instance());
 
-	while (appEngine->Running())
+//	AppEngine2* appEngine = new AppEngine2("bobwars", options);
+
+//	MainMenuState* mainMenuState = new MainMenuState(appEngine);
+//	appEngine->ChangeState(mainMenuState);
+
+	while (app.Running())
 	{
-		appEngine->HandleEvents();
-		appEngine->Update();
-		appEngine->Draw();
+		app.HandleEvents();
+		app.Update();
+		app.Draw();
 	}
-
-	delete appEngine;
 
 	logger::INFO("Exiting...");
 	return EXIT_SUCCESS;

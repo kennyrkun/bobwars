@@ -1,4 +1,5 @@
 #include "GamePlayState.hpp"
+#include "GamePauseState.hpp"
 
 #include "Interface.hpp"
 #include "ObjectManager.hpp"
@@ -9,23 +10,25 @@
 #include <ENGINE\Graphics\Graphics.hpp>
 #include <ENGINE\Graphics\Text.hpp>
 
-GamePlayState::GamePlayState(AppEngine2* app_, bool fullscreen, bool vsync)
+GamePlayState GamePlayState::GamePlayState_dontfuckwithme;
+
+void GamePlayState::Init(AppEngine* app_)
 {
 	app = app_;
 
-	logger::INFO("Initialising...");
+	logger::INFO("GamePlayState Init...");
 
 	{
 		app->window->setTitle("bobwars " + gameVersion + "-" + engine::version);
 
-		//		if (fullscreen)
-		//			app->window->create(app->windowDimensions, app->windowTitle, sf::Style::Fullscreen);
+//		if (fullscreen)
+//			app->window->create(app->windowDimensions, app->windowTitle, sf::Style::Fullscreen);
 
-		//		else
-		//			app->window->create(app->windowDimensions, app->windowTitle, sf::Style::Titlebar | sf::Style::Close);
+//		else
+//			app->window->create(app->windowDimensions, app->windowTitle, sf::Style::Titlebar | sf::Style::Close);
 
-		//		if (vsync)
-		//			app->window->setVerticalSyncEnabled(true);
+//		if (vsync)
+//			app->window->setVerticalSyncEnabled(true);
 	}
 
 	logger::INFO("Pre-game setup.");
@@ -64,34 +67,35 @@ GamePlayState::GamePlayState(AppEngine2* app_, bool fullscreen, bool vsync)
 
 	baseViewSpeed = 500;
 
-	logger::INFO("New Game created. (Ready!)");
+	logger::INFO("GamePlayState ready!");
 }
 
-GamePlayState::~GamePlayState()
+void GamePlayState::Cleanup()
 {
+	logger::INFO("GamePlayState cleaning up");
+
+	app->window->setView(app->window->getDefaultView());
+
 	delete viewAnchor;
 	delete mainView;
 	delete obMan;
 	delete ui;
 
-	delete world.getTexture();
-	delete debugText.getFont();
-
-	delete app;
-
-	logger::INFO("Game destroyed.");
+	logger::INFO("GamePlayState cleaned up");
 }
 
 // Public
 
 void GamePlayState::Pause()
 {
-	logger::INFO("game paused");
+	app->window->setView(app->window->getDefaultView());
+
+	logger::INFO("GamePlayState paused");
 }
 
 void GamePlayState::Resume()
 {
-	logger::INFO("game resumed");
+	logger::INFO("GamePlayState resumed");
 }
 
 void GamePlayState::HandleEvents()
@@ -104,7 +108,7 @@ void GamePlayState::HandleEvents()
 
 	bool should_screenshot(false);
 
-	while (timeSinceLastUpdate >= timePerFrame)
+//	while (timeSinceLastUpdate >= timePerFrame)
 	{
 		timeSinceLastUpdate -= timePerFrame;
 
@@ -121,9 +125,7 @@ void GamePlayState::HandleEvents()
 			{
 				if (event.key.code == sf::Keyboard::Key::Escape)
 				{
-					logger::INFO("Pause has function not yet been implemented.");
-
-//					app->Quit();
+					app->PushState(GamePauseState::Instance());
 				}
 				else if (event.key.code == sf::Keyboard::Key::Space)
 				{
@@ -214,6 +216,7 @@ void GamePlayState::HandleEvents()
 						}
 						else
 						{
+							obMan->deselectAllObjects();
 							obMan->createNewObject();
 							ui->delete_ent_button.enable();
 
@@ -386,8 +389,6 @@ void GamePlayState::HandleEvents()
 
 		viewAnchor->setCenter(mainView->getCenter());
 
-		Update();
-
 		if (should_screenshot)
 		{
 			engine::screenshot(*app->window);
@@ -396,10 +397,6 @@ void GamePlayState::HandleEvents()
 			app->window->display();
 
 			should_screenshot = false;
-		}
-		else
-		{
-			Draw();
 		}
 	}
 }
@@ -438,10 +435,23 @@ void GamePlayState::Draw()
 
 				if (obMan->entities[i]->moving)
 				{
-					app->window->draw(obMan->entities[i]->moveDest);
-
 					static Line line;
+
+					if (obMan->entities[i]->isSelected)
+					{
+						obMan->entities[i]->moveDest.setFillColor(sf::Color::Yellow);
+						line.setColor(sf::Color::Yellow);
+					}
+					else
+					{
+						line.setColor(sf::Color::Red);
+						obMan->entities[i]->moveDest.setFillColor(sf::Color::Red);
+					}
+
+					app->window->draw(obMan->entities[i]->moveDest);
 					line.setPoints(obMan->entities[i]->sprite.getPosition(), obMan->entities[i]->moveDest.getPosition());
+
+
 					app->window->draw(line.vertices, 4, sf::Quads);
 				}
 			}

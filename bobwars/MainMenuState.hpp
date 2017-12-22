@@ -6,14 +6,14 @@
 #include <SFUI\TextButton.hpp>
 #include "ResourceManager.hpp"
 
-#include "StateMachine.hpp"
-#include "StateBase.hpp"
+#include "AppEngine.hpp"
+#include "AppState.hpp"
 
-class MainMenuState : public AppState2
+class MainMenuState : public AppState
 {
 public:
-	MainMenuState(AppEngine2* app_);
-	~MainMenuState();
+	void Init(AppEngine* app_);
+	void Cleanup();
 
 	void Pause();
 	void Resume();
@@ -22,8 +22,14 @@ public:
 	void Update();
 	void Draw();
 
+	static MainMenuState* Instance()
+	{
+		return &MainMenuState_dontfuckwithme;
+	}
+
 private:
-	AppEngine2* app;
+	static MainMenuState MainMenuState_dontfuckwithme;
+	AppEngine* app;
 
 	bool mouseIsOver(sf::Shape &object);
 
