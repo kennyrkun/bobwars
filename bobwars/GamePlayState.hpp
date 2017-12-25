@@ -30,7 +30,7 @@ public:
 		return &GamePlayState_dontfuckwithme;
 	}
 
-	std::string gameVersion = "0.8.0";
+	std::string gameVersion = "0.8.2";
 //	sf::RenderWindow *app->window;
 	sf::Time timePerFrame; // 60 frames per second
 	sf::Time timeSinceLastUpdate;
