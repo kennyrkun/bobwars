@@ -32,6 +32,7 @@
     <ClInclude Include="GamePauseState.hpp" />
     <ClInclude Include="GamePlayState.hpp" />
     <ClInclude Include="MainMenuState.hpp" />
+    <ClInclude Include="Menu.hpp" />
     <ClInclude Include="ResourceManager.hpp" />
     <ClInclude Include="Interface.hpp" />
     <ClInclude Include="ObjectManager.hpp">
@@ -58,6 +59,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

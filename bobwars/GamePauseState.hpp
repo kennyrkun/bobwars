@@ -3,6 +3,8 @@
 
 #include "AppState.hpp"
 
+#include "Menu.hpp"
+
 class GamePauseState : public AppState
 {
 public:
@@ -33,6 +35,8 @@ private:
 
 	sf::Font *font;
 	sf::Text text;
+
+	Menu* pauseMenu;
 };
 
 #endif // !GAME_PAUSE_STATE

@@ -27,6 +27,25 @@ void GamePauseState::Init(AppEngine* app_)
 	font->loadFromFile("C:\\Windows\\Fonts\\Arial.ttf");
 	text.setFont(*font);
 
+	std::vector<SFUI::TextButton*> buttons;
+
+	SFUI::TextButton* continueButton = new SFUI::TextButton("Continue");
+	continueButton->setSizeMultiplier(2);
+	SFUI::TextButton* saveButton = new SFUI::TextButton("Save Game");
+	saveButton->setSizeMultiplier(2);
+	saveButton->disable();
+	SFUI::TextButton* optionsButton = new SFUI::TextButton("Options");
+	optionsButton->setSizeMultiplier(2);
+	optionsButton->disable();
+	SFUI::TextButton* exitButton = new SFUI::TextButton("Exit");
+	exitButton->setSizeMultiplier(2);
+	buttons.push_back(continueButton);
+	buttons.push_back(saveButton);
+	buttons.push_back(optionsButton);
+	buttons.push_back(exitButton);
+
+	pauseMenu = new Menu(app->window, "Pause", buttons);
+
 	logger::INFO("GamePauseState ready.");
 }
 
@@ -35,6 +54,7 @@ void GamePauseState::Cleanup()
 	logger::INFO("GamePauseState Cleaningup");
 
 	delete font;
+	delete pauseMenu;
 
 	logger::INFO("GamePauseState Cleanedup");
 }
@@ -66,6 +86,8 @@ void GamePauseState::HandleEvents()
 			}
 		}
 	}
+
+	pauseMenu->HandleEvents(event);
 }
 
 void GamePauseState::Update()
@@ -79,6 +101,8 @@ void GamePauseState::Draw()
 	app->window->draw(background);
 
 	engine::text::draw(*app->window, text, "game paused", app->window->getDefaultView().getCenter());
+
+	pauseMenu->Draw();
 
 	app->window->display();
 }

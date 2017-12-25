@@ -8,7 +8,7 @@
 
 namespace engine
 {
-	std::string const version("1.2.1");
+	std::string const version("1.2.2");
 
 	namespace logic
 	{
@@ -23,6 +23,14 @@ namespace engine
 		bool mouseIsOver(sf::Sprite &object, sf::RenderWindow &window, sf::View &view)
 		{
 			if (object.getGlobalBounds().contains(window.mapPixelToCoords(sf::Mouse::getPosition(window), view)))
+				return true;
+			else
+				return false;
+		}
+
+		bool mouseIsOver(sf::Sprite &object, sf::RenderWindow &window)
+		{
+			if (object.getGlobalBounds().contains(window.mapPixelToCoords(sf::Mouse::getPosition(window))))
 				return true;
 			else
 				return false;

@@ -72,7 +72,12 @@
     <ClInclude Include="GameCreationState.hpp">
       <Filter>BOBWARS\Systems\GameStates</Filter>
     </ClInclude>
-    <ClInclude Include="GamePauseState.hpp" />
+    <ClInclude Include="GamePauseState.hpp">
+      <Filter>BOBWARS\Systems\GameStates</Filter>
+    </ClInclude>
+    <ClInclude Include="Menu.hpp">
+      <Filter>BOBWARS\Systems\Graphical</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseEntity.cpp">
@@ -120,6 +125,11 @@
     <ClCompile Include="GameCreationState.cpp">
       <Filter>BOBWARS\Systems\GameStates</Filter>
     </ClCompile>
-    <ClCompile Include="GamePauseState.cpp" />
+    <ClCompile Include="Menu.cpp">
+      <Filter>BOBWARS\Systems\Graphical</Filter>
+    </ClCompile>
+    <ClCompile Include="GamePauseState.cpp">
+      <Filter>BOBWARS\Systems\GameStates</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
