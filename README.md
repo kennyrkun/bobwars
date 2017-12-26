@@ -15,26 +15,26 @@ While in the game, the WASD are used to control the main view, and the arrow key
 #### Controls
 
 ##### General
-<kbd>Escape</kbd> - Pause game
-<kbd>MouseWheel</kbd> - Change player camera zoom level by 2.0f (+/-)
-<kbd>Left Shift</kbd> - Speed up player camera by 250u/s
+<kbd>Escape</kbd> - Pause game<br>
+<kbd>MouseWheel</kbd> - Change player camera zoom level by 2.0f (+/-)<br>
+<kbd>Left Shift</kbd> - Speed up player camera by 250u/s<br>
 
 ##### Units
-<kbd>LMB</kbd> - Selects unit
-<kbd>Ctrl</kbd> + <kbd>LMB</kbd> - Adds unit to group of already selected units.
-<kbd>RMB</kbd> (Unit) - Set unit movement destination.
-<kbd>RMB</kbd> (Building) - Set unit rally point.
-<kbd>Del</kbd> - Deletes selected unit(s).
+<kbd>LMB</kbd> - Selects unit<br>
+<kbd>Ctrl</kbd> + <kbd>LMB</kbd> - Adds unit to group of already selected units.<br>
+<kbd>RMB</kbd> (Unit) - Set unit movement destination.<br>
+<kbd>RMB</kbd> (Building) - Set unit rally point.<br>
+<kbd>Del</kbd> - Deletes selected unit(s).<br>
 
 The speed of the camera can be changed by holding down the Left-Shift Key.  
 The zoom level of the camera can be changed with the middle mouse wheel.
 
 ##### Debug
-<kbd>~</kbd> or <kbd>`</kbd> - Toggle debug mode
-<kbd>W</kbd>
-<kbd>A</kbd>
-<kbd>S</kbd>
-<kbd>D</kbd>
+<kbd>~</kbd> or <kbd>`</kbd> - Toggle debug mode<br>
+<kbd>W</kbd>Unit up, if in debug.<br>
+<kbd>A</kbd>Unit left, if in debug.<br>
+<kbd>S</kbd>Unit down, if in debug.<br>
+<kbd>D</kbd>Unit right, if in debug.<br>
 
 ---
 
