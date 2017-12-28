@@ -1,11 +1,11 @@
 #include "ObjectManager.hpp"
 
-ObjectManager::ObjectManager()
+EntityManager::EntityManager()
 {
 	logger::SILENT("DEBUG", "ObjectManager constructed.");
 }
 
-ObjectManager::~ObjectManager()
+EntityManager::~EntityManager()
 {
 	for (size_t i = 0; i < entities.size(); i++)
 		delete entities[i];
@@ -13,7 +13,7 @@ ObjectManager::~ObjectManager()
 	logger::SILENT("DEBUG", "ObjectManager deconstructed.");
 }
 
-void ObjectManager::createNewObject()
+void EntityManager::newEnt()
 {
 	BaseEntity *newEnt = new BaseEntity();
 	newEnt->id = entities.size() + 1;
@@ -25,7 +25,7 @@ void ObjectManager::createNewObject()
 	logger::INFO("creating new entity (" + std::to_string(newEnt->id) + ")");
 }
 
-void ObjectManager::deselectAllObjects()
+void EntityManager::deselectAllEnts()
 {
 	for (size_t i = 0; i < selectedEnts.size(); i++)
 	{
@@ -38,7 +38,7 @@ void ObjectManager::deselectAllObjects()
 	selectedEnts.clear();
 }
 
-void ObjectManager::deleteObject(BaseEntity *ent)
+void EntityManager::deleteEnt(BaseEntity *ent)
 {
 	for (size_t i = 0; i < entities.size(); i++)
 	{
@@ -52,7 +52,7 @@ void ObjectManager::deleteObject(BaseEntity *ent)
 	}
 }
 
-int ObjectManager::selectObject(BaseEntity *ent)
+int EntityManager::selectEnt(BaseEntity *ent)
 {
 	//TODO: should this be here, or in the event loop?
 
@@ -73,7 +73,7 @@ int ObjectManager::selectObject(BaseEntity *ent)
 	return 1;
 }
 
-void ObjectManager::deselectObject(BaseEntity *ent)
+void EntityManager::deselectEnt(BaseEntity *ent)
 {
 	// FIXME: this function doesn't work?
 
