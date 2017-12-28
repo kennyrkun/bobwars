@@ -11,6 +11,8 @@ class AppState;
 
 struct AppSettings
 {
+	std::string title = "bobwars " + version;
+	std::string version = "0.9.0";
 	bool fullscreen = false;
 	bool vsync = true;
 	bool debug = false;

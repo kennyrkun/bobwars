@@ -2,8 +2,7 @@
 #include "GamePauseState.hpp"
 
 #include "Interface.hpp"
-#include "ObjectManager.hpp"
-//#include "Button.hpp"
+#include "EntityManager.hpp"
 
 #include <ENGINE\Engine.hpp>
 #include <ENGINE\Logger.hpp>
@@ -18,22 +17,9 @@ void GamePlayState::Init(AppEngine* app_)
 
 	logger::INFO("GamePlayState Init...");
 
-	{
-		app->window->setTitle("bobwars " + gameVersion + "-" + engine::version);
-
-//		if (fullscreen)
-//			app->window->create(app->windowDimensions, app->windowTitle, sf::Style::Fullscreen);
-
-//		else
-//			app->window->create(app->windowDimensions, app->windowTitle, sf::Style::Titlebar | sf::Style::Close);
-
-//		if (vsync)
-//			app->window->setVerticalSyncEnabled(true);
-	}
-
 	logger::INFO("Pre-game setup.");
 
-	obMan = new ObjectManager;
+	entMan = new EntityManager;
 
 	if (!Arial.loadFromFile("C:\\Windows\\Fonts\\Arial.ttf"))
 	{
@@ -60,10 +46,16 @@ void GamePlayState::Init(AppEngine* app_)
 	sf::Vector2f screendimensions;
 	screendimensions.x = app->window->getSize().x / 2.0f;
 	screendimensions.y = app->window->getSize().y / 2.0f;
-	mainView = new sf::View(screendimensions, screendimensions);
+
+	mainView2 = new Camera;
+	{
+		sf::View tempViewBecuaseIDonTKnowTheCorrectFunctionCallsToAchieveWhatTheConstructorDoes(screendimensions, screendimensions);
+		mainView2->view = tempViewBecuaseIDonTKnowTheCorrectFunctionCallsToAchieveWhatTheConstructorDoes;
+	}
+
 	viewAnchor = new sf::View(screendimensions, screendimensions);
 
-	ui = new Interface(app->window, viewAnchor, mainView);
+	ui = new Interface(app->window, viewAnchor, &mainView2->view);
 
 	baseViewSpeed = 500;
 
@@ -77,8 +69,8 @@ void GamePlayState::Cleanup()
 	app->window->setView(app->window->getDefaultView());
 
 	delete viewAnchor;
-	delete mainView;
-	delete obMan;
+	delete mainView2;
+	delete entMan;
 	delete ui;
 
 	logger::INFO("GamePlayState cleaned up");
@@ -129,12 +121,14 @@ void GamePlayState::HandleEvents()
 				}
 				else if (event.key.code == sf::Keyboard::Key::Space)
 				{
-					if (!obMan->selectedEnts.empty())
+					if (!entMan->selectedEnts.empty())
 					{
 						logger::INFO("centering mainview on selected entity");
 
-						mainView->setCenter(obMan->selectedEnts[0]->sprite.getPosition());
-						viewAnchor->setCenter(obMan->selectedEnts[0]->sprite.getPosition());
+						mainView2->setCenter(entMan->selectedEnts[0]->sprite.getPosition());
+						viewAnchor->setCenter(entMan->selectedEnts[0]->sprite.getPosition());
+
+						mainView2->view.setRotation(0);
 					}
 				}
 				else if (event.key.code == sf::Keyboard::Key::LShift)
@@ -151,60 +145,39 @@ void GamePlayState::HandleEvents()
 
 					logger::INFO("cl_debug set to " + std::to_string(app->debugModeActive));
 				}
-				else if (event.key.code == sf::Keyboard::Key::Delete)
+				else if (event.key.code == sf::Keyboard::Key::Delete || event.key.code == sf::Keyboard::Key::End)
 				{
-					//TODO: make this all a function so that it isn't duplicated from the interface, or the keyboard, and both do the same
-					if (!obMan->selectedEnts.empty())
-					{
-						if (obMan->selectedEnts.size() > 1)
-						{
-							for (size_t i = 0; i < obMan->selectedEnts.size(); i++)
-							{
-								obMan->deleteObject(obMan->selectedEnts[i]);
-
-								logger::INFO("deleted entity " + std::to_string(obMan->selectedEnts[i]->id));
-							}
-
-							obMan->deselectAllObjects();
-						}
-						else
-						{
-							obMan->deleteObject(obMan->selectedEnts.front());
-							obMan->deselectAllObjects();
-						}
-
-						ui->delete_ent_button.disable();
-
-						if (ui->create_ent_button.disabled && obMan->entities.size() < 100)
-							ui->create_ent_button.enable();
-					}
+					deleteButton();
 				}
-				else if (event.key.code == sf::Keyboard::Key::LControl)
+				else if (event.key.code == sf::Keyboard::Key::LControl || event.key.code == sf::Keyboard::Key::A || event.key.code == sf::Keyboard::Key::Equal || sf::Keyboard::Key::Dash)
 				{
 					//TODO: this probably isn't the best way to handle key combinations
+					//TODO: really find a better way to do this.
 
 					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl))
 					{
-						if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
+						if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) && !entMan->entities.empty())
 						{
-							for (size_t i = 0; i < obMan->entities.size(); i++)
-							{
-								obMan->entities[i]->isSelected = true;
-								obMan->selectedEnts.push_back(obMan->entities[i]);
+							entMan->deselectAllEnts();
+							entMan->selectedEnts = entMan->entities;
 
-								logger::INFO("selected entity" + std::to_string(obMan->entities[i]->id));
-							}
+							for (long long int i = 0; i < entMan->entities.size(); i++)
+								entMan->entities[i]->isSelected = true;
 
-							logger::INFO("selected all entities");
+							ui->delete_ent_button.enable();
+
+							logger::INFO("selected " + std::to_string(entMan->selectedEnts.size()) + " entities (of " + std::to_string(entMan->entities.size()) + " total entities)");
 						}
-					}
-					else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Add))
-					{
-						// zoom camera in
-					}
-					else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Subtract))
-					{
-						// zoom camera out
+						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Equal))
+						{
+							mainView2->zoom(0.5f);
+							// zoom camera in
+						}
+						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Dash))
+						{
+							mainView2->zoom(2.0f);
+							// zoom camera out
+						}
 					}
 				}
 			}
@@ -221,77 +194,73 @@ void GamePlayState::HandleEvents()
 				{
 					if (engine::logic::mouseIsOver(ui->create_ent_button.m_shape, *app->window, *viewAnchor)) // create new entity
 					{
-						if (obMan->entities.size() >= 100)
+						if (entMan->entities.size() >= entMan->maxEnts)
 						{
-							logger::INFO("Cannot create anymore units; you have too many.");
+							ui->create_ent_button.disable();
+							ui->unitCounterText.setFillColor(sf::Color::Red);
+							logger::INFO("Unit cap reached.");
 						}
 						else
 						{
-							obMan->deselectAllObjects();
-							obMan->createNewObject();
+							entMan->deselectAllEnts();
+							entMan->newEnt();
+
 							ui->delete_ent_button.enable();
 
-							if (obMan->entities.size() >= 100)
+							if (entMan->entities.size() >= entMan->maxEnts)
 							{
 								ui->create_ent_button.disable();
+								ui->unitCounterText.setFillColor(sf::Color::Red);
+								logger::INFO("Unit cap reached.");
 							}
 						}
 
-						break; //TODO: do we need this?
+						break;
 					}
-					else if (engine::logic::mouseIsOver(ui->delete_ent_button.m_shape, *app->window, *viewAnchor) && !obMan->selectedEnts.empty())
+					else if (engine::logic::mouseIsOver(ui->delete_ent_button.m_shape, *app->window, *viewAnchor) && !entMan->selectedEnts.empty())
 					{
-						//TODO: make this all a function so that it isn't duplicated from the interface, or the keyboard, and both do the same
-						if (obMan->selectedEnts.size() > 1)
-						{
-							for (size_t i = 0; i < obMan->selectedEnts.size(); i++)
-							{
-								obMan->deleteObject(obMan->selectedEnts[i]);
-
-								logger::INFO("deleted entity " + std::to_string(obMan->selectedEnts[i]->id));
-							}
-
-							obMan->deselectAllObjects();
-						}
-						else
-						{
-							obMan->deleteObject(obMan->selectedEnts.front());
-							obMan->deselectAllObjects();
-						}
-
-						ui->delete_ent_button.disable();
-
-						break; //TODO: do we need this?
+						deleteButton();
 					}
 
 					// if we haven't broken the loop already, it means we either clicked an entity or clicked nothing
 					bool selectedNothing(true);
-					for (size_t i = 0; i < obMan->entities.size(); i++)
+					for (long long int i = 0; i < entMan->entities.size(); i++)
 					{
-						if (engine::logic::mouseIsOver(obMan->entities[i]->sprite, *app->window, *mainView))
+						if (engine::logic::mouseIsOver(entMan->entities[i]->sprite, *app->window, mainView2->view))
 						{
-							logger::INFO("mouse is over entity" + std::to_string(obMan->entities[i]->id));
-
-							if (obMan->entities[i]->isSelected)
+							if (entMan->entities[i]->isSelected)
 							{
 								if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl))
 								{
-									obMan->deselectObject(obMan->entities[i]);
+									entMan->deselectEnt(entMan->entities[i]);
 									selectedNothing = false;
 								}
 								else
 								{
-									logger::INFO("entity" + std::to_string(obMan->entities[i]->id) + " is already selected");
+									if (!entMan->selectedEnts.empty())
+									{
+										entMan->deselectAllEnts();
+										entMan->selectEnt(entMan->entities[i]);
+
+										logger::INFO("selected entity" + std::to_string(entMan->entities[i]->id));
+
+										selectedNothing = false;
+									}
+									else
+									{
+										logger::INFO("entity" + std::to_string(entMan->entities[i]->id) + " is already selected");
+										selectedNothing = false;
+									}
 								}
 							}
 							else
 							{
 								if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl))
-									obMan->deselectAllObjects();
+									entMan->deselectAllEnts();
 
-								obMan->selectObject(obMan->entities[i]);
+								entMan->selectEnt(entMan->entities[i]);
 
-								logger::INFO("selected entity" + std::to_string(obMan->entities[i]->id));
+								logger::INFO("selected entity" + std::to_string(entMan->entities[i]->id));
 								ui->delete_ent_button.enable();
 
 								selectedNothing = false;
@@ -301,9 +270,9 @@ void GamePlayState::HandleEvents()
 						}
 					} // what entity did we click
 
-					if (selectedNothing && !obMan->selectedEnts.empty()) // selected nothing and didn't already have nothing
+					if (selectedNothing && !entMan->selectedEnts.empty()) // selected nothing and didn't already have nothing
 					{
-						obMan->deselectAllObjects();
+						entMan->deselectAllEnts();
 						ui->delete_ent_button.disable();
 
 						logger::INFO("All entities deselected");
@@ -313,9 +282,9 @@ void GamePlayState::HandleEvents()
 
 				if (event.key.code == sf::Mouse::Button::Right)
 				{
-					if (!obMan->selectedEnts.empty())
+					if (!entMan->selectedEnts.empty())
 					{
-						sf::Vector2f movePos(app->window->mapPixelToCoords(sf::Mouse::getPosition(*app->window), *mainView));
+						sf::Vector2f movePos(app->window->mapPixelToCoords(sf::Mouse::getPosition(*app->window), mainView2->view));
 
 						if (!world.getGlobalBounds().contains(movePos))
 						{
@@ -323,9 +292,9 @@ void GamePlayState::HandleEvents()
 						}
 						else
 						{
-							for (size_t i = 0; i < obMan->selectedEnts.size(); i++)
+							for (long long int i = 0; i < entMan->selectedEnts.size(); i++)
 							{
-								obMan->selectedEnts[i]->moveTo(movePos);
+								entMan->selectedEnts[i]->moveTo(movePos);
 							}
 						}
 					}
@@ -339,7 +308,7 @@ void GamePlayState::HandleEvents()
 				{
 					if (zoomlevel <= 4)
 					{
-						mainView->zoom(2.0f);
+						mainView2->zoom(2.0f);
 						zoomlevel *= 2.0f;
 					}
 				}
@@ -347,7 +316,7 @@ void GamePlayState::HandleEvents()
 				{
 					if (zoomlevel > 0.5f)
 					{
-						mainView->zoom(0.5f);
+						mainView2->zoom(0.5f);
 						zoomlevel *= 0.5f;
 					}
 				}
@@ -356,49 +325,46 @@ void GamePlayState::HandleEvents()
 
 		if (app->window->hasFocus())
 		{
-			{
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
-					mainView->move(0, -baseViewSpeed * timePerFrame.asSeconds());
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
-					mainView->move(-baseViewSpeed * timePerFrame.asSeconds(), 0);
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
-					mainView->move(0, baseViewSpeed * timePerFrame.asSeconds());
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
-					mainView->move(baseViewSpeed * timePerFrame.asSeconds(), 0);
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
+				mainView2->move(sf::Vector2f(0, -baseViewSpeed * timePerFrame.asSeconds()));
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
+				mainView2->move(sf::Vector2f(-baseViewSpeed * timePerFrame.asSeconds(), 0));
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
+				mainView2->move(sf::Vector2f(0, baseViewSpeed * timePerFrame.asSeconds()));
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+				mainView2->move(sf::Vector2f(baseViewSpeed * timePerFrame.asSeconds(), 0));
 
-				if (mainView->getCenter().x > 800)
-					mainView->setCenter(800, mainView->getCenter().y);
-				if (mainView->getCenter().y > 600)
-					mainView->setCenter(mainView->getCenter().x, 600);
-				if (mainView->getCenter().x < 0)
-					mainView->setCenter(0, mainView->getCenter().y);
-				if (mainView->getCenter().y < 0)
-					mainView->setCenter(mainView->getCenter().x, 0);
+			//TODO: this is probably really bad
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q) && sf::Keyboard::isKeyPressed(sf::Keyboard::Key::E))
+			{
+				mainView2->setRotation(0);
+			}
+			else
+			{
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q))
+					mainView2->rotate(1);
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::E))
+					mainView2->rotate(-1);
 			}
 
-			if (app->debugModeActive && !obMan->selectedEnts.size() == 1)
-			{
-				#define PLAYER_SPEED 250
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
-					obMan->selectedEnts[0]->sprite.move(0, -PLAYER_SPEED * timePerFrame.asSeconds());
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
-					obMan->selectedEnts[0]->sprite.move(-PLAYER_SPEED * timePerFrame.asSeconds(), 0);
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))
-					obMan->selectedEnts[0]->sprite.move(0, PLAYER_SPEED * timePerFrame.asSeconds());
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
-					obMan->selectedEnts[0]->sprite.move(PLAYER_SPEED * timePerFrame.asSeconds(), 0);
-				#undef PLAYER_SPEED	
-			}
+			if (mainView2->getCenter().x > 800)
+				mainView2->setCenter(sf::Vector2f(800, mainView2->getCenter().y));
+			if (mainView2->getCenter().y > 600)
+				mainView2->setCenter(sf::Vector2f(mainView2->getCenter().x, 600));
+			if (mainView2->getCenter().x < 0)
+				mainView2->setCenter(sf::Vector2f(0, mainView2->getCenter().y));
+			if (mainView2->getCenter().y < 0)
+				mainView2->setCenter(sf::Vector2f(mainView2->getCenter().x, 0));
 
 			{ //FRAMES PER SECOND
 				float frames_per_second = framesClock.restart().asSeconds();
 
-				debugFrameCounter.setPosition(mainView->getCenter().x - 199, mainView->getCenter().y - 130);
+				debugFrameCounter.setPosition(mainView2->getCenter().x - 199, mainView2->getCenter().y - 130);
 				debugFrameCounter.setString("FPS: " + std::to_string(static_cast<int>(1.0f / frames_per_second)));
 			}
 		} // app->window.hasFocus()
 
-		viewAnchor->setCenter(mainView->getCenter());
+		viewAnchor->setCenter(mainView2->getCenter());
 
 		if (should_screenshot)
 		{
@@ -414,11 +380,11 @@ void GamePlayState::HandleEvents()
 
 void GamePlayState::Update()
 {
-	for (size_t i = 0; i < obMan->entities.size(); i++)
+	for (long long int i = 0; i < entMan->entities.size(); i++)
 	{
-		if (obMan->entities[i]->moving)
+		if (entMan->entities[i]->moving)
 		{
-			obMan->entities[i]->Update();
+			entMan->entities[i]->Update();
 		}
 	}
 }
@@ -426,42 +392,41 @@ void GamePlayState::Update()
 void GamePlayState::Draw()
 {
 	app->window->clear();
-
+	
 	// ------------ MAIN VIEW
-	app->window->setView(*mainView);
+	app->window->setView(mainView2->view);
 	app->window->draw(world);
 
-	for (size_t i = 0; i < obMan->entities.size(); i++)
-		app->window->draw(obMan->entities[i]->sprite);
+	for (long long int i = 0; i < entMan->entities.size(); i++)
+		app->window->draw(entMan->entities[i]->sprite);
 
 	if (app->debugModeActive)
 	{
-		for (size_t i = 0; i < obMan->entities.size(); i++) // outline entities
+		for (long long int i = 0; i < entMan->entities.size(); i++) // outline entities
 		{
-			if (!obMan->entities.empty())
+			if (!entMan->entities.empty())
 			{
-				showObjectCoords(obMan->entities[i]->sprite);
-				engine::graphics::outline(*app->window, obMan->entities[i]->sprite, 2, sf::Color::Red);
-				engine::text::draw(*app->window, debugText, std::to_string(obMan->entities[i]->id) + "/" + std::to_string(obMan->entities.size()), sf::Vector2f(obMan->entities[i]->sprite.getPosition().x, obMan->entities[i]->sprite.getPosition().y));
+				showObjectCoords(entMan->entities[i]->sprite);
+				engine::graphics::outline(*app->window, entMan->entities[i]->sprite, 2, sf::Color::Red);
+				engine::text::draw(*app->window, debugText, std::to_string(entMan->entities[i]->id) + "/" + std::to_string(entMan->entities.size()), sf::Vector2f(entMan->entities[i]->sprite.getPosition().x, entMan->entities[i]->sprite.getPosition().y));
 
-				if (obMan->entities[i]->moving)
+				if (entMan->entities[i]->moving)
 				{
 					static Line line;
 
-					if (obMan->entities[i]->isSelected)
+					if (entMan->entities[i]->isSelected)
 					{
-						obMan->entities[i]->moveDest.setFillColor(sf::Color::Yellow);
+						entMan->entities[i]->moveDest.setFillColor(sf::Color::Yellow);
 						line.setColor(sf::Color::Yellow);
 					}
 					else
 					{
 						line.setColor(sf::Color::Red);
-						obMan->entities[i]->moveDest.setFillColor(sf::Color::Red);
+						entMan->entities[i]->moveDest.setFillColor(sf::Color::Red);
 					}
 
-					app->window->draw(obMan->entities[i]->moveDest);
-					line.setPoints(obMan->entities[i]->sprite.getPosition(), obMan->entities[i]->moveDest.getPosition());
-
+					app->window->draw(entMan->entities[i]->moveDest);
+					line.setPoints(entMan->entities[i]->sprite.getPosition(), entMan->entities[i]->moveDest.getPosition());
 
 					app->window->draw(line.vertices, 4, sf::Quads);
 				}
@@ -469,33 +434,30 @@ void GamePlayState::Draw()
 		}
 	}
 
-	if (!obMan->selectedEnts.empty())
-	{
-		for (size_t i = 0; i < obMan->selectedEnts.size(); i++)
-		{
-			engine::graphics::outline(*app->window, obMan->selectedEnts[i]->sprite, 2, sf::Color::Yellow);
-		}
-	}
+	if (!entMan->selectedEnts.empty())
+		for (long long int i = 0; i < entMan->selectedEnts.size(); i++)
+			engine::graphics::outline(*app->window, entMan->selectedEnts[i]->sprite, 2, sf::Color::Yellow);
 
 	// ------------- ANCHOR
 	app->window->setView(*viewAnchor);
 
 	ui->Draw();
 	//	sf::Vector2f pos;
-	//	pos.x = (mainView->getCenter().x - 98.5f);
-	//	pos.y = (mainView->getCenter().y - 144.5f);
+	//	pos.x = (mainView2->getCenter().x - 98.5f);
+	//	pos.y = (mainView2->getCenter().y - 144.5f);
 	//	engine::text::draw(*app->window, text, std::to_string(obMan->entities.size()), pos);
-	ui->unitCounterText.setString(std::to_string(obMan->entities.size()));
+	ui->unitCounterText.setString(std::to_string(entMan->entities.size()));
 
 	// debug info like coordinates and stuff
 	if (app->debugModeActive)
 	{
 		// view coordinates
-		std::string x = "X: " + std::to_string(static_cast<int>(mainView->getCenter().x));
-		std::string y = "Y: " + std::to_string(static_cast<int>(mainView->getCenter().y));
+		std::string x = "X: " + std::to_string(static_cast<int>(mainView2->getCenter().x));
+		std::string y = "Y: " + std::to_string(static_cast<int>(mainView2->getCenter().y));
 		engine::text::draw(*app->window, debugText, x + " " + y, sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 6));
-		engine::text::draw(*app->window, debugText, "selectedEntities: " + std::to_string(obMan->selectedEnts.size()), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 12));
-		engine::text::draw(*app->window, debugText, "totalEntities: " + std::to_string(obMan->entities.size()), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 18));
+		engine::text::draw(*app->window, debugText, "selectedEntities: " + std::to_string(entMan->selectedEnts.size()), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 12));
+		engine::text::draw(*app->window, debugText, "totalEntities: " + std::to_string(entMan->entities.size()), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 18));
+		engine::text::draw(*app->window, debugText, "maxEntities: " + std::to_string(entMan->maxEnts), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 24));
 
 		app->window->draw(debugFrameCounter);
 	}
@@ -505,8 +467,48 @@ void GamePlayState::Draw()
 
 // Private
 
+void GamePlayState::deleteButton()
+{
+	int deleteAmount = entMan->selectedEnts.size();
+
+	//TODO: make this all a function so that it isn't duplicated from the interface, or the keyboard, and both do the same
+	if (!entMan->selectedEnts.empty())
+	{
+		if (entMan->selectedEnts.size() > 1)
+		{
+			for (long long int i = 0; i < entMan->selectedEnts.size(); i++)
+			{
+				entMan->deleteEnt(entMan->selectedEnts[i]);
+
+				logger::INFO("deleted entity " + std::to_string(entMan->selectedEnts[i]->id));
+
+				// this is here because deleteEnt will delete the object from both entities and selectedEntities,
+				// when it does this, those vectors resize themselven. this resize causes the deletion to skip numbers
+				// instead of deleting 1 2 3 4, like we expect, it deletes 2 4 6 8.
+				// keep this
+				i--;
+			}
+		}
+		else // TODO: is this necessary?
+		{
+			entMan->deleteEnt(entMan->selectedEnts.front());
+		}
+
+		ui->delete_ent_button.disable();
+
+		if (entMan->entities.size() < entMan->maxEnts)
+			ui->create_ent_button.enable();
+	}
+	else
+	{
+		logger::INFO("nothing to delete");
+	}
+}
+
 void GamePlayState::showObjectCoords(sf::Sprite &object)
 {
+	// TODO: this can be put into draw call, yes?
+
 	std::string coords =
 		"X: " +
 		std::to_string(static_cast<int>(object.getPosition().x)) +

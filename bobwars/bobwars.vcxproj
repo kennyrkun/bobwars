@@ -28,6 +28,7 @@
     <ClInclude Include="AppState.hpp" />
     <ClInclude Include="BaseEntity.hpp" />
     <ClInclude Include="Button.hpp" />
+    <ClInclude Include="Camera.hpp" />
     <ClInclude Include="GameCreationState.hpp" />
     <ClInclude Include="GamePauseState.hpp" />
     <ClInclude Include="GamePlayState.hpp" />
@@ -35,7 +36,7 @@
     <ClInclude Include="Menu.hpp" />
     <ClInclude Include="ResourceManager.hpp" />
     <ClInclude Include="Interface.hpp" />
-    <ClInclude Include="ObjectManager.hpp">
+    <ClInclude Include="EntityManager.hpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClInclude>
@@ -49,12 +50,13 @@
     <ClCompile Include="AppEngine.cpp" />
     <ClCompile Include="BaseEntity.cpp" />
     <ClCompile Include="Button.cpp" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="GameCreationState.cpp" />
     <ClCompile Include="GamePauseState.cpp" />
     <ClCompile Include="GamePlayState.cpp" />
     <ClCompile Include="Interface.cpp" />
     <ClCompile Include="MainMenuState.cpp" />
-    <ClCompile Include="ObjectManager.cpp">
+    <ClCompile Include="EntityManager.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>

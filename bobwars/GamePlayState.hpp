@@ -4,13 +4,26 @@
 #include "AppEngine.hpp"
 #include "AppState.hpp"
 
+#include "Camera.hpp"
+
 #include <SFML\Graphics.hpp>
 #include <SFML\System\Vector2.hpp>
-#include <string>
+#include <string>	
 
 class Button;
-class ObjectManager;
+class EntityManager;
 class Interface;
+
+struct GameWorld
+{
+	void loadMapFile(std::string file);
+
+	sf::Texture mapTex;
+	sf::RectangleShape map;
+
+	size_t mapSizeX;
+	size_t mapSizeY;
+};
 
 class GamePlayState : public AppState
 {
@@ -30,7 +43,6 @@ public:
 		return &GamePlayState_dontfuckwithme;
 	}
 
-	std::string gameVersion = "0.8.2";
 //	sf::RenderWindow *app->window;
 	sf::Time timePerFrame; // 60 frames per second
 	sf::Time timeSinceLastUpdate;
@@ -39,7 +51,7 @@ private:
 	static GamePlayState GamePlayState_dontfuckwithme;
 	AppEngine* app;
 
-	ObjectManager *obMan;
+	EntityManager *entMan;
 	Interface *ui;
 	sf::RectangleShape world;
 	sf::Texture		   worldTexture;
@@ -48,12 +60,14 @@ private:
 	sf::Text debugFrameCounter;
 	sf::Text debugText;
 
-	sf::View *mainView;
+	Camera* mainView2;
 	sf::View *viewAnchor;
 	int baseViewSpeed = 500;
 
 	sf::Clock deltaClock;  // tracks how much time has past since the last frame
 	sf::Clock framesClock; // for fps
+
+	void deleteButton();
 
 	void showObjectCoords(sf::Sprite &object);
 };
