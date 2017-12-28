@@ -1,4 +1,4 @@
-#include "ObjectManager.hpp"
+#include "EntityManager.hpp"
 
 EntityManager::EntityManager()
 {
@@ -15,6 +15,8 @@ EntityManager::~EntityManager()
 
 void EntityManager::newEnt()
 {
+	//TOOD: optimise entity creation
+
 	BaseEntity *newEnt = new BaseEntity();
 	newEnt->id = entities.size() + 1;
 	newEnt->isSelected = true;
@@ -22,11 +24,13 @@ void EntityManager::newEnt()
 	entities.push_back(newEnt); // add it to the stack
 	selectedEnts.push_back(newEnt); // select it
 
-	logger::INFO("creating new entity (" + std::to_string(newEnt->id) + ")");
+//	logger::INFO("creating new entity (" + std::to_string(newEnt->id) + ")");
 }
 
 void EntityManager::deselectAllEnts()
 {
+	//TOOD: optimise deselection methods
+
 	for (size_t i = 0; i < selectedEnts.size(); i++)
 	{
 		logger::INFO("deselecting entity" + std::to_string(selectedEnts[i]->id));
@@ -40,16 +44,28 @@ void EntityManager::deselectAllEnts()
 
 void EntityManager::deleteEnt(BaseEntity *ent)
 {
-	for (size_t i = 0; i < entities.size(); i++)
-	{
-		if (ent == entities[i])
-		{
-			delete entities[i];
-			entities.erase(std::remove(entities.begin(), entities.end(), ent), entities.end());
-			logger::INFO("Deleted entity " + std::to_string(ent->id));
-			return;
-		}
-	}
+	//TOOD: optimise entity deletion;
+
+	bool wasSelected = ent->isSelected;
+	//HACK: there has to be a way to do this cleanly without creating a bool for it
+	delete ent;
+
+	if (wasSelected)
+		selectedEnts.erase(std::remove(selectedEnts.begin(), selectedEnts.end(), ent), selectedEnts.end());
+
+	entities.erase(std::remove(entities.begin(), entities.end(), ent), entities.end());
+
+//	for (size_t i = 0; i < entities.size(); i++)
+//	{
+//		if (ent == entities[i])
+//		{
+//			delete entities[i];
+//			selectedEnts.erase(std::remove(selectedEnts.begin(), selectedEnts.end(), ent), selectedEnts.end());
+//			entities.erase(std::remove(entities.begin(), entities.end(), ent), entities.end());
+//			logger::INFO("Deleted entity " + std::to_string(ent->id));
+//			return;
+//		}
+//	}
 }
 
 int EntityManager::selectEnt(BaseEntity *ent)
