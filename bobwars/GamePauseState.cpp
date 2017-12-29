@@ -5,6 +5,7 @@
 
 #include <ENGINE\Logger.hpp>
 #include <ENGINE\Graphics\Text.hpp>
+#include <ENGINE\Engine.hpp>
 #include "GamePlayState.hpp"
 
 GamePauseState GamePauseState::GameCreationState_dontfuckwithme;
@@ -23,10 +24,6 @@ void GamePauseState::Init(AppEngine* app_)
 	background.setTexture(&backgroundTexture);
 	background.setFillColor(sf::Color(255, 255, 255, 155));
 
-	font = new sf::Font;
-	font->loadFromFile("C:\\Windows\\Fonts\\Arial.ttf");
-	text.setFont(*font);
-
 	std::vector<SFUI::TextButton*> buttons;
 
 	SFUI::TextButton* continueButton = new SFUI::TextButton("Continue");
@@ -37,7 +34,7 @@ void GamePauseState::Init(AppEngine* app_)
 	SFUI::TextButton* optionsButton = new SFUI::TextButton("Options");
 	optionsButton->setSizeMultiplier(2);
 	optionsButton->disable();
-	SFUI::TextButton* exitButton = new SFUI::TextButton("Exit");
+	SFUI::TextButton* exitButton = new SFUI::TextButton("Exit to Menu");
 	exitButton->setSizeMultiplier(2);
 	buttons.push_back(continueButton);
 	buttons.push_back(saveButton);
@@ -53,7 +50,6 @@ void GamePauseState::Cleanup()
 {
 	logger::INFO("GamePauseState Cleaningup");
 
-	delete font;
 	delete pauseMenu;
 
 	logger::INFO("GamePauseState Cleanedup");
@@ -85,13 +81,38 @@ void GamePauseState::HandleEvents()
 				app->PopState();
 			}
 		}
-	}
 
-	pauseMenu->HandleEvents(event);
+		pauseMenu->HandleEvents(event);
+	}
 }
+
 
 void GamePauseState::Update()
 {
+	if (pauseMenu->done)
+	{
+		// continue
+		// save
+		// options
+		// exit
+
+		if (pauseMenu->selectedOption == 0)
+		{
+			app->PopState();
+		}
+		else if (pauseMenu->selectedOption == 1)
+		{
+			// nothing
+		}
+		else if (pauseMenu->selectedOption == 2)
+		{
+			// nothing
+		}
+		else if (pauseMenu->selectedOption == 3)
+		{
+			app->PopState(2);
+		}
+	}
 }
 
 void GamePauseState::Draw()
@@ -100,9 +121,7 @@ void GamePauseState::Draw()
 
 	app->window->draw(background);
 
-	engine::text::draw(*app->window, text, "game paused", app->window->getDefaultView().getCenter());
-
-	pauseMenu->Draw();
+	app->window->draw(*pauseMenu);
 
 	app->window->display();
 }

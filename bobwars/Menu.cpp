@@ -16,7 +16,7 @@ Menu::Menu(sf::RenderWindow* window_, std::string title_, std::vector<SFUI::Text
 {
 	logger::INFO("Creating " + title + " Menu with " + std::to_string(options.size()) + " options");
 
-	int largest = options.front()->m_shape.getLocalBounds().width;
+	float largest = options.front()->m_shape.getLocalBounds().width;
 	for (size_t i = 0; i < options.size(); i++)
 		if (options[i]->m_shape.getLocalBounds().width > largest)
 			largest = options[i]->m_shape.getLocalBounds().width;
@@ -35,6 +35,9 @@ Menu::Menu(sf::RenderWindow* window_, std::string title_, std::vector<SFUI::Text
 	}
 
 	logger::INFO("Created " + title + " Menu");
+
+	selectedButton = options[0];
+	selectedButton->select();
 }
 
 Menu::~Menu()
@@ -47,35 +50,67 @@ Menu::~Menu()
 	logger::INFO("PauseMenu destroyed");
 }
 
-void Menu::HandleEvents(sf::Event& event)
+void Menu::HandleEvents(sf::Event event)
 {
-	if (event.type == sf::Event::EventType::MouseButtonPressed)
+	if (event.type == sf::Event::EventType::KeyPressed)
 	{
-		for (size_t i = 0; i < options.size(); i++)
+		if (event.key.code == sf::Keyboard::Key::Up || event.key.code == sf::Keyboard::Key::Left)
 		{
-			if (mouseIsOver(options[i]->m_shape, *window))
+			if (selectedButton != nullptr)
+				selectedButton->deselect();
+
+			if (selectedButtonNum > 0)
 			{
-				options[i]->select();
+				selectedButton = options[selectedButtonNum - 1];
+				selectedButton->select();
+				selectedButtonNum -= 1;
+			}
+			else
+			{
+				selectedButton = options[options.size() - 1];
+				selectedButton->select();
+				selectedButtonNum = options.size() - 1;
 			}
 		}
-	}
-	else if (event.type == sf::Event::EventType::MouseButtonReleased)
-	{
-		for (size_t i = 0; i < options.size(); i++)
+		else if (event.key.code == sf::Keyboard::Key::Down || event.key.code == sf::Keyboard::Key::Right)
 		{
-			if (mouseIsOver(options[i]->m_shape, *window))
+			if (selectedButton != nullptr)
+				selectedButton->deselect();
+
+			if (selectedButtonNum < options.size() - 1)
 			{
-				options[i]->select();
-//				options[i]->callback();
+				selectedButton = options[selectedButtonNum + 1];
+				selectedButton->select();
+				selectedButtonNum += 1;
+			}
+			else
+			{
+				selectedButton = options[0];
+				selectedButton->select();
+				selectedButtonNum = 0;
 			}
 		}
+		else if (event.key.code == sf::Keyboard::Key::Return)
+		{
+			logger::INFO("selected option " + std::to_string(selectedButtonNum));
+
+			selectedOption = selectedButtonNum;
+			done = true;
+		}
+		else if (event.key.code == sf::Keyboard::Key::Return)
+		{
+			logger::INFO("dont fuck me");
+		}
+
+		logger::INFO("key: " + std::to_string(event.key.code));
+		logger::INFO("return: " + std::to_string(sf::Keyboard::Key::Return));
 	}
 }
 
-void Menu::Draw()
+void Menu::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-	window->draw(background);
+	target.draw(background);
 
 	for (size_t i = 0; i < options.size(); i++)
-		window->draw(*options[i]);
+		target.draw(*options[i]);
 }

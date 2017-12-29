@@ -4,6 +4,7 @@
 #include "AppState.hpp"
 
 #include "Menu.hpp"
+#include <SFUI/TextButton.hpp>
 
 class GamePauseState : public AppState
 {
@@ -32,9 +33,6 @@ private:
 
 	sf::RectangleShape background;
 	sf::Texture backgroundTexture;
-
-	sf::Font *font;
-	sf::Text text;
 
 	Menu* pauseMenu;
 };
