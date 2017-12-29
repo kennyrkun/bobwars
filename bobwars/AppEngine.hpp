@@ -31,6 +31,7 @@ public:
 	void ChangeState(AppState* state);
 	void PushState(AppState* state);
 	void PopState();
+	void PopState(int amount);
 
 	void HandleEvents();
 	void Update();

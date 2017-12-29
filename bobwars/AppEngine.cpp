@@ -77,6 +77,25 @@ void AppEngine::PopState()
 		Quit();
 }
 
+void AppEngine::PopState(int amount)
+{
+	for (size_t i = 0; i < amount; i++)
+	{
+		// cleanup the current state
+		if (!states.empty())
+		{
+			states.back()->Cleanup();
+			states.pop_back();
+		}
+
+		// resume previous state
+		if (!states.empty())
+			states.back()->Resume();
+		else
+			Quit();
+	}
+}
+
 void AppEngine::HandleEvents()
 {
 	if (running)
