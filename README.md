@@ -16,8 +16,11 @@ While in the game, the WASD are used to control the main view, and the arrow key
 
 ##### General
 <kbd>Escape</kbd> - Pause game<br>
+<kbd>F12</kbd> - Screenshot<br>
 <kbd>MouseWheel</kbd> - Change player camera zoom level by 2.0f (+/-)<br>
 <kbd>Left Shift</kbd> - Speed up player camera by 250u/s<br>
+<kbd>Control</kbd> + <kbd>+</kbd> - Zoom in<br>
+<kbd>Control</kbd> + <kbd>-</kbd> - Zoom out<br>
 
 ##### Units
 <kbd>LMB</kbd> - Selects unit<br>
@@ -26,15 +29,8 @@ While in the game, the WASD are used to control the main view, and the arrow key
 <kbd>RMB</kbd> (Building) - Set unit rally point.<br>
 <kbd>Del</kbd> - Deletes selected unit(s).<br>
 
-The speed of the camera can be changed by holding down the Left-Shift Key.  
-The zoom level of the camera can be changed with the middle mouse wheel.
-
 ##### Debug
 <kbd>~</kbd> or <kbd>`</kbd> - Toggle debug mode<br>
-<kbd>W</kbd>Unit up, if in debug.<br>
-<kbd>A</kbd>Unit left, if in debug.<br>
-<kbd>S</kbd>Unit down, if in debug.<br>
-<kbd>D</kbd>Unit right, if in debug.<br>
 
 ---
 
