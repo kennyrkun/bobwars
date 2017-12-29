@@ -8,7 +8,7 @@
 class Interface
 {
 public:
-	Interface(sf::RenderWindow *_targetWindow, sf::View *_viewAnchor, sf::View *_mainView);
+	Interface(sf::RenderWindow *_targetWindow, sf::View *_mainView);
 	~Interface();
 
 	void setTargetWindow(sf::RenderWindow *target_window);
@@ -24,17 +24,15 @@ public:
 	// TODO: replace these with SFUI::Button
 
 	sf::Text unitCounterText;
-	BaseEntity selectedEntity;
-	bool hasSelected;
 		
+	sf::RectangleShape bottomBar;
+	sf::RectangleShape topBar;
+
 private:
 	sf::RenderWindow *targetWindow;
 	sf::View *viewAnchor;
 	sf::View *mainView;
 	sf::Font arial;
-
-	sf::RectangleShape bottomui_background;
-	sf::RectangleShape topui_background;
 
 	sf::RectangleShape unitCounterIcon;
 	sf::Texture unitCounterIcon_tex;

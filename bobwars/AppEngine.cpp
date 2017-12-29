@@ -10,7 +10,7 @@ void AppEngine::Init(std::string title_, AppSettings settings_)
 	settings = settings_;
 	title = title_;
 
-	window = new sf::RenderWindow(sf::VideoMode(settings.width, settings.height), title);
+	window = new sf::RenderWindow(sf::VideoMode(settings.width, settings.height), settings.title);
 	window->setVerticalSyncEnabled(true);
 
 	resMan = new ResourceManager;
@@ -33,6 +33,8 @@ void AppEngine::Cleanup()
 
 	window->close();
 	delete window;
+
+	resMan->freeAllTextures();
 
 	std::cout << "AppEngine cleaned up." << std::endl;
 }

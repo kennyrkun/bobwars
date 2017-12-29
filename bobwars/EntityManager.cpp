@@ -7,6 +7,9 @@ EntityManager::EntityManager()
 
 EntityManager::~EntityManager()
 {
+	for (size_t i = 0; i < selectedEnts.size(); i++)
+		delete selectedEnts[i];
+
 	for (size_t i = 0; i < entities.size(); i++)
 		delete entities[i];
 

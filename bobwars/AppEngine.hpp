@@ -11,15 +11,15 @@ class AppState;
 
 struct AppSettings
 {
+	std::string version = "0.10.0";
 	std::string title = "bobwars " + version;
-	std::string version = "0.9.0";
 	bool fullscreen = false;
 	bool vsync = true;
 	bool debug = false;
 	bool console = false;
 	int fps = 60;
-	int width = 800;
-	int height = 600;
+	int width = 1080;
+	int height = 720;
 };
 
 class AppEngine

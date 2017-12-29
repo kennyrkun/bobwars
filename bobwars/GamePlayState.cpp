@@ -28,7 +28,7 @@ void GamePlayState::Init(AppEngine* app_)
 	else
 	{
 		debugText.setFont(Arial);
-		debugText.setScale(sf::Vector2f(.2f, .2f));
+		debugText.setCharacterSize(14);
 	}
 
 	logger::INFO("Loading world texture...");
@@ -36,16 +36,18 @@ void GamePlayState::Init(AppEngine* app_)
 	if (!worldTexture.loadFromFile("resource\\textures\\world.png"))
 		logger::SILENT("ERROR", "Failed to load world textures!");
 
+	//TODO: make camera align with world center on game start
 	world.setSize(sf::Vector2f(800, 600));
 	world.setTexture(&worldTexture);
 
 	logger::INFO("Preparing user interface elements...");
 	debugFrameCounter.setFont(Arial);
-	debugFrameCounter.setScale(sf::Vector2f(.2f, .2f));
+	debugFrameCounter.setPosition(4, 40);
+	debugFrameCounter.setCharacterSize(14);
 
 	sf::Vector2f screendimensions;
-	screendimensions.x = app->window->getSize().x / 2.0f;
-	screendimensions.y = app->window->getSize().y / 2.0f;
+	screendimensions.x = app->window->getSize().x / 2;
+	screendimensions.y = app->window->getSize().y / 2;
 
 	mainView2 = new Camera;
 	{
@@ -53,9 +55,9 @@ void GamePlayState::Init(AppEngine* app_)
 		mainView2->view = tempViewBecuaseIDonTKnowTheCorrectFunctionCallsToAchieveWhatTheConstructorDoes;
 	}
 
-	viewAnchor = new sf::View(screendimensions, screendimensions);
+//	viewAnchor = new sf::View(screendimensions, sf::Vector2f(app->window->getSize().x, app->window->getSize().y));
 
-	ui = new Interface(app->window, viewAnchor, &mainView2->view);
+	ui = new Interface(app->window, &mainView2->view);
 
 	baseViewSpeed = 500;
 
@@ -68,7 +70,7 @@ void GamePlayState::Cleanup()
 
 	app->window->setView(app->window->getDefaultView());
 
-	delete viewAnchor;
+//	delete viewAnchor;
 	delete mainView2;
 	delete entMan;
 	delete ui;
@@ -100,6 +102,7 @@ void GamePlayState::HandleEvents()
 
 	bool should_screenshot(false);
 
+	//FIXME: delta timestep
 //	while (timeSinceLastUpdate >= timePerFrame)
 	{
 		timeSinceLastUpdate -= timePerFrame;
@@ -126,7 +129,7 @@ void GamePlayState::HandleEvents()
 						logger::INFO("centering mainview on selected entity");
 
 						mainView2->setCenter(entMan->selectedEnts[0]->sprite.getPosition());
-						viewAnchor->setCenter(entMan->selectedEnts[0]->sprite.getPosition());
+//						viewAnchor->setCenter(entMan->selectedEnts[0]->sprite.getPosition());
 
 						mainView2->view.setRotation(0);
 					}
@@ -192,7 +195,7 @@ void GamePlayState::HandleEvents()
 			{
 				if (event.key.code == sf::Mouse::Button::Left)
 				{
-					if (engine::logic::mouseIsOver(ui->create_ent_button.m_shape, *app->window, *viewAnchor)) // create new entity
+					if (engine::logic::mouseIsOver(ui->create_ent_button.m_shape, *app->window, *ui->getViewAnchor())) // create new entity
 					{
 						if (entMan->entities.size() >= entMan->maxEnts)
 						{
@@ -217,7 +220,7 @@ void GamePlayState::HandleEvents()
 
 						break;
 					}
-					else if (engine::logic::mouseIsOver(ui->delete_ent_button.m_shape, *app->window, *viewAnchor) && !entMan->selectedEnts.empty())
+					else if (engine::logic::mouseIsOver(ui->delete_ent_button.m_shape, *app->window, *ui->getViewAnchor()) && !entMan->selectedEnts.empty())
 					{
 						deleteButton();
 					}
@@ -359,12 +362,9 @@ void GamePlayState::HandleEvents()
 			{ //FRAMES PER SECOND
 				float frames_per_second = framesClock.restart().asSeconds();
 
-				debugFrameCounter.setPosition(mainView2->getCenter().x - 199, mainView2->getCenter().y - 130);
 				debugFrameCounter.setString("FPS: " + std::to_string(static_cast<int>(1.0f / frames_per_second)));
 			}
 		} // app->window.hasFocus()
-
-		viewAnchor->setCenter(mainView2->getCenter());
 
 		if (should_screenshot)
 		{
@@ -373,8 +373,13 @@ void GamePlayState::HandleEvents()
 			app->window->clear(sf::Color::White);
 			app->window->display();
 
+			sf::sleep(sf::milliseconds(50));
+
 			should_screenshot = false;
 		}
+
+		sf::Time deltaTime = deltaClock.restart();  // get elapsed time and reset clock
+		timeSinceLastUpdate += deltaTime;
 	}
 }
 
@@ -406,9 +411,9 @@ void GamePlayState::Draw()
 		{
 			if (!entMan->entities.empty())
 			{
-				showObjectCoords(entMan->entities[i]->sprite);
 				engine::graphics::outline(*app->window, entMan->entities[i]->sprite, 2, sf::Color::Red);
-				engine::text::draw(*app->window, debugText, std::to_string(entMan->entities[i]->id) + "/" + std::to_string(entMan->entities.size()), sf::Vector2f(entMan->entities[i]->sprite.getPosition().x, entMan->entities[i]->sprite.getPosition().y));
+				showObjectCoords(entMan->entities[i]->sprite);
+				engine::text::draw(*app->window, debugText, std::to_string(entMan->entities[i]->id) + "/" + std::to_string(entMan->entities.size()), sf::Vector2f(entMan->entities[i]->sprite.getPosition().x, entMan->entities[i]->sprite.getPosition().y), sf::Vector2f(.2f, .2f));
 
 				if (entMan->entities[i]->moving)
 				{
@@ -439,7 +444,7 @@ void GamePlayState::Draw()
 			engine::graphics::outline(*app->window, entMan->selectedEnts[i]->sprite, 2, sf::Color::Yellow);
 
 	// ------------- ANCHOR
-	app->window->setView(*viewAnchor);
+	app->window->setView(*ui->getViewAnchor());
 
 	ui->Draw();
 	//	sf::Vector2f pos;
@@ -454,10 +459,10 @@ void GamePlayState::Draw()
 		// view coordinates
 		std::string x = "X: " + std::to_string(static_cast<int>(mainView2->getCenter().x));
 		std::string y = "Y: " + std::to_string(static_cast<int>(mainView2->getCenter().y));
-		engine::text::draw(*app->window, debugText, x + " " + y, sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 6));
-		engine::text::draw(*app->window, debugText, "selectedEntities: " + std::to_string(entMan->selectedEnts.size()), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 12));
-		engine::text::draw(*app->window, debugText, "totalEntities: " + std::to_string(entMan->entities.size()), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 18));
-		engine::text::draw(*app->window, debugText, "maxEntities: " + std::to_string(entMan->maxEnts), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 24));
+		engine::text::draw(*app->window, debugText, x + " " + y, sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 12));
+		engine::text::draw(*app->window, debugText, "selectedEntities: " + std::to_string(entMan->selectedEnts.size()), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 24));
+		engine::text::draw(*app->window, debugText, "totalEntities: " + std::to_string(entMan->entities.size()), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 36));
+		engine::text::draw(*app->window, debugText, "maxEntities: " + std::to_string(entMan->maxEnts), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 48));
 
 		app->window->draw(debugFrameCounter);
 	}
@@ -471,7 +476,6 @@ void GamePlayState::deleteButton()
 {
 	int deleteAmount = entMan->selectedEnts.size();
 
-	//TODO: make this all a function so that it isn't duplicated from the interface, or the keyboard, and both do the same
 	if (!entMan->selectedEnts.empty())
 	{
 		if (entMan->selectedEnts.size() > 1)
@@ -515,9 +519,9 @@ void GamePlayState::showObjectCoords(sf::Sprite &object)
 		" Y: " +
 		std::to_string(static_cast<int>(object.getPosition().y));
 
-	float x = object.getPosition().x + object.getLocalBounds().width / 4;
-	float y = object.getPosition().y - 5;
+	float x = object.getPosition().x - object.getLocalBounds().width;
+	float y = object.getPosition().y - object.getLocalBounds().height / 1.5;
 	sf::Vector2f position(x, y);
 
-	engine::text::draw(*app->window, debugText, coords, position, 34);
+	engine::text::draw(*app->window, debugText, coords, position, sf::Vector2f(.2f, .2f));
 }

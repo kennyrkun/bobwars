@@ -2,49 +2,60 @@
 
 #include <ENGINE\Logger.hpp>
 
-Interface::Interface(sf::RenderWindow *_targetWindow, sf::View *_viewAnchor, sf::View *_mainView)
+Interface::Interface(sf::RenderWindow *_targetWindow, sf::View *_mainView)
 {
 //	Button create_ent_button(sf::Vector2f(50, 25), "create");
 //	Button delete_ent_button(sf::Vector2f(50, 25), "delete");
 
 	targetWindow = _targetWindow;
-	viewAnchor = _viewAnchor;
 	mainView = _mainView;
+
+	viewAnchor = new sf::View(mainView->getCenter(), sf::Vector2f(targetWindow->getSize().x, targetWindow->getSize().y));
+
+	topBar.setSize(sf::Vector2f(targetWindow->getSize().x, 40));
+	bottomBar.setSize(sf::Vector2f(targetWindow->getSize().x, 150));
+
+	float leftX = viewAnchor->getCenter().x - targetWindow->getSize().x / 2;
+	float rightX = 0;
+	float topMiddleY = viewAnchor->getCenter().y - targetWindow->getSize().y / 2 + topBar.getSize().y / 2;
+	float bottomMiddleY = viewAnchor->getCenter().y + targetWindow->getSize().y / 2 - bottomBar.getSize().y / 2;
 
 	arial.loadFromFile("C:\\Windows\\Fonts\\Arial.ttf");
 
-	topui_background.setFillColor(sf::Color(100, 100, 100));
-	topui_background.setSize(sf::Vector2f(mainView->getSize().x, 20));
-	topui_background.setOrigin(topui_background.getLocalBounds().width / 2, topui_background.getLocalBounds().height / 2);
+	topBar.setFillColor(sf::Color(100, 100, 100));
+	topBar.setOrigin(topBar.getLocalBounds().width / 2, topBar.getLocalBounds().height / 2);
+	topBar.setPosition(sf::Vector2f(viewAnchor->getCenter().x, topMiddleY));
 
-	bottomui_background.setFillColor(sf::Color(100, 100, 100));
-	bottomui_background.setSize(sf::Vector2f(mainView->getSize().x, 60));
-	bottomui_background.setOrigin(bottomui_background.getLocalBounds().width / 2, bottomui_background.getLocalBounds().height / 2);
+	bottomBar.setFillColor(sf::Color(100, 100, 100));
+	bottomBar.setOrigin(bottomBar.getLocalBounds().width / 2, bottomBar.getLocalBounds().height / 2);
+	bottomBar.setPosition(sf::Vector2f(viewAnchor->getCenter().x, bottomMiddleY));
+
+	unitCounterBackground.setFillColor(sf::Color(70, 70, 70));
+	float padding = 3.0f;
+	unitCounterBackground.setSize(sf::Vector2f(46 - padding, 26 - padding));
+	unitCounterBackground.setOrigin(sf::Vector2f(unitCounterBackground.getSize().x / 2, unitCounterBackground.getSize().y / 2));
+	unitCounterBackground.setOutlineThickness(padding);
+	unitCounterBackground.setOutlineColor(sf::Color(50, 50, 50));
+	unitCounterBackground.setPosition(sf::Vector2f(leftX + 125, topMiddleY));
 
 	unitCounterIcon_tex.loadFromFile("resource\\textures\\silk\\user.png");
 	unitCounterIcon.setTexture(&unitCounterIcon_tex);
-	unitCounterIcon.setSize(sf::Vector2f(10, 10));
+	unitCounterIcon.setSize(sf::Vector2f(20, 20));
 	unitCounterIcon.setOrigin(sf::Vector2f(unitCounterIcon.getLocalBounds().width / 2, unitCounterIcon.getLocalBounds().height / 2));
-
-	unitCounterBackground.setFillColor(sf::Color(70, 70, 70));
-	float padding = 1.5f;
-	unitCounterBackground.setSize(sf::Vector2f(28 - padding, 13 - padding));
-	unitCounterBackground.setOutlineThickness(padding);
-	unitCounterBackground.setOutlineColor(sf::Color(50, 50, 50));
-	unitCounterText.setFont(arial);
+	unitCounterIcon.setPosition(sf::Vector2f(unitCounterBackground.getPosition().x - 10, unitCounterBackground.getPosition().y));
 
 	unitCounterText.setFont(arial);
-	unitCounterText.setCharacterSize(34);
-	unitCounterText.setScale(sf::Vector2f(.25f, .25f));
+	unitCounterText.setCharacterSize(22);
 	unitCounterText.setString("0");
 	unitCounterText.setOrigin(sf::Vector2f(unitCounterText.getLocalBounds().width / 2, unitCounterText.getLocalBounds().height / 2));
+	unitCounterText.setPosition(sf::Vector2f(unitCounterBackground.getPosition().x + 10, unitCounterBackground.getPosition().y - 6));
 
-	create_ent_button.setScale(sf::Vector2f(.4f, .4f));
 	create_ent_button.setString("create");
+	create_ent_button.setPosition(sf::Vector2f(leftX + 50, topMiddleY));
 
-	delete_ent_button.setScale(sf::Vector2f(.4f, .4f));
 	delete_ent_button.setString("delete");
 	delete_ent_button.disable();
+	delete_ent_button.setPosition(sf::Vector2f(leftX + 50, bottomMiddleY - 55));
 
 	logger::INFO("New interface created.");
 }
@@ -74,36 +85,44 @@ void Interface::Draw()
 {
 	Update();
 	
-	targetWindow->draw(topui_background);
+	targetWindow->draw(topBar);
+
+	create_ent_button.draw(targetWindow);
 
 	targetWindow->draw(unitCounterBackground);
 	targetWindow->draw(unitCounterIcon);
 	targetWindow->draw(unitCounterText);
 
-//	targetWindow->draw(bottomui_background);
+	targetWindow->draw(bottomBar);
 
-	create_ent_button.draw(targetWindow);
 	delete_ent_button.draw(targetWindow);
 }
 
 void Interface::Update()
 {
-	unitCounterText.setOrigin(sf::Vector2f(unitCounterText.getLocalBounds().width / 2, unitCounterText.getLocalBounds().height / 2));
-
-	reanchor();
+	unitCounterBackground.setSize(sf::Vector2f(unitCounterText.getGlobalBounds().width + 35, unitCounterBackground.getSize().y));
 }
 
 // private:
 
 void Interface::reanchor()
 {
-	topui_background.setPosition(sf::Vector2f(mainView->getCenter().x, mainView->getCenter().y - 140));
-	unitCounterBackground.setPosition(sf::Vector2f(mainView->getCenter().x - 115, mainView->getCenter().y - 145.5f));
-	unitCounterIcon.setPosition(sf::Vector2f((mainView->getCenter().x - 114) + (unitCounterIcon.getLocalBounds().width / 2), (mainView->getCenter().y - 145) + (unitCounterIcon.getLocalBounds().height / 2)));
-	unitCounterText.setPosition(sf::Vector2f((mainView->getCenter().x - 102) + (unitCounterIcon.getLocalBounds().width / 2), (mainView->getCenter().y - 147) + (unitCounterIcon.getLocalBounds().height / 2)));
+	/*
+	float leftX = viewAnchor->getCenter().x - targetWindow->getSize().x / 2;
+	float rightX = 0;
+	float topMiddleY = viewAnchor->getCenter().y - targetWindow->getSize().y / 2 + topBar.getSize().y / 2;
+	float bottomMiddleY = viewAnchor->getCenter().y + targetWindow->getSize().y / 2 - bottomBar.getSize().y / 2;
 
-	bottomui_background.setPosition(sf::Vector2f(mainView->getCenter().x, mainView->getCenter().y + 120));
+	topBar.setPosition(sf::Vector2f(viewAnchor->getCenter().x, topMiddleY));
 
-	create_ent_button.setPosition(sf::Vector2f(mainView->getCenter().x - 179, mainView->getCenter().y - 140));
-	delete_ent_button.setPosition(sf::Vector2f(mainView->getCenter().x - 139, mainView->getCenter().y - 140));
+	create_ent_button.setPosition(sf::Vector2f(leftX + 50, topMiddleY));
+
+	unitCounterBackground.setPosition(sf::Vector2f(leftX + 125, topMiddleY));
+	unitCounterIcon.setPosition(sf::Vector2f(unitCounterBackground.getPosition().x - 10, unitCounterBackground.getPosition().y));
+	unitCounterText.setPosition(sf::Vector2f(unitCounterBackground.getPosition().x + 10, unitCounterBackground.getPosition().y - 6));
+
+	bottomBar.setPosition(sf::Vector2f(viewAnchor->getCenter().x, bottomMiddleY));
+
+	delete_ent_button.setPosition(sf::Vector2f(leftX + 50, bottomMiddleY - 55));
+	*/
 }

@@ -61,7 +61,6 @@ private:
 	sf::Text debugText;
 
 	Camera* mainView2;
-	sf::View *viewAnchor;
 	int baseViewSpeed = 500;
 
 	sf::Clock deltaClock;  // tracks how much time has past since the last frame
