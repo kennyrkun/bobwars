@@ -12,7 +12,11 @@ namespace engine
 	{
 		bool mouseIsOver(sf::Shape &object, sf::RenderWindow &window, sf::View &view);
 
+		bool mouseIsOver(sf::Shape &object, sf::RenderWindow &window);
+
 		bool mouseIsOver(sf::Sprite &object, sf::RenderWindow &window, sf::View &view);
+
+		bool mouseIsOver(sf::Sprite &object, sf::RenderWindow &window);
 	}
 
 	void screenshot(sf::RenderWindow &window);

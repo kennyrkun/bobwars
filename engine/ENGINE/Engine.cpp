@@ -19,6 +19,14 @@ namespace engine
 			else
 				return false;
 		}
+		
+		bool mouseIsOver(sf::Shape &object, sf::RenderWindow &window)
+		{
+			if (object.getGlobalBounds().contains(window.mapPixelToCoords(sf::Mouse::getPosition(window))))
+				return true;
+			else
+				return false;
+		}
 
 		bool mouseIsOver(sf::Sprite &object, sf::RenderWindow &window, sf::View &view)
 		{
