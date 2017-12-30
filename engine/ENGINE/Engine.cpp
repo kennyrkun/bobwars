@@ -10,6 +10,8 @@ namespace engine
 {
 	std::string const version("1.2.2");
 
+	int const maxPlayers = 16;
+
 	namespace logic
 	{
 		bool mouseIsOver(sf::Shape &object, sf::RenderWindow &window, sf::View &view)

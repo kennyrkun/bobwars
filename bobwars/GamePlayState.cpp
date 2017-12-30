@@ -206,7 +206,7 @@ void GamePlayState::HandleEvents()
 						else
 						{
 							entMan->deselectAllEnts();
-							entMan->newEnt();
+							entMan->newBob();
 
 							ui->delete_ent_button.enable();
 
@@ -456,6 +456,8 @@ void GamePlayState::Draw()
 	// debug info like coordinates and stuff
 	if (app->debugModeActive)
 	{
+		app->window->draw(debugFrameCounter);
+
 		// view coordinates
 		std::string x = "X: " + std::to_string(static_cast<int>(mainView2->getCenter().x));
 		std::string y = "Y: " + std::to_string(static_cast<int>(mainView2->getCenter().y));
@@ -463,8 +465,8 @@ void GamePlayState::Draw()
 		engine::text::draw(*app->window, debugText, "selectedEntities: " + std::to_string(entMan->selectedEnts.size()), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 24));
 		engine::text::draw(*app->window, debugText, "totalEntities: " + std::to_string(entMan->entities.size()), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 36));
 		engine::text::draw(*app->window, debugText, "maxEntities: " + std::to_string(entMan->maxEnts), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 48));
-
-		app->window->draw(debugFrameCounter);
+		engine::text::draw(*app->window, debugText, "physicalMaxEntities: " + std::to_string(entMan->physicalMaxEnts), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 60));
+		engine::text::draw(*app->window, debugText, "maxEntitiesPerTeam: " + std::to_string(entMan->maxEntsPerTeam), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 72));
 	}
 
 	app->window->display();

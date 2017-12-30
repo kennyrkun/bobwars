@@ -8,6 +8,8 @@ namespace engine
 {
 	extern const std::string version;
 
+	extern const int maxPlayers;
+
 	namespace logic
 	{
 		bool mouseIsOver(sf::Shape &object, sf::RenderWindow &window, sf::View &view);

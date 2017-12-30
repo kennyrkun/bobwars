@@ -3,6 +3,8 @@
 EntityManager::EntityManager()
 {
 	logger::SILENT("DEBUG", "ObjectManager constructed.");
+
+	maxEntsPerTeam = maxEnts / engine::maxPlayers;
 }
 
 EntityManager::~EntityManager()
@@ -16,17 +18,31 @@ EntityManager::~EntityManager()
 	logger::SILENT("DEBUG", "ObjectManager deconstructed.");
 }
 
-void EntityManager::newEnt()
+void EntityManager::newBaseEntity()
 {
 	//TOOD: optimise entity creation
 
-	BaseEntity *newEnt = new BaseEntity();
-	newEnt->id = entities.size() + 1;
-	newEnt->isSelected = true;
+	BaseEntity *newBaseEntity = new BaseEntity();
+	newBaseEntity->id = entities.size() + 1;
+	newBaseEntity->isSelected = true;
 
-	entities.push_back(newEnt); // add it to the stack
-	selectedEnts.push_back(newEnt); // select it
+	entities.push_back(newBaseEntity); // add it to the stack
+	selectedEnts.push_back(newBaseEntity); // select it
 
+//	logger::INFO("creating new entity (" + std::to_string(newEnt->id) + ")");
+}
+
+void EntityManager::newBob()
+{
+	//TOOD: optimise entity creation
+
+	Bob *newBobEntity = new Bob();
+	newBobEntity->id = entities.size() + 1;
+	newBobEntity->isSelected = true;
+
+	entities.push_back(newBobEntity); // add it to the stack
+	selectedEnts.push_back(newBobEntity); // select it
+									   
 //	logger::INFO("creating new entity (" + std::to_string(newEnt->id) + ")");
 }
 
@@ -45,7 +61,15 @@ void EntityManager::deselectAllEnts()
 	selectedEnts.clear();
 }
 
-void EntityManager::deleteEnt(BaseEntity *ent)
+void EntityManager::addEnt(BaseEntity* ent)
+{
+	entities.push_back(ent);
+
+	if (ent->isSelected)
+		selectedEnts.push_back(ent);
+}
+
+void EntityManager::deleteEnt(BaseEntity* ent)
 {
 	//TOOD: optimise entity deletion;
 

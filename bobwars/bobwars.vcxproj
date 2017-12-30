@@ -27,6 +27,7 @@
     <ClInclude Include="AppEngine.hpp" />
     <ClInclude Include="AppState.hpp" />
     <ClInclude Include="BaseEntity.hpp" />
+    <ClInclude Include="Bob.hpp" />
     <ClInclude Include="Button.hpp" />
     <ClInclude Include="Camera.hpp" />
     <ClInclude Include="GameCreationState.hpp" />
@@ -49,6 +50,7 @@
     <ClCompile Include="..\engine\ENGINE\Logger.cpp" />
     <ClCompile Include="AppEngine.cpp" />
     <ClCompile Include="BaseEntity.cpp" />
+    <ClCompile Include="Bob.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="GameCreationState.cpp" />

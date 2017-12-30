@@ -81,6 +81,9 @@
     <ClInclude Include="EntityManager.hpp">
       <Filter>BOBWARS\Systems</Filter>
     </ClInclude>
+    <ClInclude Include="Bob.hpp">
+      <Filter>BOBWARS\Systems\Entities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseEntity.cpp">
@@ -136,6 +139,9 @@
     </ClCompile>
     <ClCompile Include="EntityManager.cpp">
       <Filter>BOBWARS\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Bob.cpp">
+      <Filter>BOBWARS\Systems\Entities</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
