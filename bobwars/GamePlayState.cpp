@@ -100,8 +100,6 @@ void GamePlayState::HandleEvents()
 	sf::Time deltaTime = deltaClock.restart();  // get elapsed time and reset clock
 	timeSinceLastUpdate += deltaTime;
 
-	bool should_screenshot(false);
-
 	//FIXME: delta timestep
 //	while (timeSinceLastUpdate >= timePerFrame)
 	{
@@ -140,7 +138,10 @@ void GamePlayState::HandleEvents()
 				}
 				else if (event.key.code == sf::Keyboard::Key::F12)
 				{
-					should_screenshot = true;
+					engine::screenshot(*app->window);
+
+					app->window->clear(sf::Color::White);
+					app->window->display();
 				}
 				else if (event.key.code == sf::Keyboard::Key::Tilde)
 				{
@@ -365,18 +366,6 @@ void GamePlayState::HandleEvents()
 				debugFrameCounter.setString("FPS: " + std::to_string(static_cast<int>(1.0f / frames_per_second)));
 			}
 		} // app->window.hasFocus()
-
-		if (should_screenshot)
-		{
-			engine::screenshot(*app->window);
-
-			app->window->clear(sf::Color::White);
-			app->window->display();
-
-			sf::sleep(sf::milliseconds(50));
-
-			should_screenshot = false;
-		}
 
 		sf::Time deltaTime = deltaClock.restart();  // get elapsed time and reset clock
 		timeSinceLastUpdate += deltaTime;
