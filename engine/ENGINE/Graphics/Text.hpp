@@ -1,7 +1,7 @@
 #ifndef TEXT_HPP
 #define TEXT_HPP
 
-#include <SFML\Graphics.hpp>
+#include <SFML/Graphics.hpp>
 
 namespace engine {
 namespace text

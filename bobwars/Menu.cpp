@@ -1,7 +1,7 @@
 #include "Menu.hpp"
 
-#include <ENGINE\Logger.hpp>
-#include <ENGINE\Engine.hpp>
+#include <ENGINE/Logger.hpp>
+#include <ENGINE/Engine.hpp>
 
 // HACK: this is only here because the EXACT SAME THING in the engine won't work. /shrug
 bool mouseIsOver(sf::Shape &object, sf::RenderWindow &window)

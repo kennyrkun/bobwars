@@ -1,4 +1,4 @@
-#include <ENGINE\Engine.hpp>
+#include <ENGINE/Engine.hpp>
 
 #include <fstream>
 #include <iostream>
@@ -23,7 +23,7 @@ void writeLog(const std::string output)
 	}
 	else
 	{
-		std::cerr << "\n" << "unable to open log file for writing!" << std::endl;
+		std::cerr << "/n" << "unable to open log file for writing!" << std::endl;
 	}
 }
 
@@ -93,7 +93,7 @@ namespace loggerv2
 	// 3 = 1 + light debug messages
 	// 4 = print all debug messages */
 
-	std::string logLocation = ".\\bobars.log"; // default
+	std::string logLocation = ".//bobars.log"; // default
 
 	void logToFile(std::string message)
 	{
@@ -177,7 +177,7 @@ Logger::Logger(std::string logOutputDir_)
 {
 	outputfile = logOutputDir_;
 
-	std::cout << "Logger created (at \"" + outputfile + "\")" << std::endl;
+	std::cout << "log output redirected to (at \"" + outputfile + "\")" << std::endl;
 }
 
 Logger::~Logger()
@@ -239,7 +239,7 @@ void Logger::writeLog(const std::string output)
 	}
 	else
 	{
-		std::cerr << "\n" << "unable to open log file for writing!" << std::endl;
+		std::cerr << "/n" << "unable to open log file for writing!" << std::endl;
 	}
 
 	log.close();

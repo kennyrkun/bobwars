@@ -3,9 +3,9 @@
 #include "AppEngine.hpp"
 #include "AppState.hpp"
 
-#include <ENGINE\Logger.hpp>
-#include <ENGINE\Graphics\Text.hpp>
-#include <ENGINE\Engine.hpp>
+#include <ENGINE/Logger.hpp>
+#include <ENGINE/Graphics/Text.hpp>
+#include <ENGINE/Engine.hpp>
 #include "GamePlayState.hpp"
 
 GamePauseState GamePauseState::GameCreationState_dontfuckwithme;

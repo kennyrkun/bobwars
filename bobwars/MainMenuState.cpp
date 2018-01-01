@@ -12,7 +12,7 @@ void MainMenuState::Init(AppEngine* app_)
 
 	app = app_;
 
-	app->resMan->loadTexture("title_screen_logo", ".\\resource\\textures\\logo.png");
+	app->resMan->loadTexture("title_screen_logo", ".//resource//textures//logo.png");
 	app->resMan->getTexture("title_screen_logo")->setSmooth(true);
 	logoShape.setSize(sf::Vector2f(app->resMan->getTexture("title_screen_logo")->getSize().x, app->resMan->getTexture("title_screen_logo")->getSize().y));
 	logoShape.setTexture(&*app->resMan->getTexture("title_screen_logo"));

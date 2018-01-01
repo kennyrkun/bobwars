@@ -1,10 +1,11 @@
 #ifndef MENU_HPP
 #define MENU_HPP
 
-#include <SFML\Graphics.hpp>
+#include <SFUI/TextButton.hpp>
+#include <SFML/Graphics.hpp>
+
 #include <vector>
 #include <string>
-#include <SFUI\TextButton.hpp>
 
 class Menu : public sf::Drawable
 {

@@ -1,8 +1,9 @@
 #ifndef ENGINE_HPP
 #define ENGINE_HPP
 
-#include <SFML\Graphics.hpp>
-#include <ENGINE\Logger.hpp>
+#include <ENGINE/Logger.hpp>
+
+#include <SFML/Graphics.hpp>
 
 namespace engine
 {

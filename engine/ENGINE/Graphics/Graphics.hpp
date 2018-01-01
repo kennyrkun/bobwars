@@ -1,7 +1,7 @@
 #ifndef GRAPHICS_HPP
 #define GRAPHICS_HPP
 
-#include "SFML\Graphics.hpp"
+#include <SFML/Graphics.hpp>
 
 namespace engine {
 namespace graphics

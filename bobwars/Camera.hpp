@@ -1,7 +1,7 @@
 #ifndef CAMERA_HPP
 #define CAMERA_HPP
 
-#include <SFML\Graphics\View.hpp>
+#include <SFML/Graphics/View.hpp>
 
 class Camera
 {

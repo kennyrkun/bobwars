@@ -1,10 +1,10 @@
 #include "Button.hpp"
 
-#include <ENGINE\Logger.hpp>
+#include <ENGINE/Logger.hpp>
 
 Button::Button(const sf::Vector2f &size, const std::string string)
 {
-	if (m_font.loadFromFile("C:\\Windows\\Fonts\\Arial.ttf"))
+	if (m_font.loadFromFile("C://Windows//Fonts//Arial.ttf"))
 		m_string.setFont(m_font);
 
 	m_string.setString(string);
@@ -21,7 +21,7 @@ Button::Button(const sf::Vector2f &size, const std::string string)
 
 Button::Button()
 {
-	if (m_font.loadFromFile("C:\\Windows\\Fonts\\Arial.ttf"))
+	if (m_font.loadFromFile("C://Windows//Fonts//Arial.ttf"))
 		m_string.setFont(m_font);
 
 	m_string.setFillColor(sf::Color::Black);

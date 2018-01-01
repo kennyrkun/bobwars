@@ -1,9 +1,9 @@
 #ifndef BASE_ENTITY_HPP
 #define BASE_ENTITY_HPP
 
-#include <ENGINE\Engine.hpp>
-#include <SFML\Graphics.hpp>
-#include <ENGINE\Graphics\Line.hpp>
+#include <ENGINE/Engine.hpp>
+#include <SFML/Graphics.hpp>
+#include <ENGINE/Graphics/Line.hpp>
 
 #include <string>
 

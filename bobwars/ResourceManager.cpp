@@ -4,7 +4,7 @@
 #include <iostream>
 
 #include "ResourceManager.hpp"
-#include <ENGINE\Logger.hpp>
+#include <ENGINE/Logger.hpp>
 
 ResourceManager::ResourceManager()
 {

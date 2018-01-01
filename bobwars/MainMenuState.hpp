@@ -2,8 +2,8 @@
 #define MAIN_MENU_STATE
 
 #include "GamePlayState.hpp"
-#include "ENGINE\Logger.hpp"
-#include <SFUI\TextButton.hpp>
+#include "ENGINE/Logger.hpp"
+#include <SFUI/TextButton.hpp>
 #include "ResourceManager.hpp"
 
 #include "AppEngine.hpp"

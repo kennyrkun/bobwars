@@ -25,6 +25,9 @@
     <Filter Include="BOBWARS\Systems\GameStates\Manager &amp; Base">
       <UniqueIdentifier>{b0e65a1e-d8f1-4afe-9a89-ea101c211d7f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="BOBWARS\Systems\Graphical\Interface">
+      <UniqueIdentifier>{26b73e13-2708-465d-8f44-258c11ad1be6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseEntity.hpp">
@@ -44,9 +47,6 @@
     </ClInclude>
     <ClInclude Include="..\engine\ENGINE\Graphics\Line.hpp">
       <Filter>ENGINE\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Interface.hpp">
-      <Filter>BOBWARS\Systems\Graphical</Filter>
     </ClInclude>
     <ClInclude Include="GamePlayState.hpp">
       <Filter>BOBWARS\Systems\GameStates</Filter>
@@ -84,6 +84,9 @@
     <ClInclude Include="Bob.hpp">
       <Filter>BOBWARS\Systems\Entities</Filter>
     </ClInclude>
+    <ClInclude Include="Interface.hpp">
+      <Filter>BOBWARS\Systems\Graphical\Interface</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseEntity.cpp">
@@ -103,9 +106,6 @@
     </ClCompile>
     <ClCompile Include="..\engine\ENGINE\Graphics\Line.cpp">
       <Filter>ENGINE\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Interface.cpp">
-      <Filter>BOBWARS\Systems\Graphical</Filter>
     </ClCompile>
     <ClCompile Include="MainMenuState.cpp">
       <Filter>BOBWARS\Systems\GameStates</Filter>
@@ -142,6 +142,9 @@
     </ClCompile>
     <ClCompile Include="Bob.cpp">
       <Filter>BOBWARS\Systems\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Interface.cpp">
+      <Filter>BOBWARS\Systems\Graphical\Interface</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

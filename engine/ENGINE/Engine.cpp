@@ -1,4 +1,4 @@
-#include <ENGINE\Engine.hpp>
+#include <ENGINE/Engine.hpp>
 
 #include <string>
 #include <time.h>
@@ -67,7 +67,7 @@ namespace engine
 					screenshots += 1;
 				}
 
-				std::string savePath = "screenshots\\screenshot_" + std::to_string(screenshots) + ".png";
+				std::string savePath = "screenshots//screenshot_" + std::to_string(screenshots) + ".png";
 
 				if (!texture.copyToImage().saveToFile(savePath))
 				{

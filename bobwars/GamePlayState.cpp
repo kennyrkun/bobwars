@@ -4,10 +4,10 @@
 #include "Interface.hpp"
 #include "EntityManager.hpp"
 
-#include <ENGINE\Engine.hpp>
-#include <ENGINE\Logger.hpp>
-#include <ENGINE\Graphics\Graphics.hpp>
-#include <ENGINE\Graphics\Text.hpp>
+#include <ENGINE/Engine.hpp>
+#include <ENGINE/Logger.hpp>
+#include <ENGINE/Graphics/Graphics.hpp>
+#include <ENGINE/Graphics/Text.hpp>
 
 GamePlayState GamePlayState::GamePlayState_dontfuckwithme;
 
@@ -21,9 +21,9 @@ void GamePlayState::Init(AppEngine* app_)
 
 	entMan = new EntityManager;
 
-	if (!Arial.loadFromFile("C:\\Windows\\Fonts\\Arial.ttf"))
+	if (!Arial.loadFromFile("C://Windows//Fonts//Arial.ttf"))
 	{
-		logger::SILENT("ERROR", "Failed to load font \"Arial\"!");
+		logger::SILENT("ERROR", "Failed to load font Arial!");
 	}
 	else
 	{
@@ -33,7 +33,7 @@ void GamePlayState::Init(AppEngine* app_)
 
 	logger::INFO("Loading world texture...");
 
-	if (!worldTexture.loadFromFile("resource\\textures\\world.png"))
+	if (!worldTexture.loadFromFile("resource//textures//world.png"))
 		logger::SILENT("ERROR", "Failed to load world textures!");
 
 	//TODO: make camera align with world center on game start
@@ -375,12 +375,7 @@ void GamePlayState::HandleEvents()
 void GamePlayState::Update()
 {
 	for (long long int i = 0; i < entMan->entities.size(); i++)
-	{
-		if (entMan->entities[i]->moving)
-		{
-			entMan->entities[i]->Update();
-		}
-	}
+		entMan->entities[i]->Update();
 }
 
 void GamePlayState::Draw()
@@ -456,6 +451,7 @@ void GamePlayState::Draw()
 		engine::text::draw(*app->window, debugText, "maxEntities: " + std::to_string(entMan->maxEnts), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 48));
 		engine::text::draw(*app->window, debugText, "physicalMaxEntities: " + std::to_string(entMan->physicalMaxEnts), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 60));
 		engine::text::draw(*app->window, debugText, "maxEntitiesPerTeam: " + std::to_string(entMan->maxEntsPerTeam), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 72));
+		engine::text::draw(*app->window, debugText, "delta: " + std::to_string(deltaClock.getElapsedTime().asMilliseconds()), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 84));
 	}
 
 	app->window->display();

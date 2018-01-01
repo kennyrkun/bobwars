@@ -1,9 +1,9 @@
 #ifndef INTERFACE_HPP
 #define INTERFACE_HPP
 
-#include <SFML\Graphics.hpp>
-#include "BaseEntity.hpp"
-#include "Button.hpp"
+#include <SFUI/TextButton.hpp>
+
+#include <SFML/Graphics.hpp>
 
 class Interface
 {
@@ -18,9 +18,10 @@ public:
 
 	void Draw();
 	void Update();
+	void HandleEvents();
 
-	Button create_ent_button;
-	Button delete_ent_button;
+	SFUI::TextButton create_ent_button;
+	SFUI::TextButton delete_ent_button;
 	// TODO: replace these with SFUI::Button
 
 	sf::Text unitCounterText;
@@ -37,8 +38,6 @@ private:
 	sf::RectangleShape unitCounterIcon;
 	sf::Texture unitCounterIcon_tex;
 	sf::RectangleShape unitCounterBackground;
-
-	void reanchor();
 };
 
 #endif /* INTERFACE_HPP */
