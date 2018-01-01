@@ -100,8 +100,7 @@ void GamePlayState::HandleEvents()
 	sf::Time deltaTime = deltaClock.restart();  // get elapsed time and reset clock
 	timeSinceLastUpdate += deltaTime;
 
-	//FIXME: delta timestep
-//	while (timeSinceLastUpdate >= timePerFrame)
+//	if (timeSinceLastUpdate >= timePerFrame)
 	{
 		timeSinceLastUpdate -= timePerFrame;
 
@@ -283,8 +282,7 @@ void GamePlayState::HandleEvents()
 						break;
 					}
 				} // left mouse button
-
-				if (event.key.code == sf::Mouse::Button::Right)
+				else if (event.key.code == sf::Mouse::Button::Right)
 				{
 					if (!entMan->selectedEnts.empty())
 					{
@@ -292,7 +290,7 @@ void GamePlayState::HandleEvents()
 
 						if (!world.getGlobalBounds().contains(movePos))
 						{
-							logger::ERROR("Cannot move target out of bounds!");
+							logger::INFO("Cannot move target out of bounds!");
 						}
 						else
 						{
@@ -325,6 +323,8 @@ void GamePlayState::HandleEvents()
 					}
 				}
 			}
+
+			ui->HandleEvents(event);
 		} // pollevent
 
 		if (app->window->hasFocus())
@@ -430,12 +430,9 @@ void GamePlayState::Draw()
 	// ------------- ANCHOR
 	app->window->setView(*ui->getViewAnchor());
 
+	ui->unitCounterText.setString(std::to_string(entMan->entities.size()) + "/" + std::to_string(entMan->maxEntsPerTeam));
+
 	ui->Draw();
-	//	sf::Vector2f pos;
-	//	pos.x = (mainView2->getCenter().x - 98.5f);
-	//	pos.y = (mainView2->getCenter().y - 144.5f);
-	//	engine::text::draw(*app->window, text, std::to_string(obMan->entities.size()), pos);
-	ui->unitCounterText.setString(std::to_string(entMan->entities.size()));
 
 	// debug info like coordinates and stuff
 	if (app->debugModeActive)
@@ -465,24 +462,17 @@ void GamePlayState::deleteButton()
 
 	if (!entMan->selectedEnts.empty())
 	{
-		if (entMan->selectedEnts.size() > 1)
+		for (long long int i = 0; i < entMan->selectedEnts.size(); i++)
 		{
-			for (long long int i = 0; i < entMan->selectedEnts.size(); i++)
-			{
-				entMan->deleteEnt(entMan->selectedEnts[i]);
+			entMan->deleteEnt(entMan->selectedEnts[i]);
 
-				logger::INFO("deleted entity " + std::to_string(entMan->selectedEnts[i]->id));
+			logger::INFO("deleted entity " + std::to_string(entMan->selectedEnts[i]->id));
 
-				// this is here because deleteEnt will delete the object from both entities and selectedEntities,
-				// when it does this, those vectors resize themselven. this resize causes the deletion to skip numbers
-				// instead of deleting 1 2 3 4, like we expect, it deletes 2 4 6 8.
-				// keep this
-				i--;
-			}
-		}
-		else // TODO: is this necessary?
-		{
-			entMan->deleteEnt(entMan->selectedEnts.front());
+			// this is here because deleteEnt will delete the object from both entities and selectedEntities,
+			// when it does this, those vectors resize themselven. this resize causes the deletion to skip numbers
+			// instead of deleting 1 2 3 4, like we expect, it deletes 2 4 6 8.
+			// keep this
+			i--;
 		}
 
 		ui->delete_ent_button.disable();

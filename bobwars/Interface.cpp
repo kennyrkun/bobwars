@@ -30,8 +30,30 @@ Interface::Interface(sf::RenderWindow *_targetWindow, sf::View *_mainView)
 	bottomBar.setOrigin(bottomBar.getLocalBounds().width / 2, bottomBar.getLocalBounds().height / 2);
 	bottomBar.setPosition(sf::Vector2f(viewAnchor->getCenter().x, bottomMiddleY));
 
+	float padding = 3.0f; // for the counters
+
+	// gold
+	memesCounterBackground.setFillColor(sf::Color(70, 70, 70));
+	memesCounterBackground.setSize(sf::Vector2f(46 - padding, 26 - padding));
+	memesCounterBackground.setOrigin(sf::Vector2f(memesCounterBackground.getSize().x / 2, memesCounterBackground.getSize().y / 2));
+	memesCounterBackground.setOutlineThickness(padding);
+	memesCounterBackground.setOutlineColor(sf::Color(50, 50, 50));
+	memesCounterBackground.setPosition(sf::Vector2f(leftX + 30, topMiddleY));
+
+	memesCounterIcon_tex.loadFromFile("resource//textures//silk//heart.png");
+	memesCounterIcon.setTexture(&memesCounterIcon_tex);
+	memesCounterIcon.setSize(sf::Vector2f(16, 16));
+	memesCounterIcon.setOrigin(sf::Vector2f(8, 8));
+	memesCounterIcon.setPosition(sf::Vector2f(memesCounterBackground.getPosition().x - 10, memesCounterBackground.getPosition().y));
+
+	memesCounterText.setFont(arial);
+	memesCounterText.setCharacterSize(22);
+	memesCounterText.setString("100");
+	memesCounterText.setOrigin(sf::Vector2f(0, memesCounterText.getLocalBounds().height / 2));
+	memesCounterText.setPosition(sf::Vector2f(memesCounterBackground.getPosition().x + 4, memesCounterBackground.getPosition().y - 6));
+
+	// unit counter
 	unitCounterBackground.setFillColor(sf::Color(70, 70, 70));
-	float padding = 3.0f;
 	unitCounterBackground.setSize(sf::Vector2f(46 - padding, 26 - padding));
 	unitCounterBackground.setOrigin(sf::Vector2f(unitCounterBackground.getSize().x / 2, unitCounterBackground.getSize().y / 2));
 	unitCounterBackground.setOutlineThickness(padding);
@@ -40,15 +62,15 @@ Interface::Interface(sf::RenderWindow *_targetWindow, sf::View *_mainView)
 
 	unitCounterIcon_tex.loadFromFile("resource//textures//silk//user.png");
 	unitCounterIcon.setTexture(&unitCounterIcon_tex);
-	unitCounterIcon.setSize(sf::Vector2f(20, 20));
-	unitCounterIcon.setOrigin(sf::Vector2f(unitCounterIcon.getLocalBounds().width / 2, unitCounterIcon.getLocalBounds().height / 2));
+	unitCounterIcon.setSize(sf::Vector2f(16, 16));
+	unitCounterIcon.setOrigin(sf::Vector2f(8, 8));
 	unitCounterIcon.setPosition(sf::Vector2f(unitCounterBackground.getPosition().x - 10, unitCounterBackground.getPosition().y));
 
 	unitCounterText.setFont(arial);
 	unitCounterText.setCharacterSize(22);
 	unitCounterText.setString("0");
-	unitCounterText.setOrigin(sf::Vector2f(unitCounterText.getLocalBounds().width / 2, unitCounterText.getLocalBounds().height / 2));
-	unitCounterText.setPosition(sf::Vector2f(unitCounterBackground.getPosition().x + 10, unitCounterBackground.getPosition().y - 6));
+	unitCounterText.setOrigin(sf::Vector2f(0, unitCounterText.getLocalBounds().height / 2));
+	unitCounterText.setPosition(sf::Vector2f(unitCounterBackground.getPosition().x + 4, unitCounterBackground.getPosition().y - 6));
 
 	create_ent_button.setString("create");
 	create_ent_button.setPosition(sf::Vector2f(leftX + 50, topMiddleY));
@@ -81,6 +103,26 @@ void Interface::setViewAnchor(sf::View *_viewAnchor)
 
 // sf::View* Interface::getViewAnchor()
 
+void Interface::HandleEvents(sf::Event& event)
+{
+	/*
+	if (engine::logic::mouseIsOver(ui->create_ent_button.m_shape, *app->window, *ui->getViewAnchor())) // create new entity
+	{
+		callback for createentbutton
+	}
+	else if (engine::logic::mouseIsOver(ui->delete_ent_button.m_shape, *app->window, *ui->getViewAnchor()) && !entMan->selectedEnts.empty())
+	{
+		callback for delete ent button
+	}
+	*/
+}
+
+void Interface::Update()
+{
+	unitCounterBackground.setSize(sf::Vector2f(unitCounterText.getGlobalBounds().width + 32, unitCounterBackground.getSize().y));
+	memesCounterBackground.setSize(sf::Vector2f(memesCounterText.getGlobalBounds().width + 32, unitCounterBackground.getSize().y));
+}
+
 void Interface::Draw()
 {
 	Update();
@@ -93,16 +135,11 @@ void Interface::Draw()
 	targetWindow->draw(unitCounterIcon);
 	targetWindow->draw(unitCounterText);
 
+	targetWindow->draw(memesCounterBackground);
+	targetWindow->draw(memesCounterIcon);
+	targetWindow->draw(memesCounterText);
+
 	targetWindow->draw(bottomBar);
 
 	targetWindow->draw(delete_ent_button);
-}
-
-void Interface::Update()
-{
-	unitCounterBackground.setSize(sf::Vector2f(unitCounterText.getGlobalBounds().width + 35, unitCounterBackground.getSize().y));
-}
-
-void Interface::HandleEvents()
-{
 }

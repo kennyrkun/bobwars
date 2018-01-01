@@ -16,15 +16,16 @@ public:
 	void setViewAnchor(sf::View *viewAnchor);
 	sf::View* getViewAnchor() { return viewAnchor; }
 
-	void Draw();
+	void HandleEvents(sf::Event& event);
 	void Update();
-	void HandleEvents();
+	void Draw();
 
 	SFUI::TextButton create_ent_button;
 	SFUI::TextButton delete_ent_button;
 	// TODO: replace these with SFUI::Button
 
 	sf::Text unitCounterText;
+	sf::Text memesCounterText;
 		
 	sf::RectangleShape bottomBar;
 	sf::RectangleShape topBar;
@@ -38,6 +39,10 @@ private:
 	sf::RectangleShape unitCounterIcon;
 	sf::Texture unitCounterIcon_tex;
 	sf::RectangleShape unitCounterBackground;
+
+	sf::RectangleShape memesCounterIcon;
+	sf::Texture memesCounterIcon_tex;
+	sf::RectangleShape memesCounterBackground;
 };
 
 #endif /* INTERFACE_HPP */

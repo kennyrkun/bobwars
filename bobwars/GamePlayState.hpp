@@ -25,6 +25,11 @@ struct GameWorld
 	size_t mapSizeY;
 };
 
+struct Resources
+{
+	int memes = 100;
+};
+
 class GamePlayState : public AppState
 {
 public:
