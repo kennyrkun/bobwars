@@ -1,11 +1,12 @@
 #ifndef BASE_ENTITY_HPP
 #define BASE_ENTITY_HPP
 
-#include <ENGINE/Engine.hpp>
 #include <SFML/Graphics.hpp>
-#include <ENGINE/Graphics/Line.hpp>
 
 #include <string>
+
+// I have a feeling the entire entity system has a design of complete horseshit.
+// If anyone would like to fix it, it'd be very much appreciated.
 
 class BaseEntity
 {
@@ -14,18 +15,22 @@ public:
 	~BaseEntity();
 
 	sf::Sprite sprite;
+
+	//TODO: move this out of the entity class itself and have the renderer draw one for each bob, since this is just used in debug mode.
 	sf::CircleShape moveDest;
 
 	int id;
-	int team = 0;
-	int armor = 0;
-	int hitpoints = 0;
+
+	int team;
+	int armor;
+	int hitpoints;
+	int health;
 
 	bool isSelected;
 	bool movable;
-	bool moving = false;
+	bool moving;
 
-	const std::string type = "BaseEntity";
+	std::string type;
 
 	void moveTo(const sf::Vector2f &dest);
 	void Update();

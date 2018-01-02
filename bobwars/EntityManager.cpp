@@ -1,5 +1,13 @@
 #include "EntityManager.hpp"
 
+#include <ENGINE\Engine.hpp>
+#include <ENGINE\Logger.hpp>
+
+#include "BaseEntity.hpp"
+
+#include "Bob.hpp"
+#include "CommentSection.hpp"
+
 EntityManager::EntityManager()
 {
 	logger::SILENT("DEBUG", "ObjectManager constructed.");
@@ -18,9 +26,9 @@ EntityManager::~EntityManager()
 	logger::SILENT("DEBUG", "ObjectManager deconstructed.");
 }
 
-void EntityManager::newBaseEntity()
+BaseEntity* EntityManager::newBaseEntity()
 {
-	//TOOD: optimise entity creation
+	//TODO: optimise entity creation
 
 	BaseEntity *newBaseEntity = new BaseEntity();
 	newBaseEntity->id = entities.size() + 1;
@@ -29,12 +37,13 @@ void EntityManager::newBaseEntity()
 	entities.push_back(newBaseEntity); // add it to the stack
 	selectedEnts.push_back(newBaseEntity); // select it
 
+	return newBaseEntity;
 //	logger::INFO("creating new entity (" + std::to_string(newEnt->id) + ")");
 }
 
-void EntityManager::newBob()
+BaseEntity* EntityManager::newBob()
 {
-	//TOOD: optimise entity creation
+	//TODO: optimise entity creation
 
 	Bob *newBobEntity = new Bob();
 	newBobEntity->id = entities.size() + 1;
@@ -42,13 +51,31 @@ void EntityManager::newBob()
 
 	entities.push_back(newBobEntity); // add it to the stack
 	selectedEnts.push_back(newBobEntity); // select it
+
+	return newBobEntity;
 									   
+//	logger::INFO("creating new entity (" + std::to_string(newEnt->id) + ")");
+}
+
+BaseEntity* EntityManager::newCommentSection()
+{
+	//TODO: optimise entity creation
+	//TODO: comment sections might not want to be selected on creation
+
+	CommentSection *newBobEntity = new CommentSection();
+	newBobEntity->id = entities.size() + 1;
+	newBobEntity->isSelected = true;
+
+	entities.push_back(newBobEntity); // add it to the stack
+	selectedEnts.push_back(newBobEntity); // select it
+				
+	return newBobEntity;
 //	logger::INFO("creating new entity (" + std::to_string(newEnt->id) + ")");
 }
 
 void EntityManager::deselectAllEnts()
 {
-	//TOOD: optimise deselection methods
+	//TODO: optimise deselection methods
 
 	for (size_t i = 0; i < selectedEnts.size(); i++)
 	{
@@ -71,7 +98,7 @@ void EntityManager::addEnt(BaseEntity* ent)
 
 void EntityManager::deleteEnt(BaseEntity* ent)
 {
-	//TOOD: optimise entity deletion;
+	//TODO: optimise entity deletion;
 
 	bool wasSelected = ent->isSelected;
 	//HACK: there has to be a way to do this cleanly without creating a bool for it

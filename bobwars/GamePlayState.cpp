@@ -6,6 +6,7 @@
 
 #include <ENGINE/Engine.hpp>
 #include <ENGINE/Logger.hpp>
+#include <ENGINE/Graphics/Line.hpp>
 #include <ENGINE/Graphics/Graphics.hpp>
 #include <ENGINE/Graphics/Text.hpp>
 
@@ -60,6 +61,8 @@ void GamePlayState::Init(AppEngine* app_)
 	ui = new Interface(app->window, &mainView2->view);
 
 	baseViewSpeed = 500;
+
+	entMan->newCommentSection()->setPosition(sf::Vector2f(app->window->getSize().x / 2, app->window->getSize().y / 2));
 
 	logger::INFO("GamePlayState ready!");
 }
@@ -397,7 +400,8 @@ void GamePlayState::Draw()
 			{
 				engine::graphics::outline(*app->window, entMan->entities[i]->sprite, 2, sf::Color::Red);
 				showObjectCoords(entMan->entities[i]->sprite);
-				engine::text::draw(*app->window, debugText, std::to_string(entMan->entities[i]->id) + "/" + std::to_string(entMan->entities.size()), sf::Vector2f(entMan->entities[i]->sprite.getPosition().x, entMan->entities[i]->sprite.getPosition().y), sf::Vector2f(.2f, .2f));
+				engine::text::draw(*app->window, debugText, std::to_string(entMan->entities[i]->id) + "/" + std::to_string(entMan->entities.size()), sf::Vector2f(entMan->entities[i]->sprite.getPosition().x, entMan->entities[i]->sprite.getPosition().y - entMan->entities[i]->sprite.getLocalBounds().height / 2), sf::Vector2f(.2f, .2f));
+				engine::text::draw(*app->window, debugText, entMan->entities[i]->type, sf::Vector2f(entMan->entities[i]->sprite.getPosition().x, entMan->entities[i]->sprite.getPosition().y), sf::Vector2f(.2f, .2f));
 
 				if (entMan->entities[i]->moving)
 				{
@@ -449,6 +453,45 @@ void GamePlayState::Draw()
 		engine::text::draw(*app->window, debugText, "physicalMaxEntities: " + std::to_string(entMan->physicalMaxEnts), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 60));
 		engine::text::draw(*app->window, debugText, "maxEntitiesPerTeam: " + std::to_string(entMan->maxEntsPerTeam), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 72));
 		engine::text::draw(*app->window, debugText, "delta: " + std::to_string(deltaClock.getElapsedTime().asMilliseconds()), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 84));
+
+		if (!entMan->selectedEnts.empty() && entMan->selectedEnts.size() == 1)
+		{
+			engine::text::draw(*app->window, debugText, "id: " + std::to_string(entMan->selectedEnts[0]->id), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 108));
+			engine::text::draw(*app->window, debugText, "team: " + std::to_string(entMan->selectedEnts[0]->team), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 120));
+			engine::text::draw(*app->window, debugText, "type: " + entMan->selectedEnts[0]->type, sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 132));
+			engine::text::draw(*app->window, debugText, "health: " + std::to_string(entMan->selectedEnts[0]->health), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 144));
+			engine::text::draw(*app->window, debugText, "hp: " + std::to_string(entMan->selectedEnts[0]->hitpoints), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 156));
+			engine::text::draw(*app->window, debugText, "armor: " + std::to_string(entMan->selectedEnts[0]->armor), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 168));
+			engine::text::draw(*app->window, debugText, "movable: " + std::to_string(entMan->selectedEnts[0]->movable), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 180));
+			engine::text::draw(*app->window, debugText, "moving: " + std::to_string(entMan->selectedEnts[0]->moving), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 192));
+		}
+
+		sf::RectangleShape top;
+		sf::RectangleShape left;
+		sf::RectangleShape right;
+		sf::RectangleShape bottom;
+
+		float width = 20;
+
+		top.setFillColor(sf::Color(255, 200, 0, 50));
+		left.setFillColor(sf::Color(255, 200, 0, 50));
+		right.setFillColor(sf::Color(255, 200, 0, 50));
+		bottom.setFillColor(sf::Color(255, 200, 0, 50));
+
+		top.setSize(sf::Vector2f(app->window->getSize().x, width)); // -
+		left.setSize(sf::Vector2f(width, app->window->getSize().y)); // |
+		right.setSize(sf::Vector2f(width, app->window->getSize().y)); // |
+		bottom.setSize(sf::Vector2f(app->window->getSize().x, width)); // -
+
+		top.setPosition(sf::Vector2f(0, 0));
+//		left.setPosition(sf::Vector2f(0, 0));
+		right.setPosition(sf::Vector2f(app->window->getSize().x - width, 0));
+		bottom.setPosition(sf::Vector2f(0, app->window->getSize().y - width));
+
+		app->window->draw(top);
+		app->window->draw(left);
+		app->window->draw(right);
+		app->window->draw(bottom);
 	}
 
 	app->window->display();

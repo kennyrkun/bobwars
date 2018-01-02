@@ -1,12 +1,12 @@
-#include "Bob.hpp"
+#include "CommentSection.hpp"
 
 #include <ENGINE\Logger.hpp>
 
-Bob::Bob()
+CommentSection::CommentSection()
 {
-	logger::INFO("Bob entity created.");
+	logger::INFO("CommentSection entity created.");
 
-	texture.loadFromFile("resource//textures//bob.png"); // no point in logging failure, as SFML does this for us (I wish it didn't!)
+	texture.loadFromFile("resource//textures//commentsection.png"); // no point in logging failure, as SFML does this for us (I wish it didn't!)
 	sprite.setTexture(texture, true);
 	sprite.setOrigin(sf::Vector2f(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2));
 
@@ -14,15 +14,15 @@ Bob::Bob()
 	moveDest.setPointCount(8);
 	moveDest.setFillColor(sf::Color::Red);
 	moveDest.setOrigin(sf::Vector2f(moveDest.getLocalBounds().width / 2, moveDest.getLocalBounds().height / 2));
-	
+
 	team = 1;
 	health = 10;
 	armor = 0;
 	hitpoints = 1;
-	type = "bob";
-	movable = true;
+	type = "commentsection";
+	movable = false;
 }
 
-Bob::~Bob()
+CommentSection::~CommentSection()
 {
 }

@@ -1,5 +1,8 @@
 #include "BaseEntity.hpp"
 
+#include <ENGINE/Graphics/Line.hpp>
+#include <ENGINE/Engine.hpp>
+
 BaseEntity::BaseEntity()
 {
 	logger::INFO("Entity base class constructed.");
@@ -17,15 +20,22 @@ BaseEntity::~BaseEntity()
 
 void BaseEntity::moveTo(const sf::Vector2f &pos)
 {
-	logger::INFO("Moving to X: " + std::to_string(pos.x) + ", Y: " + std::to_string(pos.y) + ". (" + std::to_string(id) + ")");
-	movePos = pos;
-	moveDest.setPosition(pos);
-	moving = true;
+	if (movable)
+	{
+		logger::INFO("Moving to X: " + std::to_string(pos.x) + ", Y: " + std::to_string(pos.y) + ". (" + std::to_string(id) + ")");
+		movePos = pos;
+		moveDest.setPosition(pos);
+		moving = true;
+	}
+	else
+	{
+		logger::INFO("This entity is not movable! (" + type + ")");
+	}
 }
 
 void BaseEntity::Update()
 {
-	if (moving)
+	if (moving && movable)
 	{
 		int sX = static_cast<int>(sprite.getPosition().x);
 		int sY = static_cast<int>(sprite.getPosition().y);

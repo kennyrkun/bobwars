@@ -2,7 +2,6 @@
 #define ENTITY_MANAGER_HPP
 
 #include "BaseEntity.hpp"
-#include "Bob.hpp"
 
 #include <vector>
 
@@ -15,8 +14,9 @@ public:
 	std::vector<BaseEntity*> entities;
 	std::vector<BaseEntity*> selectedEnts;
 
-	void newBaseEntity();
-	void newBob();
+	BaseEntity* newBaseEntity();
+	BaseEntity* newBob();
+	BaseEntity* newCommentSection();
 
 	// newBob
 	// newBob(position);
@@ -34,9 +34,6 @@ public:
 	unsigned long long int physicalMaxEnts = std::numeric_limits<long long int>::max();
 	unsigned long long int maxEnts = 8000;
 	unsigned long long int maxEntsPerTeam;
-
-private:
-	// nothing
 };
 
 #endif // ENTITY_MANAGER_HPP

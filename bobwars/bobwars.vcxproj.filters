@@ -87,6 +87,9 @@
     <ClInclude Include="Interface.hpp">
       <Filter>BOBWARS\Systems\Graphical\Interface</Filter>
     </ClInclude>
+    <ClInclude Include="CommentSection.hpp">
+      <Filter>BOBWARS\Systems\Entities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseEntity.cpp">
@@ -145,6 +148,9 @@
     </ClCompile>
     <ClCompile Include="Interface.cpp">
       <Filter>BOBWARS\Systems\Graphical\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="CommentSection.cpp">
+      <Filter>BOBWARS\Systems\Entities</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
