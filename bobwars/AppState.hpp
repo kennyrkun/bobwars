@@ -3,6 +3,8 @@
 
 #include "AppEngine.hpp"
 
+//TODO: non static app states
+
 class AppState
 {
 public:

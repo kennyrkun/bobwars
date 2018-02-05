@@ -1,13 +1,10 @@
 #ifndef MAIN_MENU_STATE
 #define MAIN_MENU_STATE
 
-#include "GamePlayState.hpp"
-#include "ENGINE/Logger.hpp"
-#include <SFUI/TextButton.hpp>
-#include "ResourceManager.hpp"
-
 #include "AppEngine.hpp"
 #include "AppState.hpp"
+
+#include <SFUI/TextButton.hpp>
 
 class MainMenuState : public AppState
 {

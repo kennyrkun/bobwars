@@ -1,5 +1,7 @@
+#include "GameCreationState.hpp"
 #include "MainMenuState.hpp"
 
+#include "ENGINE/Logger.hpp"
 #include <iostream>
 
 // public:
@@ -75,7 +77,7 @@ void MainMenuState::HandleEvents()
 			{
 				logger::INFO("Starting a new game...");
 
-				app->PushState(GamePlayState::Instance());
+				app->PushState(GameCreationState::Instance());
 			}
 			else if (mouseIsOver(loadButton.m_shape))
 			{

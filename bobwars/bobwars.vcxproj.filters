@@ -69,9 +69,6 @@
     <ClInclude Include="GameCreationState.hpp">
       <Filter>BOBWARS\Systems\GameStates</Filter>
     </ClInclude>
-    <ClInclude Include="GamePauseState.hpp">
-      <Filter>BOBWARS\Systems\GameStates</Filter>
-    </ClInclude>
     <ClInclude Include="Menu.hpp">
       <Filter>BOBWARS\Systems\Graphical</Filter>
     </ClInclude>
@@ -89,6 +86,9 @@
     </ClInclude>
     <ClInclude Include="CommentSection.hpp">
       <Filter>BOBWARS\Systems\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="GamePauseState.hpp">
+      <Filter>BOBWARS\Systems\GameStates</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -134,9 +134,6 @@
     <ClCompile Include="Menu.cpp">
       <Filter>BOBWARS\Systems\Graphical</Filter>
     </ClCompile>
-    <ClCompile Include="GamePauseState.cpp">
-      <Filter>BOBWARS\Systems\GameStates</Filter>
-    </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>BOBWARS\Systems\Graphical</Filter>
     </ClCompile>
@@ -151,6 +148,9 @@
     </ClCompile>
     <ClCompile Include="CommentSection.cpp">
       <Filter>BOBWARS\Systems\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="GamePauseState.cpp">
+      <Filter>BOBWARS\Systems\GameStates</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

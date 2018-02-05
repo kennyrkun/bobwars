@@ -21,9 +21,6 @@ public:
 		return &GameCreationState_dontfuckwithme;
 	}
 
-protected:
-	GameCreationState() { }
-
 private:
 	static GameCreationState GameCreationState_dontfuckwithme;
 	AppEngine* app;
