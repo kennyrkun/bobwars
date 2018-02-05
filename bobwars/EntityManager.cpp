@@ -17,11 +17,18 @@ EntityManager::EntityManager()
 
 EntityManager::~EntityManager()
 {
-	for (size_t i = 0; i < selectedEnts.size(); i++)
-		delete selectedEnts[i];
-
 	for (size_t i = 0; i < entities.size(); i++)
 		delete entities[i];
+
+//	is this needed?
+//	in theory, there can be no more selected entities than entities,
+//	so deleting all entities will also delete all selected entities
+//	thus rendering this code uselss and crash-creaty
+//	for (size_t i = 0; i < selectedEnts.size(); i++)
+//		delete selectedEnts[i];
+
+	selectedEnts.clear();
+	entities.clear();
 
 	logger::SILENT("DEBUG", "ObjectManager deconstructed.");
 }
