@@ -21,18 +21,18 @@ public:
 
 	static GamePauseState* Instance()
 	{
-		return &GameCreationState_dontfuckwithme;
+		return &GamePauseState_dontfuckwithme;
 	}
 
 protected:
 	GamePauseState() { }
 
 private:
-	static GamePauseState GameCreationState_dontfuckwithme;
+	static GamePauseState GamePauseState_dontfuckwithme;
 	AppEngine* app;
 
 	sf::RectangleShape background;
-	sf::Texture backgroundTexture;
+	sf::Texture* backgroundTexture; //HACK: don't crash on startup while in debug
 
 	Menu* pauseMenu;
 };

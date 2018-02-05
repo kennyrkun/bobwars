@@ -8,7 +8,7 @@
 #include <ENGINE/Engine.hpp>
 #include "GamePlayState.hpp"
 
-GamePauseState GamePauseState::GameCreationState_dontfuckwithme;
+GamePauseState GamePauseState::GamePauseState_dontfuckwithme;
 
 void GamePauseState::Init(AppEngine* app_)
 {
@@ -16,12 +16,14 @@ void GamePauseState::Init(AppEngine* app_)
 
 	app = app_;
 
+	backgroundTexture = new sf::Texture;
+
 	sf::Vector2u windowSize = app->window->getSize();
-	backgroundTexture.create(windowSize.x, windowSize.y);
-	backgroundTexture.update(*app->window); // give texture window
+	backgroundTexture->create(windowSize.x, windowSize.y);
+	backgroundTexture->update(*app->window); // give texture window
 
 	background.setSize(sf::Vector2f(windowSize.x, windowSize.y));
-	background.setTexture(&backgroundTexture);
+	background.setTexture(*&backgroundTexture);
 	background.setFillColor(sf::Color(255, 255, 255, 155));
 
 	std::vector<SFUI::TextButton*> buttons;
@@ -51,6 +53,7 @@ void GamePauseState::Cleanup()
 	logger::INFO("GamePauseState Cleaningup");
 
 	delete pauseMenu;
+	delete backgroundTexture;
 
 	logger::INFO("GamePauseState Cleanedup");
 }

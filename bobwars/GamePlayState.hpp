@@ -59,7 +59,7 @@ private:
 	EntityManager *entMan;
 	Interface *ui;
 	sf::RectangleShape world;
-	sf::Texture		   worldTexture;
+	sf::Texture		   *worldTexture;
 
 	sf::Font Arial;
 	sf::Text debugFrameCounter;

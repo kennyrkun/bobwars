@@ -34,12 +34,14 @@ void GamePlayState::Init(AppEngine* app_)
 
 	logger::INFO("Loading world texture...");
 
-	if (!worldTexture.loadFromFile("resource//textures//world.png"))
+	worldTexture = new sf::Texture; // fix not running in debug
+
+	if (!worldTexture->loadFromFile("resource//textures//world.png"))
 		logger::SILENT("ERROR", "Failed to load world textures!");
 
 	//TODO: make camera align with world center on game start
 	world.setSize(sf::Vector2f(800, 600));
-	world.setTexture(&worldTexture);
+	world.setTexture(*&worldTexture);
 
 	logger::INFO("Preparing user interface elements...");
 	debugFrameCounter.setFont(Arial);
@@ -77,6 +79,7 @@ void GamePlayState::Cleanup()
 	delete mainView2;
 	delete entMan;
 	delete ui;
+	delete worldTexture;
 
 	logger::INFO("GamePlayState cleaned up");
 }
@@ -167,12 +170,12 @@ void GamePlayState::HandleEvents()
 							entMan->deselectAllEnts();
 							entMan->selectedEnts = entMan->entities;
 
-							for (long long int i = 0; i < entMan->entities.size(); i++)
+							for (size_t i = 0; i < entMan->entities.size(); i++)
 								entMan->entities[i]->isSelected = true;
 
 							ui->delete_ent_button.enable();
 
-							logger::INFO("selected " + std::to_string(entMan->selectedEnts.size()) + " entities (of " + std::to_string(entMan->entities.size()) + " total entities)");
+							logger::INFO("selected " + std::to_string(entMan->selectedEnts.size()) + " entities (of " + std::to_string(entMan->entities.size()) + ")");
 						}
 						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Equal))
 						{
