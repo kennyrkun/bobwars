@@ -1,9 +1,9 @@
 #include "Menu.hpp"
 
-#include <ENGINE/Logger.hpp>
-#include <ENGINE/Engine.hpp>
+#include "Util/Logger.hpp"
+#include "Util/Util.hpp"
 
-// HACK: this is only here because the EXACT SAME THING in the engine won't work. /shrug
+// HACK: this is only here because the EXACT SAME THING in the util won't work. /shrug
 bool mouseIsOver(sf::Shape &object, sf::RenderWindow &window)
 {
 	if (object.getGlobalBounds().contains(window.mapPixelToCoords(sf::Mouse::getPosition(window))))

@@ -1,4 +1,4 @@
-#include <ENGINE/Engine.hpp>
+#include "Util.hpp"
 
 #include <string>
 #include <time.h>
@@ -6,7 +6,7 @@
 #include <fstream>
 #include <filesystem>
 
-namespace engine
+namespace util
 {
 	std::string const version("1.2.2");
 

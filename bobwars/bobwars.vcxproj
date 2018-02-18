@@ -19,11 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\engine\ENGINE\Engine.hpp" />
-    <ClInclude Include="..\engine\ENGINE\Graphics\Graphics.hpp" />
-    <ClInclude Include="..\engine\ENGINE\Graphics\Line.hpp" />
-    <ClInclude Include="..\engine\ENGINE\Graphics\Text.hpp" />
-    <ClInclude Include="..\engine\ENGINE\Logger.hpp" />
     <ClInclude Include="AppEngine.hpp" />
     <ClInclude Include="AppState.hpp" />
     <ClInclude Include="BaseEntity.hpp" />
@@ -44,13 +39,13 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="Util\Util.hpp" />
+    <ClInclude Include="Util\Graphics\Graphics.hpp" />
+    <ClInclude Include="Util\Graphics\Line.hpp" />
+    <ClInclude Include="Util\Graphics\Text.hpp" />
+    <ClInclude Include="Util\Logger.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\engine\ENGINE\Engine.cpp" />
-    <ClCompile Include="..\engine\ENGINE\Graphics\Graphics.cpp" />
-    <ClCompile Include="..\engine\ENGINE\Graphics\Line.cpp" />
-    <ClCompile Include="..\engine\ENGINE\Graphics\Text.cpp" />
-    <ClCompile Include="..\engine\ENGINE\Logger.cpp" />
     <ClCompile Include="AppEngine.cpp" />
     <ClCompile Include="BaseEntity.cpp" />
     <ClCompile Include="Bob.cpp" />
@@ -71,6 +66,11 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="Util\Util.cpp" />
+    <ClCompile Include="Util\Graphics\Graphics.cpp" />
+    <ClCompile Include="Util\Graphics\Line.cpp" />
+    <ClCompile Include="Util\Graphics\Text.cpp" />
+    <ClCompile Include="Util\Logger.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{4AED59B2-9B61-4406-9C63-102E3343A182}</ProjectGuid>
@@ -144,7 +144,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>SFML_STATIC;_MBCS%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\\engine;..\\SFML\\include;..\\SFUI\\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\\SFML\\include;..\\SFUI\\include;</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile />
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>

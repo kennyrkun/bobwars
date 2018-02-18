@@ -1,7 +1,7 @@
 #include "GameCreationState.hpp"
 #include "MainMenuState.hpp"
 
-#include "ENGINE/Logger.hpp"
+#include "Util/Logger.hpp"
 #include <iostream>
 
 // public:

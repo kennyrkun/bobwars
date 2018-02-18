@@ -1,7 +1,7 @@
 #include "BaseEntity.hpp"
 
-#include <ENGINE/Graphics/Line.hpp>
-#include <ENGINE/Engine.hpp>
+#include "Util/Graphics/Line.hpp"
+#include "Util/Util.hpp"
 
 BaseEntity::BaseEntity()
 {

@@ -1,4 +1,4 @@
-#include <ENGINE/Engine.hpp>
+#include "Util.hpp"
 
 #include <fstream>
 #include <iostream>
@@ -31,7 +31,7 @@ namespace logger
 {
 	void INFO(std::string output)
 	{
-		output = engine::getTimestamp() + " INFO: " + output;
+		output = util::getTimestamp() + " INFO: " + output;
 
 		std::cout << output << std::endl;
 		writeLog(output);
@@ -39,7 +39,7 @@ namespace logger
 
 	void WARNING(std::string output)
 	{
-		output = engine::getTimestamp() + " WARNING: " + output;
+		output = util::getTimestamp() + " WARNING: " + output;
 		std::cout << output << std::endl;
 
 		writeLog(output);
@@ -47,7 +47,7 @@ namespace logger
 
 	void ERROR(std::string output)
 	{
-		output = engine::getTimestamp() + " ERROR: " + output;
+		output = util::getTimestamp() + " ERROR: " + output;
 		std::cerr << output << std::endl;
 
 		writeLog(output);
@@ -55,14 +55,14 @@ namespace logger
 
 	void SILENT(std::string type, std::string output)
 	{
-		output = engine::getTimestamp() + " " + type + ": " + output;
+		output = util::getTimestamp() + " " + type + ": " + output;
 
 		writeLog(output);
 	}
 
 	void CUSTOM(std::string type, std::string output)
 	{
-		output = engine::getTimestamp() + " " + type + ": " + output;
+		output = util::getTimestamp() + " " + type + ": " + output;
 		std::cout << output << std::endl;
 
 		writeLog(output);
@@ -113,7 +113,7 @@ namespace loggerv2
 		if (logLevel == 0)
 			return;
 
-		message.insert(0, engine::getTimestamp() + " INFO: ");
+		message.insert(0, util::getTimestamp() + " INFO: ");
 		logToFile(message);
 
 		if (logLevel >= 2) // info or greater
@@ -125,7 +125,7 @@ namespace loggerv2
 		if (logLevel == 0)
 			return;
 
-		message.insert(0, engine::getTimestamp() + " WARNING: ");
+		message.insert(0, util::getTimestamp() + " WARNING: ");
 		logToFile(message);
 
 		if (logLevel >= 2) // info or greater
@@ -137,7 +137,7 @@ namespace loggerv2
 		if (logLevel == 0)
 			return;
 
-		message.insert(0, engine::getTimestamp() + " ERROR: ");
+		message.insert(0, util::getTimestamp() + " ERROR: ");
 		logToFile(message);
 
 		if (logLevel >= 2) // info or greater
@@ -149,7 +149,7 @@ namespace loggerv2
 		if (logLevel == 0)
 			return;
 
-		message.insert(0, engine::getTimestamp() + " DEBUG: ");
+		message.insert(0, util::getTimestamp() + " DEBUG: ");
 		logToFile(message);
 
 		if (logLevel >= 3) // debug or greater
@@ -187,7 +187,7 @@ Logger::~Logger()
 
 void Logger::log(std::string type, std::string message)
 {
-	message = engine::getTimestamp() + " " + type + ": " + message;
+	message = util::getTimestamp() + " " + type + ": " + message;
 
 	std::cout << message << std::endl;
 	writeLog(message);
@@ -195,7 +195,7 @@ void Logger::log(std::string type, std::string message)
 
 void Logger::info(std::string message)
 {
-	message = engine::getTimestamp() + " INFO: " + message;
+	message = util::getTimestamp() + " INFO: " + message;
 
 	std::cout << message << std::endl;
 	writeLog(message);
@@ -203,7 +203,7 @@ void Logger::info(std::string message)
 
 void Logger::warn(std::string message)
 {
-	message = engine::getTimestamp() + " WARNING: " + message;
+	message = util::getTimestamp() + " WARNING: " + message;
 
 	std::cout << message << std::endl;
 	writeLog(message);
@@ -211,7 +211,7 @@ void Logger::warn(std::string message)
 
 void Logger::error(std::string message)
 {
-	message = engine::getTimestamp() + " ERROR: " + message;
+	message = util::getTimestamp() + " ERROR: " + message;
 
 	std::cout << message << std::endl;
 	writeLog(message);

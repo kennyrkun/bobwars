@@ -1,11 +1,11 @@
 #ifndef ENGINE_HPP
 #define ENGINE_HPP
 
-#include <ENGINE/Logger.hpp>
+#include "Logger.hpp"
 
 #include <SFML/Graphics.hpp>
 
-namespace engine
+namespace util
 {
 	extern const std::string version;
 

@@ -3,7 +3,8 @@
 
 #include <SFML/Graphics.hpp>
 
-namespace engine {
+namespace util {
+
 namespace text
 {
 	void draw(sf::RenderWindow &window, sf::Text &text, const std::string string, const sf::Vector2f &pos, const int characterSize, const sf::Color &c);
@@ -14,6 +15,7 @@ namespace text
 
 	void draw(sf::RenderWindow &window, sf::Text &text, const std::string string, const sf::Vector2f &pos);
 }
+
 }
 
 #endif

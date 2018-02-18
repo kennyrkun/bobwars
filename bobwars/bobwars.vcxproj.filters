@@ -1,156 +1,156 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="ENGINE">
-      <UniqueIdentifier>{43460924-c4c9-4560-a6a0-6686b453ac22}</UniqueIdentifier>
-    </Filter>
     <Filter Include="BOBWARS">
       <UniqueIdentifier>{dd8c5868-6c01-4eb6-a632-06173d2931ee}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ENGINE\Graphics">
-      <UniqueIdentifier>{16a8e2dd-dbf2-4fc9-b352-89717ce6afc8}</UniqueIdentifier>
+    <Filter Include="BOBWARS\Util">
+      <UniqueIdentifier>{7f6725ec-b195-414f-b052-6d78b30c53c4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="BOBWARS\Systems">
+    <Filter Include="BOBWARS\Game">
       <UniqueIdentifier>{d0e709c4-2ae6-45de-aa2d-1eb16649a0b5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="BOBWARS\Systems\Entities">
+    <Filter Include="BOBWARS\Game\Entities">
       <UniqueIdentifier>{8182fa6a-3efe-4037-a9b0-cf947c7a12c0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="BOBWARS\Systems\Graphical">
+    <Filter Include="BOBWARS\Game\Graphical">
       <UniqueIdentifier>{371f4bb8-4ecb-4516-8845-55265c76a8b1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="BOBWARS\Systems\GameStates">
+    <Filter Include="BOBWARS\Game\Graphical\Interface">
+      <UniqueIdentifier>{26b73e13-2708-465d-8f44-258c11ad1be6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BOBWARS\Game\GameStates">
       <UniqueIdentifier>{f1a42a54-de3b-40dc-9d0d-289da8ba3beb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="BOBWARS\Systems\GameStates\Manager &amp; Base">
+    <Filter Include="BOBWARS\Game\GameStates\Manager &amp; Base">
       <UniqueIdentifier>{b0e65a1e-d8f1-4afe-9a89-ea101c211d7f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="BOBWARS\Systems\Graphical\Interface">
-      <UniqueIdentifier>{26b73e13-2708-465d-8f44-258c11ad1be6}</UniqueIdentifier>
+    <Filter Include="BOBWARS\Util\Graphics">
+      <UniqueIdentifier>{30b74059-0d1f-4f20-b842-bf9e81b51ce5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseEntity.hpp">
-      <Filter>BOBWARS\Systems\Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="..\engine\ENGINE\Logger.hpp">
-      <Filter>ENGINE</Filter>
-    </ClInclude>
-    <ClInclude Include="..\engine\ENGINE\Engine.hpp">
-      <Filter>ENGINE</Filter>
-    </ClInclude>
-    <ClInclude Include="..\engine\ENGINE\Graphics\Graphics.hpp">
-      <Filter>ENGINE\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\engine\ENGINE\Graphics\Text.hpp">
-      <Filter>ENGINE\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\engine\ENGINE\Graphics\Line.hpp">
-      <Filter>ENGINE\Graphics</Filter>
+      <Filter>BOBWARS\Game\Entities</Filter>
     </ClInclude>
     <ClInclude Include="GamePlayState.hpp">
-      <Filter>BOBWARS\Systems\GameStates</Filter>
+      <Filter>BOBWARS\Game\GameStates</Filter>
     </ClInclude>
     <ClInclude Include="MainMenuState.hpp">
-      <Filter>BOBWARS\Systems\GameStates</Filter>
+      <Filter>BOBWARS\Game\GameStates</Filter>
     </ClInclude>
     <ClInclude Include="ResourceManager.hpp">
-      <Filter>BOBWARS\Systems</Filter>
+      <Filter>BOBWARS\Game</Filter>
     </ClInclude>
     <ClInclude Include="Button.hpp">
-      <Filter>BOBWARS\Systems\Graphical</Filter>
+      <Filter>BOBWARS\Game\Graphical</Filter>
     </ClInclude>
     <ClInclude Include="AppState.hpp">
-      <Filter>BOBWARS\Systems\GameStates\Manager &amp; Base</Filter>
+      <Filter>BOBWARS\Game\GameStates\Manager &amp; Base</Filter>
     </ClInclude>
     <ClInclude Include="AppEngine.hpp">
-      <Filter>BOBWARS\Systems\GameStates\Manager &amp; Base</Filter>
+      <Filter>BOBWARS\Game\GameStates\Manager &amp; Base</Filter>
     </ClInclude>
     <ClInclude Include="GameCreationState.hpp">
-      <Filter>BOBWARS\Systems\GameStates</Filter>
+      <Filter>BOBWARS\Game\GameStates</Filter>
     </ClInclude>
     <ClInclude Include="Menu.hpp">
-      <Filter>BOBWARS\Systems\Graphical</Filter>
+      <Filter>BOBWARS\Game\Graphical</Filter>
     </ClInclude>
     <ClInclude Include="Camera.hpp">
-      <Filter>BOBWARS\Systems\Graphical</Filter>
+      <Filter>BOBWARS\Game\Graphical</Filter>
     </ClInclude>
     <ClInclude Include="EntityManager.hpp">
-      <Filter>BOBWARS\Systems</Filter>
+      <Filter>BOBWARS\Game</Filter>
     </ClInclude>
     <ClInclude Include="Bob.hpp">
-      <Filter>BOBWARS\Systems\Entities</Filter>
+      <Filter>BOBWARS\Game\Entities</Filter>
     </ClInclude>
     <ClInclude Include="Interface.hpp">
-      <Filter>BOBWARS\Systems\Graphical\Interface</Filter>
+      <Filter>BOBWARS\Game\Graphical\Interface</Filter>
     </ClInclude>
     <ClInclude Include="CommentSection.hpp">
-      <Filter>BOBWARS\Systems\Entities</Filter>
+      <Filter>BOBWARS\Game\Entities</Filter>
     </ClInclude>
     <ClInclude Include="GamePauseState.hpp">
-      <Filter>BOBWARS\Systems\GameStates</Filter>
+      <Filter>BOBWARS\Game\GameStates</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Logger.hpp">
+      <Filter>BOBWARS\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Graphics\Text.hpp">
+      <Filter>BOBWARS\Util\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Graphics\Line.hpp">
+      <Filter>BOBWARS\Util\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Graphics\Graphics.hpp">
+      <Filter>BOBWARS\Util\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Util.hpp">
+      <Filter>BOBWARS\Util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseEntity.cpp">
-      <Filter>BOBWARS\Systems\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\ENGINE\Logger.cpp">
-      <Filter>ENGINE</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\ENGINE\Engine.cpp">
-      <Filter>ENGINE</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\ENGINE\Graphics\Graphics.cpp">
-      <Filter>ENGINE\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\ENGINE\Graphics\Text.cpp">
-      <Filter>ENGINE\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\ENGINE\Graphics\Line.cpp">
-      <Filter>ENGINE\Graphics</Filter>
+      <Filter>BOBWARS\Game\Entities</Filter>
     </ClCompile>
     <ClCompile Include="MainMenuState.cpp">
-      <Filter>BOBWARS\Systems\GameStates</Filter>
+      <Filter>BOBWARS\Game\GameStates</Filter>
     </ClCompile>
     <ClCompile Include="GamePlayState.cpp">
-      <Filter>BOBWARS\Systems\GameStates</Filter>
+      <Filter>BOBWARS\Game\GameStates</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>BOBWARS</Filter>
     </ClCompile>
     <ClCompile Include="ResourceManager.cpp">
-      <Filter>BOBWARS\Systems</Filter>
+      <Filter>BOBWARS\Game</Filter>
     </ClCompile>
     <ClCompile Include="Button.cpp">
-      <Filter>BOBWARS\Systems\Graphical</Filter>
+      <Filter>BOBWARS\Game\Graphical</Filter>
     </ClCompile>
     <ClCompile Include="AppEngine.cpp">
-      <Filter>BOBWARS\Systems\GameStates\Manager &amp; Base</Filter>
+      <Filter>BOBWARS\Game\GameStates\Manager &amp; Base</Filter>
     </ClCompile>
     <ClCompile Include="GameCreationState.cpp">
-      <Filter>BOBWARS\Systems\GameStates</Filter>
+      <Filter>BOBWARS\Game\GameStates</Filter>
     </ClCompile>
     <ClCompile Include="Menu.cpp">
-      <Filter>BOBWARS\Systems\Graphical</Filter>
+      <Filter>BOBWARS\Game\Graphical</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
-      <Filter>BOBWARS\Systems\Graphical</Filter>
+      <Filter>BOBWARS\Game\Graphical</Filter>
     </ClCompile>
     <ClCompile Include="EntityManager.cpp">
-      <Filter>BOBWARS\Systems</Filter>
+      <Filter>BOBWARS\Game</Filter>
     </ClCompile>
     <ClCompile Include="Bob.cpp">
-      <Filter>BOBWARS\Systems\Entities</Filter>
+      <Filter>BOBWARS\Game\Entities</Filter>
     </ClCompile>
     <ClCompile Include="Interface.cpp">
-      <Filter>BOBWARS\Systems\Graphical\Interface</Filter>
+      <Filter>BOBWARS\Game\Graphical\Interface</Filter>
     </ClCompile>
     <ClCompile Include="CommentSection.cpp">
-      <Filter>BOBWARS\Systems\Entities</Filter>
+      <Filter>BOBWARS\Game\Entities</Filter>
     </ClCompile>
     <ClCompile Include="GamePauseState.cpp">
-      <Filter>BOBWARS\Systems\GameStates</Filter>
+      <Filter>BOBWARS\Game\GameStates</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Logger.cpp">
+      <Filter>BOBWARS\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Graphics\Text.cpp">
+      <Filter>BOBWARS\Util\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Graphics\Line.cpp">
+      <Filter>BOBWARS\Util\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Graphics\Graphics.cpp">
+      <Filter>BOBWARS\Util\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Util.cpp">
+      <Filter>BOBWARS\Util</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,7 +1,7 @@
 #include "Graphics.hpp"
 #include "../Logger.hpp"
 
-namespace engine {
+namespace util {
 namespace graphics
 {
 	void outline(sf::RenderWindow &window, sf::Shape &object, float thickness, sf::Color color)

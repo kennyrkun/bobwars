@@ -3,7 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 
-namespace engine {
+namespace util {
 namespace graphics
 {
 	void outline(sf::RenderWindow &window, sf::Shape &object, float thickness, sf::Color color);

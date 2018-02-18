@@ -1,6 +1,6 @@
 #include "Interface.hpp"
 
-#include <ENGINE/Logger.hpp>
+#include "Util/Logger.hpp"
 
 Interface::Interface(sf::RenderWindow *_targetWindow, sf::View *_mainView)
 {
@@ -106,11 +106,11 @@ void Interface::setViewAnchor(sf::View *_viewAnchor)
 void Interface::HandleEvents(sf::Event& event)
 {
 	/*
-	if (engine::logic::mouseIsOver(ui->create_ent_button.m_shape, *app->window, *ui->getViewAnchor())) // create new entity
+	if (util::logic::mouseIsOver(ui->create_ent_button.m_shape, *app->window, *ui->getViewAnchor())) // create new entity
 	{
 		callback for createentbutton
 	}
-	else if (engine::logic::mouseIsOver(ui->delete_ent_button.m_shape, *app->window, *ui->getViewAnchor()) && !entMan->selectedEnts.empty())
+	else if (util::logic::mouseIsOver(ui->delete_ent_button.m_shape, *app->window, *ui->getViewAnchor()) && !entMan->selectedEnts.empty())
 	{
 		callback for delete ent button
 	}

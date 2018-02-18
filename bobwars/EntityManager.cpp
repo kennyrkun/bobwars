@@ -1,7 +1,7 @@
 #include "EntityManager.hpp"
 
-#include <ENGINE\Engine.hpp>
-#include <ENGINE\Logger.hpp>
+#include "Util\Util.hpp"
+#include "Util\Logger.hpp"
 
 #include "BaseEntity.hpp"
 
@@ -12,7 +12,7 @@ EntityManager::EntityManager()
 {
 	logger::SILENT("DEBUG", "ObjectManager constructed.");
 
-	maxEntsPerTeam = maxEnts / engine::maxPlayers;
+	maxEntsPerTeam = maxEnts / util::maxPlayers;
 }
 
 EntityManager::~EntityManager()

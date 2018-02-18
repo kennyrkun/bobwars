@@ -4,11 +4,11 @@
 #include "Interface.hpp"
 #include "EntityManager.hpp"
 
-#include <ENGINE/Engine.hpp>
-#include <ENGINE/Logger.hpp>
-#include <ENGINE/Graphics/Line.hpp>
-#include <ENGINE/Graphics/Graphics.hpp>
-#include <ENGINE/Graphics/Text.hpp>
+#include "Util/Util.hpp"
+#include "Util/Logger.hpp"
+#include "Util/Graphics/Line.hpp"
+#include "Util/Graphics/Graphics.hpp"
+#include "Util/Graphics/Text.hpp"
 
 GamePlayState GamePlayState::GamePlayState_dontfuckwithme;
 
@@ -143,7 +143,7 @@ void GamePlayState::HandleEvents()
 				}
 				else if (event.key.code == sf::Keyboard::Key::F12)
 				{
-					engine::screenshot(*app->window);
+					util::screenshot(*app->window);
 
 					app->window->clear(sf::Color::White);
 					app->window->display();
@@ -201,7 +201,7 @@ void GamePlayState::HandleEvents()
 			{
 				if (event.key.code == sf::Mouse::Button::Left)
 				{
-					if (engine::logic::mouseIsOver(ui->create_ent_button.m_shape, *app->window, *ui->getViewAnchor())) // create new entity
+					if (util::logic::mouseIsOver(ui->create_ent_button.m_shape, *app->window, *ui->getViewAnchor())) // create new entity
 					{
 						if (entMan->entities.size() >= entMan->maxEnts)
 						{
@@ -226,7 +226,7 @@ void GamePlayState::HandleEvents()
 
 						break;
 					}
-					else if (engine::logic::mouseIsOver(ui->delete_ent_button.m_shape, *app->window, *ui->getViewAnchor()) && !entMan->selectedEnts.empty())
+					else if (util::logic::mouseIsOver(ui->delete_ent_button.m_shape, *app->window, *ui->getViewAnchor()) && !entMan->selectedEnts.empty())
 					{
 						deleteButton();
 					}
@@ -235,7 +235,7 @@ void GamePlayState::HandleEvents()
 					bool selectedNothing(true);
 					for (long long int i = 0; i < entMan->entities.size(); i++)
 					{
-						if (engine::logic::mouseIsOver(entMan->entities[i]->sprite, *app->window, mainView2->view))
+						if (util::logic::mouseIsOver(entMan->entities[i]->sprite, *app->window, mainView2->view))
 						{
 							if (entMan->entities[i]->isSelected)
 							{
@@ -401,10 +401,10 @@ void GamePlayState::Draw()
 		{
 			if (!entMan->entities.empty())
 			{
-				engine::graphics::outline(*app->window, entMan->entities[i]->sprite, 2, sf::Color::Red);
+				util::graphics::outline(*app->window, entMan->entities[i]->sprite, 2, sf::Color::Red);
 				showObjectCoords(entMan->entities[i]->sprite);
-				engine::text::draw(*app->window, debugText, std::to_string(entMan->entities[i]->id) + "/" + std::to_string(entMan->entities.size()), sf::Vector2f(entMan->entities[i]->sprite.getPosition().x, entMan->entities[i]->sprite.getPosition().y - entMan->entities[i]->sprite.getLocalBounds().height / 2), sf::Vector2f(.2f, .2f));
-				engine::text::draw(*app->window, debugText, entMan->entities[i]->type, sf::Vector2f(entMan->entities[i]->sprite.getPosition().x, entMan->entities[i]->sprite.getPosition().y), sf::Vector2f(.2f, .2f));
+				util::text::draw(*app->window, debugText, std::to_string(entMan->entities[i]->id) + "/" + std::to_string(entMan->entities.size()), sf::Vector2f(entMan->entities[i]->sprite.getPosition().x, entMan->entities[i]->sprite.getPosition().y - entMan->entities[i]->sprite.getLocalBounds().height / 2), sf::Vector2f(.2f, .2f));
+				util::text::draw(*app->window, debugText, entMan->entities[i]->type, sf::Vector2f(entMan->entities[i]->sprite.getPosition().x, entMan->entities[i]->sprite.getPosition().y), sf::Vector2f(.2f, .2f));
 
 				if (entMan->entities[i]->moving)
 				{
@@ -432,7 +432,7 @@ void GamePlayState::Draw()
 
 	if (!entMan->selectedEnts.empty())
 		for (long long int i = 0; i < entMan->selectedEnts.size(); i++)
-			engine::graphics::outline(*app->window, entMan->selectedEnts[i]->sprite, 2, sf::Color::Yellow);
+			util::graphics::outline(*app->window, entMan->selectedEnts[i]->sprite, 2, sf::Color::Yellow);
 
 	// ------------- ANCHOR
 	app->window->setView(*ui->getViewAnchor());
@@ -449,24 +449,24 @@ void GamePlayState::Draw()
 		// view coordinates
 		std::string x = "X: " + std::to_string(static_cast<int>(mainView2->getCenter().x));
 		std::string y = "Y: " + std::to_string(static_cast<int>(mainView2->getCenter().y));
-		engine::text::draw(*app->window, debugText, x + " " + y, sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 12));
-		engine::text::draw(*app->window, debugText, "selectedEntities: " + std::to_string(entMan->selectedEnts.size()), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 24));
-		engine::text::draw(*app->window, debugText, "totalEntities: " + std::to_string(entMan->entities.size()), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 36));
-		engine::text::draw(*app->window, debugText, "maxEntities: " + std::to_string(entMan->maxEnts), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 48));
-		engine::text::draw(*app->window, debugText, "physicalMaxEntities: " + std::to_string(entMan->physicalMaxEnts), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 60));
-		engine::text::draw(*app->window, debugText, "maxEntitiesPerTeam: " + std::to_string(entMan->maxEntsPerTeam), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 72));
-		engine::text::draw(*app->window, debugText, "delta: " + std::to_string(deltaClock.getElapsedTime().asMilliseconds()), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 84));
+		util::text::draw(*app->window, debugText, x + " " + y, sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 12));
+		util::text::draw(*app->window, debugText, "selectedEntities: " + std::to_string(entMan->selectedEnts.size()), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 24));
+		util::text::draw(*app->window, debugText, "totalEntities: " + std::to_string(entMan->entities.size()), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 36));
+		util::text::draw(*app->window, debugText, "maxEntities: " + std::to_string(entMan->maxEnts), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 48));
+		util::text::draw(*app->window, debugText, "physicalMaxEntities: " + std::to_string(entMan->physicalMaxEnts), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 60));
+		util::text::draw(*app->window, debugText, "maxEntitiesPerTeam: " + std::to_string(entMan->maxEntsPerTeam), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 72));
+		util::text::draw(*app->window, debugText, "delta: " + std::to_string(deltaClock.getElapsedTime().asMilliseconds()), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 84));
 
 		if (!entMan->selectedEnts.empty() && entMan->selectedEnts.size() == 1)
 		{
-			engine::text::draw(*app->window, debugText, "id: " + std::to_string(entMan->selectedEnts[0]->id), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 108));
-			engine::text::draw(*app->window, debugText, "team: " + std::to_string(entMan->selectedEnts[0]->team), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 120));
-			engine::text::draw(*app->window, debugText, "type: " + entMan->selectedEnts[0]->type, sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 132));
-			engine::text::draw(*app->window, debugText, "health: " + std::to_string(entMan->selectedEnts[0]->health), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 144));
-			engine::text::draw(*app->window, debugText, "hp: " + std::to_string(entMan->selectedEnts[0]->hitpoints), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 156));
-			engine::text::draw(*app->window, debugText, "armor: " + std::to_string(entMan->selectedEnts[0]->armor), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 168));
-			engine::text::draw(*app->window, debugText, "movable: " + std::to_string(entMan->selectedEnts[0]->movable), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 180));
-			engine::text::draw(*app->window, debugText, "moving: " + std::to_string(entMan->selectedEnts[0]->moving), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 192));
+			util::text::draw(*app->window, debugText, "id: " + std::to_string(entMan->selectedEnts[0]->id), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 108));
+			util::text::draw(*app->window, debugText, "team: " + std::to_string(entMan->selectedEnts[0]->team), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 120));
+			util::text::draw(*app->window, debugText, "type: " + entMan->selectedEnts[0]->type, sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 132));
+			util::text::draw(*app->window, debugText, "health: " + std::to_string(entMan->selectedEnts[0]->health), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 144));
+			util::text::draw(*app->window, debugText, "hp: " + std::to_string(entMan->selectedEnts[0]->hitpoints), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 156));
+			util::text::draw(*app->window, debugText, "armor: " + std::to_string(entMan->selectedEnts[0]->armor), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 168));
+			util::text::draw(*app->window, debugText, "movable: " + std::to_string(entMan->selectedEnts[0]->movable), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 180));
+			util::text::draw(*app->window, debugText, "moving: " + std::to_string(entMan->selectedEnts[0]->moving), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 192));
 		}
 
 		sf::RectangleShape top;
@@ -546,5 +546,5 @@ void GamePlayState::showObjectCoords(sf::Sprite &object)
 	float y = object.getPosition().y - object.getLocalBounds().height / 1.5;
 	sf::Vector2f position(x, y);
 
-	engine::text::draw(*app->window, debugText, coords, position, sf::Vector2f(.2f, .2f));
+	util::text::draw(*app->window, debugText, coords, position, sf::Vector2f(.2f, .2f));
 }
