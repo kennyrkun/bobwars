@@ -24,8 +24,8 @@ public:
 
 	void zoom(float step);
 
-	void rotate(int degrees);
-	void setRotation(int degrees);
+	void rotate(float degrees);
+	void setRotation(float degrees);
 };
 
 #endif // !CAMERA_HPP

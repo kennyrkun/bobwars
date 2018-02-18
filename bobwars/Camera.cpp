@@ -39,12 +39,12 @@ void Camera::zoom(float step)
 	zoomLevel *= step;
 }
 
-void Camera::rotate(int degrees)
+void Camera::rotate(float degrees)
 {
 	view.rotate(degrees);
 }
 
-void Camera::setRotation(int degrees)
+void Camera::setRotation(float degrees)
 {
 	view.setRotation(degrees);
 }

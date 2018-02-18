@@ -27,7 +27,7 @@ While in the game, the WASD are used to control the main view, and the arrow key
 <kbd>Ctrl</kbd> + <kbd>LMB</kbd> - Adds unit to group of already selected units.<br>
 <kbd>RMB</kbd> (Unit) - Set unit movement destination.<br>
 <kbd>RMB</kbd> (Building) - Set unit rally point.<br>
-<kbd>Del</kbd> - Deletes selected unit(s).<br>
+<kbd>Del</kbd> or <kbd>End</kbd> - Deletes selected unit(s).<br>
 
 ##### Debug
 <kbd>~</kbd> or <kbd>`</kbd> - Toggle debug mode<br>

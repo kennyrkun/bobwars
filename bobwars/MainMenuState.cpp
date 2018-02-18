@@ -20,7 +20,7 @@ void MainMenuState::Init(AppEngine* app_)
 	logoShape.setTexture(&*app->resMan->getTexture("title_screen_logo"));
 //	logoTexture.setSmooth(true);
 	logoShape.setOrigin(logoShape.getLocalBounds().width / 2, logoShape.getLocalBounds().height / 2);
-	logoShape.setPosition(app->window->getDefaultView().getCenter().x, app->window->getSize().y / 2 - ((app->window->getSize().y / 2) / 2));
+	logoShape.setPosition(sf::Vector2f(app->window->getDefaultView().getCenter().x, app->window->getSize().y / 2 - ((app->window->getSize().y / 2) / 2)));
 
 	playButton.setString("new game :D");
 	playButton.setSizeMultiplier(2);

@@ -233,7 +233,7 @@ void GamePlayState::HandleEvents()
 
 					// if we haven't broken the loop already, it means we either clicked an entity or clicked nothing
 					bool selectedNothing(true);
-					for (long long int i = 0; i < entMan->entities.size(); i++)
+					for (size_t i = 0; i < entMan->entities.size(); i++)
 					{
 						if (util::logic::mouseIsOver(entMan->entities[i]->sprite, *app->window, mainView2->view))
 						{
@@ -300,7 +300,7 @@ void GamePlayState::HandleEvents()
 						}
 						else
 						{
-							for (long long int i = 0; i < entMan->selectedEnts.size(); i++)
+							for (size_t i = 0; i < entMan->selectedEnts.size(); i++)
 							{
 								entMan->selectedEnts[i]->moveTo(movePos);
 							}
@@ -380,7 +380,7 @@ void GamePlayState::HandleEvents()
 
 void GamePlayState::Update()
 {
-	for (long long int i = 0; i < entMan->entities.size(); i++)
+	for (size_t i = 0; i < entMan->entities.size(); i++)
 		entMan->entities[i]->Update();
 }
 
@@ -392,12 +392,12 @@ void GamePlayState::Draw()
 	app->window->setView(mainView2->view);
 	app->window->draw(world);
 
-	for (long long int i = 0; i < entMan->entities.size(); i++)
+	for (size_t i = 0; i < entMan->entities.size(); i++)
 		app->window->draw(entMan->entities[i]->sprite);
 
 	if (app->debugModeActive)
 	{
-		for (long long int i = 0; i < entMan->entities.size(); i++) // outline entities
+		for (size_t i = 0; i < entMan->entities.size(); i++) // outline entities
 		{
 			if (!entMan->entities.empty())
 			{
@@ -431,7 +431,7 @@ void GamePlayState::Draw()
 	}
 
 	if (!entMan->selectedEnts.empty())
-		for (long long int i = 0; i < entMan->selectedEnts.size(); i++)
+		for (size_t i = 0; i < entMan->selectedEnts.size(); i++)
 			util::graphics::outline(*app->window, entMan->selectedEnts[i]->sprite, 2, sf::Color::Yellow);
 
 	// ------------- ANCHOR
@@ -508,11 +508,11 @@ void GamePlayState::deleteButton()
 
 	if (!entMan->selectedEnts.empty())
 	{
-		for (long long int i = 0; i < entMan->selectedEnts.size(); i++)
+		for (size_t i = 0; i < entMan->selectedEnts.size(); i++)
 		{
-			entMan->deleteEnt(entMan->selectedEnts[i]);
+			logger::INFO("deleting entity " + std::to_string(entMan->selectedEnts[i]->id));
 
-			logger::INFO("deleted entity " + std::to_string(entMan->selectedEnts[i]->id));
+			entMan->deleteEnt(entMan->selectedEnts[i]);
 
 			// this is here because deleteEnt will delete the object from both entities and selectedEntities,
 			// when it does this, those vectors resize themselven. this resize causes the deletion to skip numbers

@@ -31,7 +31,7 @@ public:
 	void deselectAllEnts();
 	// add selected bool to entity, check if it's selected without looping.
 
-	unsigned long long int physicalMaxEnts = std::numeric_limits<long long int>::max();
+	unsigned long long int physicalMaxEnts = std::numeric_limits<int>::max();
 	unsigned long long int maxEnts = 8000;
 	unsigned long long int maxEntsPerTeam;
 };

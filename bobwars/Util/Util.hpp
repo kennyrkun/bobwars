@@ -7,8 +7,6 @@
 
 namespace util
 {
-	extern const std::string version;
-
 	extern const int maxPlayers;
 
 	namespace logic

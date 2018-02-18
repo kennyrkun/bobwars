@@ -8,8 +8,6 @@
 
 namespace util
 {
-	std::string const version("1.2.2");
-
 	int const maxPlayers = 16;
 
 	namespace logic
