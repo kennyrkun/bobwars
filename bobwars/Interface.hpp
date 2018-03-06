@@ -5,6 +5,19 @@
 
 #include <SFML/Graphics.hpp>
 
+class IInterface
+{
+public:
+	IInterface(sf::RenderTarget *target);
+	~IInterface();
+
+	void addInterface(Interface *_interface);
+	void popInterface(Interface* _interface);
+
+private:
+	sf::RenderTarget *target;
+};
+
 class Interface
 {
 public:
@@ -26,7 +39,7 @@ public:
 
 	sf::Text unitCounterText;
 	sf::Text memesCounterText;
-		
+	
 	sf::RectangleShape bottomBar;
 	sf::RectangleShape topBar;
 

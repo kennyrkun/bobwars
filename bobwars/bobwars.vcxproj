@@ -23,9 +23,6 @@
     <ClInclude Include="AppState.hpp" />
     <ClInclude Include="BaseEntity.hpp" />
     <ClInclude Include="Bob.hpp" />
-    <ClInclude Include="Button.hpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="Camera.hpp" />
     <ClInclude Include="CommentSection.hpp" />
     <ClInclude Include="GameCreationState.hpp" />
@@ -49,9 +46,6 @@
     <ClCompile Include="AppEngine.cpp" />
     <ClCompile Include="BaseEntity.cpp" />
     <ClCompile Include="Bob.cpp" />
-    <ClCompile Include="Button.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CommentSection.cpp" />
     <ClCompile Include="GameCreationState.cpp" />

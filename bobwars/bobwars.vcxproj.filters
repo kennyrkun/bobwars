@@ -42,9 +42,6 @@
     <ClInclude Include="ResourceManager.hpp">
       <Filter>BOBWARS\Game</Filter>
     </ClInclude>
-    <ClInclude Include="Button.hpp">
-      <Filter>BOBWARS\Game\Graphical</Filter>
-    </ClInclude>
     <ClInclude Include="AppState.hpp">
       <Filter>BOBWARS\Game\GameStates\Manager &amp; Base</Filter>
     </ClInclude>
@@ -106,9 +103,6 @@
     </ClCompile>
     <ClCompile Include="ResourceManager.cpp">
       <Filter>BOBWARS\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Button.cpp">
-      <Filter>BOBWARS\Game\Graphical</Filter>
     </ClCompile>
     <ClCompile Include="AppEngine.cpp">
       <Filter>BOBWARS\Game\GameStates\Manager &amp; Base</Filter>
