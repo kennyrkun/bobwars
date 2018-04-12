@@ -14,7 +14,6 @@ public:
 	std::vector<BaseEntity*> entities;
 	std::vector<BaseEntity*> selectedEnts;
 
-	BaseEntity* newBaseEntity();
 	BaseEntity* newBob();
 	BaseEntity* newCommentSection();
 

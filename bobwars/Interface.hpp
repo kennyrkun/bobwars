@@ -5,6 +5,7 @@
 
 #include <SFML/Graphics.hpp>
 
+/*
 class IInterface
 {
 public:
@@ -17,6 +18,7 @@ public:
 private:
 	sf::RenderTarget *target;
 };
+*/
 
 class Interface
 {

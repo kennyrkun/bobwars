@@ -22,7 +22,7 @@ void GamePlayState::Init(AppEngine* app_)
 
 	entMan = new EntityManager;
 
-	if (!Arial.loadFromFile("C://Windows//Fonts//Arial.ttf"))
+	if (!Arial.loadFromFile("C:/Windows/Fonts/Arial.ttf"))
 	{
 		logger::SILENT("ERROR", "Failed to load font Arial!");
 	}
@@ -36,7 +36,7 @@ void GamePlayState::Init(AppEngine* app_)
 
 	worldTexture = new sf::Texture; // fix not running in debug
 
-	if (!worldTexture->loadFromFile("resource//textures//world.png"))
+	if (!worldTexture->loadFromFile("bobwars/resource/textures/world.png"))
 		logger::SILENT("ERROR", "Failed to load world textures!");
 
 	//TODO: make camera align with world center on game start
@@ -547,4 +547,9 @@ void GamePlayState::showObjectCoords(sf::Sprite &object)
 	sf::Vector2f position(x, y);
 
 	util::text::draw(*app->window, debugText, coords, position, sf::Vector2f(.2f, .2f));
+}
+
+void GamePlayState::saveGame()
+{
+	
 }

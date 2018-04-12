@@ -33,21 +33,6 @@ EntityManager::~EntityManager()
 	logger::SILENT("DEBUG", "ObjectManager deconstructed.");
 }
 
-BaseEntity* EntityManager::newBaseEntity()
-{
-	//TODO: optimise entity creation
-
-	BaseEntity *newBaseEntity = new BaseEntity();
-	newBaseEntity->id = entities.size() + 1;
-	newBaseEntity->isSelected = true;
-
-	entities.push_back(newBaseEntity); // add it to the stack
-	selectedEnts.push_back(newBaseEntity); // select it
-
-	return newBaseEntity;
-//	logger::INFO("creating new entity (" + std::to_string(newEnt->id) + ")");
-}
-
 BaseEntity* EntityManager::newBob()
 {
 	//TODO: optimise entity creation

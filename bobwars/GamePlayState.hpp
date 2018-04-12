@@ -48,13 +48,12 @@ public:
 		return &GamePlayState_dontfuckwithme;
 	}
 
-//	sf::RenderWindow *app->window;
-	sf::Time timePerFrame; // 60 frames per second
-	sf::Time timeSinceLastUpdate;
-
 private:
 	static GamePlayState GamePlayState_dontfuckwithme;
 	AppEngine* app;
+
+	sf::Time timePerFrame; // 60 frames per second
+	sf::Time timeSinceLastUpdate;
 
 	EntityManager *entMan;
 	Interface *ui;
@@ -74,6 +73,8 @@ private:
 	void deleteButton();
 
 	void showObjectCoords(sf::Sprite &object);
+
+	void saveGame();
 };
 
 #endif /* GAME_HPP */

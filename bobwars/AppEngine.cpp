@@ -2,6 +2,9 @@
 #include "AppState.hpp"
 
 #include <iostream>
+#include <filesystem>
+
+namespace fs = std::experimental::filesystem;
 
 void AppEngine::Init(std::string title_, AppSettings settings_)
 {
@@ -9,6 +12,9 @@ void AppEngine::Init(std::string title_, AppSettings settings_)
 
 	settings = settings_;
 	title = title_;
+
+	if (!fs::exists("./bobwars"))
+		fs::create_directory("./bobwars");
 
 	window = new sf::RenderWindow(sf::VideoMode(settings.width, settings.height), settings.title);
 	window->setVerticalSyncEnabled(true);
