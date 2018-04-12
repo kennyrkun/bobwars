@@ -36,6 +36,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="Util\SettingsParser.hpp" />
     <ClInclude Include="Util\Util.hpp" />
     <ClInclude Include="Util\Graphics\Graphics.hpp" />
     <ClInclude Include="Util\Graphics\Line.hpp" />
@@ -60,6 +61,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="Util\SettingsParser.cpp" />
     <ClCompile Include="Util\Util.cpp" />
     <ClCompile Include="Util\Graphics\Graphics.cpp" />
     <ClCompile Include="Util\Graphics\Line.cpp" />
