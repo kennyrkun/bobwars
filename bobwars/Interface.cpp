@@ -40,7 +40,7 @@ Interface::Interface(sf::RenderWindow *_targetWindow, sf::View *_mainView)
 	memesCounterBackground.setOutlineColor(sf::Color(50, 50, 50));
 	memesCounterBackground.setPosition(sf::Vector2f(leftX + 30, topMiddleY));
 
-	memesCounterIcon_tex.loadFromFile("resource/textures/silk/heart.png");
+	memesCounterIcon_tex.loadFromFile("./bobwars/resource/textures/silk/heart.png");
 	memesCounterIcon.setTexture(&memesCounterIcon_tex);
 	memesCounterIcon.setSize(sf::Vector2f(16, 16));
 	memesCounterIcon.setOrigin(sf::Vector2f(8, 8));
@@ -60,7 +60,7 @@ Interface::Interface(sf::RenderWindow *_targetWindow, sf::View *_mainView)
 	unitCounterBackground.setOutlineColor(sf::Color(50, 50, 50));
 	unitCounterBackground.setPosition(sf::Vector2f(leftX + 125, topMiddleY));
 
-	unitCounterIcon_tex.loadFromFile("bobwars/resource/textures/silk/user.png");
+	unitCounterIcon_tex.loadFromFile("./bobwars/resource/textures/silk/user.png");
 	unitCounterIcon.setTexture(&unitCounterIcon_tex);
 	unitCounterIcon.setSize(sf::Vector2f(16, 16));
 	unitCounterIcon.setOrigin(sf::Vector2f(8, 8));

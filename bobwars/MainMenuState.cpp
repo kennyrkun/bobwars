@@ -25,8 +25,11 @@ void MainMenuState::Init(AppEngine* app_)
 	playButton.setString("new game :D");
 	playButton.setSizeMultiplier(2);
 	playButton.setPosition(app->window->getDefaultView().getCenter());
+	// HACK: something in SFUI causes buttons to be blank when not explicity enabled.
+	playButton.disable();
+	playButton.enable();
 
-	loadButton.setString("load game");
+	loadButton.setString("settings");
 	loadButton.setSizeMultiplier(1);
 	loadButton.setPosition(sf::Vector2f(app->window->getDefaultView().getCenter().x, playButton.m_shape.getPosition().y + 50));
 	loadButton.disable();
@@ -38,6 +41,9 @@ void MainMenuState::Init(AppEngine* app_)
 	exitButton.setString("exit");
 	exitButton.setSizeMultiplier(2);
 	exitButton.setPosition(sf::Vector2f(app->window->getDefaultView().getCenter().x, settingsButton.m_shape.getPosition().y + 50));
+	// HACK: something in SFUI causes buttons to be blank when not explicity enabled.
+	exitButton.disable();
+	exitButton.enable();
 
 	logger::INFO("MainMenuState ready.");
 }
