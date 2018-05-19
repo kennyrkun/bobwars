@@ -13,6 +13,16 @@ BaseEntity::BaseEntity()
 	moveDest.setOrigin(sf::Vector2f(moveDest.getLocalBounds().width / 2, moveDest.getLocalBounds().height / 2));
 }
 
+BaseEntity::BaseEntity(int entityID, int team, int armour, int hitpoints, int health) : entityID(entityID), team(team), armor(armour), hitpoints(hitpoints), health(health)
+{
+	logger::INFO("Entity base class constructed.");
+
+	moveDest.setRadius(5);
+	moveDest.setPointCount(8);
+	moveDest.setFillColor(sf::Color::Red);
+	moveDest.setOrigin(sf::Vector2f(moveDest.getLocalBounds().width / 2, moveDest.getLocalBounds().height / 2));
+}
+
 BaseEntity::~BaseEntity()
 {
 	logger::SILENT("DEBUG", "Entity base class deconstructed.");
@@ -22,7 +32,7 @@ void BaseEntity::moveTo(const sf::Vector2f &pos)
 {
 	if (movable)
 	{
-		logger::INFO("Moving to X: " + std::to_string(pos.x) + ", Y: " + std::to_string(pos.y) + ". (" + std::to_string(id) + ")");
+		logger::INFO("Moving to X: " + std::to_string(pos.x) + ", Y: " + std::to_string(pos.y) + ". (" + std::to_string(entityID) + ")");
 		movePos = pos;
 		moveDest.setPosition(pos);
 		moving = true;
@@ -33,9 +43,13 @@ void BaseEntity::moveTo(const sf::Vector2f &pos)
 	}
 }
 
+void BaseEntity::HandleEvents(const sf::Event & event)
+{
+}
+
 void BaseEntity::Update()
 {
-	if (moving && movable)
+	if (moving)
 	{
 		int sX = static_cast<int>(sprite.getPosition().x);
 		int sY = static_cast<int>(sprite.getPosition().y);
@@ -54,7 +68,7 @@ void BaseEntity::Update()
 
 		if (sX == gX && sY == gY)
 		{
-			logger::INFO("Done moving! (" + std::to_string(id) + ")");
+			logger::INFO("Done moving! (" + std::to_string(entityID) + ")");
 
 			moving = false;
 		}
@@ -63,4 +77,18 @@ void BaseEntity::Update()
 			//line.setPoints(sprite.getPosition(), moveDest.getPosition());
 		}
 	}
+}
+
+void BaseEntity::Draw()
+{
+}
+
+void BaseEntity::setPosition(const sf::Vector2f& pos)
+{
+	sprite.setPosition(pos);
+}
+
+sf::Vector2f BaseEntity::getPosition()
+{
+	return sprite.getPosition();
 }

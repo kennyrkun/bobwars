@@ -12,11 +12,17 @@ public:
 	ResourceManager();
 	~ResourceManager();
 
+	// TODO: this should probably be a bool
+	// to return whether or not we loaded the texture
 	void loadTexture(std::string resourceName, std::string fileLocation);
-	void freeTexture(std::string filename);
-	void freeAllTextures();
 	bool textureLoaded(std::string filename);
 	sf::Texture* getTexture(std::string filename);
+	void freeTexture(std::string filename);
+	void freeAllTextures();
+
+	// TODO: audio
+
+	// TODO: fonts
 
 private:
 	std::map<std::string, sf::Texture*> loaded_textures;

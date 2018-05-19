@@ -18,7 +18,9 @@ EntityManager::EntityManager()
 EntityManager::~EntityManager()
 {
 	for (size_t i = 0; i < entities.size(); i++)
+	{
 		delete entities[i];
+	}
 
 //	is this needed?
 //	in theory, there can be no more selected entities than entities,
@@ -38,7 +40,7 @@ BaseEntity* EntityManager::newBob()
 	//TODO: optimise entity creation
 
 	Bob *newBobEntity = new Bob();
-	newBobEntity->id = entities.size() + 1;
+	newBobEntity->entityID = entities.size() + 1;
 	newBobEntity->isSelected = true;
 
 	entities.push_back(newBobEntity); // add it to the stack
@@ -46,7 +48,7 @@ BaseEntity* EntityManager::newBob()
 
 	return newBobEntity;
 									   
-//	logger::INFO("creating new entity (" + std::to_string(newEnt->id) + ")");
+//	logger::INFO("creating new entity (" + std::to_string(newEnt->entityID) + ")");
 }
 
 BaseEntity* EntityManager::newCommentSection()
@@ -55,14 +57,14 @@ BaseEntity* EntityManager::newCommentSection()
 	//TODO: comment sections might not want to be selected on creation
 
 	CommentSection *newBobEntity = new CommentSection();
-	newBobEntity->id = entities.size() + 1;
+	newBobEntity->entityID = entities.size() + 1;
 	newBobEntity->isSelected = true;
 
 	entities.push_back(newBobEntity); // add it to the stack
 	selectedEnts.push_back(newBobEntity); // select it
 				
 	return newBobEntity;
-//	logger::INFO("creating new entity (" + std::to_string(newEnt->id) + ")");
+//	logger::INFO("creating new entity (" + std::to_string(newEnt->entityID) + ")");
 }
 
 void EntityManager::deselectAllEnts()
@@ -71,7 +73,7 @@ void EntityManager::deselectAllEnts()
 
 	for (size_t i = 0; i < selectedEnts.size(); i++)
 	{
-		logger::INFO("deselecting entity" + std::to_string(selectedEnts[i]->id));
+		logger::INFO("deselecting entity" + std::to_string(selectedEnts[i]->entityID));
 
 		//delesectEnt(selectedEnts[i]); // broken
 		selectedEnts[i]->isSelected = false;
@@ -108,7 +110,7 @@ void EntityManager::deleteEnt(BaseEntity* ent)
 //			delete entities[i];
 //			selectedEnts.erase(std::remove(selectedEnts.begin(), selectedEnts.end(), ent), selectedEnts.end());
 //			entities.erase(std::remove(entities.begin(), entities.end(), ent), entities.end());
-//			logger::INFO("Deleted entity " + std::to_string(ent->id));
+//			logger::INFO("Deleted entity " + std::to_string(ent->entityID));
 //			return;
 //		}
 //	}
@@ -142,5 +144,5 @@ void EntityManager::deselectEnt(BaseEntity *ent)
 	ent->isSelected = false;
 	selectedEnts.erase(std::remove(selectedEnts.begin(), selectedEnts.end(), ent), selectedEnts.end());
 
-	logger::INFO("deselected entity" + std::to_string(ent->id));
+	logger::INFO("deselected entity" + std::to_string(ent->entityID));
 }

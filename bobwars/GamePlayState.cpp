@@ -251,13 +251,13 @@ void GamePlayState::HandleEvents()
 										entMan->deselectAllEnts();
 										entMan->selectEnt(entMan->entities[i]);
 
-										logger::INFO("selected entity" + std::to_string(entMan->entities[i]->id));
+										logger::INFO("selected entity" + std::to_string(entMan->entities[i]->entityID));
 
 										selectedNothing = false;
 									}
 									else
 									{
-										logger::INFO("entity" + std::to_string(entMan->entities[i]->id) + " is already selected");
+										logger::INFO("entity" + std::to_string(entMan->entities[i]->entityID) + " is already selected");
 										selectedNothing = false;
 									}
 								}
@@ -269,7 +269,7 @@ void GamePlayState::HandleEvents()
 
 								entMan->selectEnt(entMan->entities[i]);
 
-								logger::INFO("selected entity" + std::to_string(entMan->entities[i]->id));
+								logger::INFO("selected entity" + std::to_string(entMan->entities[i]->entityID));
 								ui->delete_ent_button.enable();
 
 								selectedNothing = false;
@@ -403,7 +403,7 @@ void GamePlayState::Draw()
 			{
 				util::graphics::outline(*app->window, entMan->entities[i]->sprite, 2, sf::Color::Red);
 				showObjectCoords(entMan->entities[i]->sprite);
-				util::text::draw(*app->window, debugText, std::to_string(entMan->entities[i]->id) + "/" + std::to_string(entMan->entities.size()), sf::Vector2f(entMan->entities[i]->sprite.getPosition().x, entMan->entities[i]->sprite.getPosition().y - entMan->entities[i]->sprite.getLocalBounds().height / 2), sf::Vector2f(.2f, .2f));
+				util::text::draw(*app->window, debugText, std::to_string(entMan->entities[i]->entityID) + "/" + std::to_string(entMan->entities.size()), sf::Vector2f(entMan->entities[i]->sprite.getPosition().x, entMan->entities[i]->sprite.getPosition().y - entMan->entities[i]->sprite.getLocalBounds().height / 2), sf::Vector2f(.2f, .2f));
 				util::text::draw(*app->window, debugText, entMan->entities[i]->type, sf::Vector2f(entMan->entities[i]->sprite.getPosition().x, entMan->entities[i]->sprite.getPosition().y), sf::Vector2f(.2f, .2f));
 
 				if (entMan->entities[i]->moving)
@@ -459,7 +459,7 @@ void GamePlayState::Draw()
 
 		if (!entMan->selectedEnts.empty() && entMan->selectedEnts.size() == 1)
 		{
-			util::text::draw(*app->window, debugText, "id: " + std::to_string(entMan->selectedEnts[0]->id), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 108));
+			util::text::draw(*app->window, debugText, "entityID: " + std::to_string(entMan->selectedEnts[0]->entityID), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 108));
 			util::text::draw(*app->window, debugText, "team: " + std::to_string(entMan->selectedEnts[0]->team), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 120));
 			util::text::draw(*app->window, debugText, "type: " + entMan->selectedEnts[0]->type, sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 132));
 			util::text::draw(*app->window, debugText, "health: " + std::to_string(entMan->selectedEnts[0]->health), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 144));
@@ -510,7 +510,7 @@ void GamePlayState::deleteButton()
 	{
 		for (size_t i = 0; i < entMan->selectedEnts.size(); i++)
 		{
-			logger::INFO("deleting entity " + std::to_string(entMan->selectedEnts[i]->id));
+			logger::INFO("deleting entity " + std::to_string(entMan->selectedEnts[i]->entityID));
 
 			entMan->deleteEnt(entMan->selectedEnts[i]);
 

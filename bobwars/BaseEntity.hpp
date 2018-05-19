@@ -6,20 +6,29 @@
 #include <string>
 
 // I have a feeling the entire entity system has a design of complete horseshit.
-// If anyone would like to fix it, it'd be very much appreciated.
+// If anyone would like to fix it, it'd be very much appreciated. (:
+
+enum class EntityType
+{
+	BaseEntity,
+	Bob,
+	CommentSection,
+	GooglePlus
+};
 
 class BaseEntity
 {
 public:
 	BaseEntity();
+	BaseEntity(int entityID, int team, int armour, int hitpoints, int health);
 	~BaseEntity();
 
 	sf::Sprite sprite;
 
-	//TODO: move this out of the entity class itself and have the renderer draw one for each bob, since this is just used in debug mode.
+	//TODO: move this out of the entity class itself and have the renderer draw one for each ent, since this is just used in debug mode.
 	sf::CircleShape moveDest;
 
-	int id;
+	int entityID;
 
 	int team;
 	int armor;
@@ -32,11 +41,14 @@ public:
 
 	std::string type;
 
-	void moveTo(const sf::Vector2f &dest);
-	void Update();
+	virtual void moveTo(const sf::Vector2f &dest);
 
-	void setPosition(const sf::Vector2f& pos) { sprite.setPosition(pos); }
-	sf::Vector2f getPosition() { return sprite.getPosition(); }
+	virtual void HandleEvents(const sf::Event& event);
+	virtual void Update(); // if moveTo is overriden this should be too
+	virtual void Draw();
+
+	virtual void setPosition(const sf::Vector2f& pos);
+	virtual sf::Vector2f getPosition();
 
 	sf::Vector2f movePos;
 	sf::Texture texture;

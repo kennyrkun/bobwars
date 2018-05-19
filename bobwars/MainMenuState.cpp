@@ -46,7 +46,7 @@ void MainMenuState::Cleanup()
 {
 	logger::INFO("Cleaning up MainMenuState.");
 
-	app->resMan->freeAll();
+	app->resMan->freeAllTextures();
 
 	logger::INFO("Cleaned up MainMenuState.");
 }
