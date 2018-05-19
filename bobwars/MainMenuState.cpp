@@ -29,7 +29,6 @@ void MainMenuState::Init(AppEngine* app_)
 	loadButton.setString("load game");
 	loadButton.setSizeMultiplier(1);
 	loadButton.setPosition(sf::Vector2f(app->window->getDefaultView().getCenter().x, playButton.m_shape.getPosition().y + 50));
-
 	loadButton.disable();
 
 	settingsButton.setString("settings");
@@ -40,26 +39,26 @@ void MainMenuState::Init(AppEngine* app_)
 	exitButton.setSizeMultiplier(2);
 	exitButton.setPosition(sf::Vector2f(app->window->getDefaultView().getCenter().x, settingsButton.m_shape.getPosition().y + 50));
 
-	logger::INFO("MainMenuState ready");
+	logger::INFO("MainMenuState ready.");
 }
 
 void MainMenuState::Cleanup()
 {
-	logger::INFO("MainMenuState cleaning up");
+	logger::INFO("Cleaning up MainMenuState.");
 
-	app->resMan->freeTexture("title_screen_logo");
+	app->resMan->freeAll();
 
-	logger::INFO("MainMenuState cleaned up");
+	logger::INFO("Cleaned up MainMenuState.");
 }
 
 void MainMenuState::Pause()
 {
-	logger::INFO("MainMenuState paused");
+	logger::INFO("MainMenuState paused.");
 }
 
 void MainMenuState::Resume()
 {
-	logger::INFO("MainMenuState resumed");
+	logger::INFO("MainMenuState resumed.");
 }
 
 void MainMenuState::HandleEvents()
@@ -104,34 +103,22 @@ void MainMenuState::Update()
 	b += db;
 
 	if (r == 255 && g == 0 && b == 0)
-	{
 		dr = 0; dg = 1; db = 0;
-	}
 
 	if (r == 255 && g == 255 && b == 0)
-	{
 		dr = -1; dg = 0; db = 0;
-	}
 
 	if (r == 0 && g == 255 && b == 0)
-	{
 		dr = 0; dg = 0; db = 1;
-	}
 
 	if (r == 0 && g == 255 && b == 255)
-	{
 		dr = 0; dg = -1; db = 0;
-	}
-
+	
 	if (r == 0 && g == 0 && b == 255)
-	{
 		dr = 1; dg = 0; db = 0;
-	}
-
+	
 	if (r == 255 && g == 0 && b == 255)
-	{
 		dr = 0; dg = 0; db = -1;
-	}
 
 	logoShape.setFillColor(sf::Color(r, g, b));
 }
