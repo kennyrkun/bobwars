@@ -1,7 +1,7 @@
 #ifndef INTERFACE_HPP
 #define INTERFACE_HPP
 
-#include <SFUI/TextButton.hpp>
+#include <SFUI/Button.hpp>
 
 #include <SFML/Graphics.hpp>
 
@@ -35,8 +35,10 @@ public:
 	void Update();
 	void Draw();
 
-	SFUI::TextButton create_ent_button;
-	SFUI::TextButton delete_ent_button;
+	bool createEnabled = true;
+	SFUI::Button* create_ent_button;
+	bool deleteEnabled = false;
+	SFUI::Button* delete_ent_button;
 	// TODO: replace these with SFUI::Button
 
 	sf::Text unitCounterText;

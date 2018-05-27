@@ -26,18 +26,22 @@ void GamePauseState::Init(AppEngine* app_)
 	background.setTexture(*&backgroundTexture);
 	background.setFillColor(sf::Color(255, 255, 255, 155));
 
-	std::vector<SFUI::TextButton*> buttons;
+	std::vector<SFUI::Button*> buttons;
 
-	SFUI::TextButton* continueButton = new SFUI::TextButton("Continue");
-	continueButton->setSizeMultiplier(2);
-	SFUI::TextButton* saveButton = new SFUI::TextButton("Save Game");
-	saveButton->setSizeMultiplier(2);
-	saveButton->disable();
-	SFUI::TextButton* optionsButton = new SFUI::TextButton("Options");
-	optionsButton->setSizeMultiplier(2);
-	optionsButton->disable();
-	SFUI::TextButton* exitButton = new SFUI::TextButton("Exit to Menu");
-	exitButton->setSizeMultiplier(2);
+	SFUI::Button* continueButton = new SFUI::Button("Continue");
+//	continueButton->setSizeMultiplier(2);
+
+	SFUI::Button* saveButton = new SFUI::Button("Save Game");
+//	saveButton->setSizeMultiplier(2);
+//	saveButton->disable();
+
+	SFUI::Button* optionsButton = new SFUI::Button("Options");
+//	optionsButton->setSizeMultiplier(2);
+//	optionsButton->disable();
+
+	SFUI::Button* exitButton = new SFUI::Button("Exit to Menu");
+//	exitButton->setSizeMultiplier(2);
+
 	buttons.push_back(continueButton);
 	buttons.push_back(saveButton);
 	buttons.push_back(optionsButton);

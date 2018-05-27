@@ -4,7 +4,7 @@
 #include "AppState.hpp"
 
 #include "Menu.hpp"
-#include <SFUI/TextButton.hpp>
+#include <SFUI/Button.hpp>
 
 class GamePauseState : public AppState
 {

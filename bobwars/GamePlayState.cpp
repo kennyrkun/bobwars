@@ -173,7 +173,8 @@ void GamePlayState::HandleEvents()
 							for (size_t i = 0; i < entMan->entities.size(); i++)
 								entMan->entities[i]->isSelected = true;
 
-							ui->delete_ent_button.enable();
+							ui->deleteEnabled = true;
+//							ui->delete_ent_button.enable();
 
 							logger::INFO("selected " + std::to_string(entMan->selectedEnts.size()) + " entities (of " + std::to_string(entMan->entities.size()) + ")");
 						}
@@ -201,11 +202,12 @@ void GamePlayState::HandleEvents()
 			{
 				if (event.key.code == sf::Mouse::Button::Left)
 				{
-					if (util::logic::mouseIsOver(ui->create_ent_button.m_shape, *app->window, *ui->getViewAnchor())) // create new entity
+					if (ui->delete_ent_button->containsPoint(sf::Vector2f(sf::Mouse::getPosition(*app->window).x, sf::Mouse::getPosition(*app->window).y)))
 					{
 						if (entMan->entities.size() >= entMan->maxEnts)
 						{
-							ui->create_ent_button.disable();
+							ui->createEnabled = false;
+//							ui->create_ent_button.disable();
 							ui->unitCounterText.setFillColor(sf::Color::Red);
 							logger::INFO("Unit cap reached.");
 						}
@@ -214,11 +216,13 @@ void GamePlayState::HandleEvents()
 							entMan->deselectAllEnts();
 							entMan->newBob();
 
-							ui->delete_ent_button.enable();
+							ui->deleteEnabled = true;
+//							ui->delete_ent_button.enable();
 
 							if (entMan->entities.size() >= entMan->maxEnts)
 							{
-								ui->create_ent_button.disable();
+								ui->createEnabled = false;
+//								ui->create_ent_button.disable();
 								ui->unitCounterText.setFillColor(sf::Color::Red);
 								logger::INFO("Unit cap reached.");
 							}
@@ -226,8 +230,9 @@ void GamePlayState::HandleEvents()
 
 						break;
 					}
-					else if (util::logic::mouseIsOver(ui->delete_ent_button.m_shape, *app->window, *ui->getViewAnchor()) && !entMan->selectedEnts.empty())
+					else if (ui->delete_ent_button->containsPoint(sf::Vector2f(sf::Mouse::getPosition(*app->window).x, sf::Mouse::getPosition(*app->window).y)) && !entMan->selectedEnts.empty())
 					{
+
 						deleteButton();
 					}
 
@@ -270,7 +275,9 @@ void GamePlayState::HandleEvents()
 								entMan->selectEnt(entMan->entities[i]);
 
 								logger::INFO("selected entity" + std::to_string(entMan->entities[i]->entityID));
-								ui->delete_ent_button.enable();
+
+								ui->deleteEnabled = true;
+//								ui->delete_ent_button.enable();
 
 								selectedNothing = false;
 							}
@@ -282,7 +289,9 @@ void GamePlayState::HandleEvents()
 					if (selectedNothing && !entMan->selectedEnts.empty()) // selected nothing and didn't already have nothing
 					{
 						entMan->deselectAllEnts();
-						ui->delete_ent_button.disable();
+
+						ui->deleteEnabled = false;
+//						ui->delete_ent_button.disable();
 
 						logger::INFO("All entities deselected");
 						break;
@@ -521,10 +530,12 @@ void GamePlayState::deleteButton()
 			i--;
 		}
 
-		ui->delete_ent_button.disable();
+		ui->deleteEnabled = false;
+		//ui->delete_ent_button.disable();
 
 		if (entMan->entities.size() < entMan->maxEnts)
-			ui->create_ent_button.enable();
+			ui->createEnabled = true;
+			//ui->create_ent_button.enable();
 	}
 	else
 	{

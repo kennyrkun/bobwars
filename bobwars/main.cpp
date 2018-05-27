@@ -5,12 +5,26 @@
 
 #include <iostream>
 
+#include <SFUI/SFUI.hpp>
+
 int main(int argc, char *argv[])
 {
 	std::cout << "Launched with " << argc << " arguments: " << std::endl;
 
 	for (int i = 0; i < argc; i++)
 		std::cout << i << ": " << argv[i] << std::endl;
+
+	SFUI::Theme::loadFont("bobwars/resource/interface/tahoma.ttf");
+	SFUI::Theme::loadTexture("bobwars/resource/interface/texture_square.png");
+	SFUI::Theme::fontSize = 11;
+	SFUI::Theme::click.textColor = SFUI::Theme::hexToRgb("#191B18");
+	SFUI::Theme::click.textColorHover = SFUI::Theme::hexToRgb("#191B18");
+	SFUI::Theme::click.textColorFocus = SFUI::Theme::hexToRgb("#000000");
+	SFUI::Theme::input.textColor = SFUI::Theme::hexToRgb("#000000");
+	SFUI::Theme::input.textColorHover = SFUI::Theme::hexToRgb("#CC7A00");
+	SFUI::Theme::input.textColorFocus = SFUI::Theme::hexToRgb("#000000");
+	SFUI::Theme::windowBgColor = SFUI::Theme::hexToRgb("#dddbde");
+	SFUI::Theme::PADDING = 2.f;
 
 	AppSettings options;
 
