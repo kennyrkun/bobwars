@@ -35,7 +35,7 @@ namespace graphics
 
 	void fade(sf::Shape &object, int opacity) // TODO: run this in another thread
 	{
-		logger::SILENT("DEBUG", "fading to " + std::to_string(opacity));
+		logger::DEBUG("fading to " + std::to_string(opacity), true);
 
 		if (opacity < object.getFillColor().a) // 255 0
 		{

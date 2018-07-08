@@ -102,8 +102,8 @@ void Menu::HandleEvents(sf::Event event)
 			logger::INFO("dont fuck me");
 		}
 
-		logger::INFO("key: " + std::to_string(event.key.code));
-		logger::INFO("return: " + std::to_string(sf::Keyboard::Key::Return));
+		logger::DEBUG("key: " + std::to_string(event.key.code), true);
+		logger::DEBUG("return: " + std::to_string(sf::Keyboard::Key::Return), true);
 	}
 }
 

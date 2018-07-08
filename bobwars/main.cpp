@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
 //		}
 	}
 
-	logger::BREAK();
+	logger::LINE_BREAK();
 
 	AppEngine app;
 	app.Init("bobwars", options);
