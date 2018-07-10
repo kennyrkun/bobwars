@@ -1,7 +1,7 @@
 #ifndef MENU_HPP
 #define MENU_HPP
 
-#include <SFUI/Button.hpp>
+#include <SFUI/Layouts/Menu.hpp>
 #include <SFML/Graphics.hpp>
 
 #include <vector>
@@ -10,16 +10,18 @@
 class Menu : public sf::Drawable
 {
 public:
-	Menu(sf::RenderWindow* window_, std::string title_, std::vector<SFUI::Button*> options_);
+	Menu(sf::RenderWindow* targetWindow, std::string menuTitle, std::vector<std::pair<std::string, int>> options);
 	~Menu();
 
+	void Update();
 	void HandleEvents(sf::Event event);
-
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
-	std::vector<SFUI::Button*> options;
+	std::vector<std::pair<std::string, int>> options;
 	std::string title;
 	sf::Vector2f windowDimensions;
+
+	SFUI::Menu* menu;
 
 	int selectedOption;
 	bool done;
@@ -27,10 +29,6 @@ public:
 private:
 	sf::RenderWindow* window;
 	sf::RectangleShape background;
-
-	SFUI::Button *selectedButton;
-	int selectedButtonNum;
-
 };
 
 #endif // !MENU_HPP

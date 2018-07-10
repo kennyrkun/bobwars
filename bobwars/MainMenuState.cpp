@@ -93,6 +93,7 @@ void MainMenuState::HandleEvents()
 		{
 		case MENU_CALLBACKS::PLAY_BUTTON:
 			logger::INFO("Starting a new game...");
+			// TODO: we should ChangeState and rebuild the menu everytime, to save memory.
 			app->PushState(GameCreationState::Instance());
 			break;
 		case MENU_CALLBACKS::LOAD_BUTTON:

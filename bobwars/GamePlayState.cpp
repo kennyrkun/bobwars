@@ -16,7 +16,7 @@ void GamePlayState::Init(AppEngine* app_)
 {
 	app = app_;
 
-	logger::INFO("GamePlayState Init...");
+	logger::INFO("Initialising GamePlayState");
 
 	logger::INFO("Pre-game setup.");
 
@@ -42,6 +42,7 @@ void GamePlayState::Init(AppEngine* app_)
 	//TODO: make camera align with world center on game start
 	world.setSize(sf::Vector2f(800, 600));
 	world.setTexture(*&worldTexture);
+	world.setOrigin(sf::Vector2f(world.getSize().x / 2, world.getSize().y / 2));
 
 	logger::INFO("Preparing user interface elements...");
 	debugFrameCounter.setFont(Arial);
@@ -200,6 +201,8 @@ void GamePlayState::HandleEvents()
 			}
 			else if (event.type == sf::Event::EventType::MouseButtonPressed)
 			{
+				// TODO: disregard clicks if over interface
+
 				if (event.key.code == sf::Mouse::Button::Left)
 				{
 					if (ui->delete_ent_button->containsPoint(sf::Vector2f(sf::Mouse::getPosition(*app->window).x, sf::Mouse::getPosition(*app->window).y)))

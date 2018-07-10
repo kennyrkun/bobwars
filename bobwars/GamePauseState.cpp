@@ -26,40 +26,24 @@ void GamePauseState::Init(AppEngine* app_)
 	background.setTexture(*&backgroundTexture);
 	background.setFillColor(sf::Color(255, 255, 255, 155));
 
-	std::vector<SFUI::Button*> buttons;
+	std::vector<std::pair<std::string, int>> options = { std::pair<std::string, int>{"Continue", 0},
+														 std::pair<std::string, int>{"Save Game", 1},
+														 std::pair<std::string, int>{"Options", 2},
+														 std::pair<std::string, int>{"Exit to Menu", 3} };
 
-	SFUI::Button* continueButton = new SFUI::Button("Continue");
-//	continueButton->setSizeMultiplier(2);
-
-	SFUI::Button* saveButton = new SFUI::Button("Save Game");
-//	saveButton->setSizeMultiplier(2);
-//	saveButton->disable();
-
-	SFUI::Button* optionsButton = new SFUI::Button("Options");
-//	optionsButton->setSizeMultiplier(2);
-//	optionsButton->disable();
-
-	SFUI::Button* exitButton = new SFUI::Button("Exit to Menu");
-//	exitButton->setSizeMultiplier(2);
-
-	buttons.push_back(continueButton);
-	buttons.push_back(saveButton);
-	buttons.push_back(optionsButton);
-	buttons.push_back(exitButton);
-
-	pauseMenu = new Menu(app->window, "Pause", buttons);
+	pauseMenu = new Menu(app->window, "Pause", options);
 
 	logger::INFO("GamePauseState ready.");
 }
 
 void GamePauseState::Cleanup()
 {
-	logger::INFO("GamePauseState Cleaningup");
+	logger::INFO("Cleaning up GamePauseState.");
 
 	delete pauseMenu;
 	delete backgroundTexture;
 
-	logger::INFO("GamePauseState Cleanedup");
+	logger::INFO("Cleaned up GamePauseState.");
 }
 
 void GamePauseState::Pause()
@@ -86,6 +70,8 @@ void GamePauseState::HandleEvents()
 			if (event.key.code == sf::Keyboard::Key::Escape)
 			{
 				app->PopState();
+
+				break;
 			}
 		}
 
@@ -93,9 +79,10 @@ void GamePauseState::HandleEvents()
 	}
 }
 
-
 void GamePauseState::Update()
 {
+	 // TODO: function callbacks for buttons, instead of hard coded options
+
 	if (pauseMenu->done)
 	{
 		// continue
@@ -105,6 +92,7 @@ void GamePauseState::Update()
 
 		if (pauseMenu->selectedOption == 0)
 		{
+			// FIXME: should we return after this to avoid access violations?
 			app->PopState();
 		}
 		else if (pauseMenu->selectedOption == 1)
@@ -117,7 +105,12 @@ void GamePauseState::Update()
 		}
 		else if (pauseMenu->selectedOption == 3)
 		{
+			// FIXME: should we return after this to avoid access violations?
 			app->PopState(2);
+		}
+		else
+		{
+			logger::ERROR("Wrong option ID was returned (" + std::to_string(pauseMenu->selectedOption) + ")");
 		}
 	}
 }

@@ -12,98 +12,58 @@ bool mouseIsOver(sf::Shape &object, sf::RenderWindow &window)
 		return false;
 }
 
-Menu::Menu(sf::RenderWindow* window_, std::string title_, std::vector<SFUI::Button*> options_) : window(window_), title(title_), options(options_)
+Menu::Menu(sf::RenderWindow* window_, std::string title_, std::vector<std::pair<std::string, int>> options_) : window(window_), title(title_), options(options_)
 {
 	logger::INFO("Creating " + title + " Menu with " + std::to_string(options.size()) + " options");
 
-	float largest = options.front()->getSize().x;
-	for (size_t i = 0; i < options.size(); i++)
-		if (options[i]->getSize().x > largest)
-			largest = options[i]->getSize().x;
+	menu = new SFUI::Menu(*window);
 
-	background.setSize(sf::Vector2f(largest + 10, options.size() * 54));
-	background.setOrigin(sf::Vector2f(background.getGlobalBounds().width / 2, background.getGlobalBounds().height / 2));
-	background.setPosition(sf::Vector2f(window->getSize().x / 2, window->getSize().y / 2));
+	for (size_t i = 0; i < options.size(); i++)
+		menu->addButton(options[i].first, options[i].second);
+
+	background.setSize(sf::Vector2f(menu->getSize().x + 10, menu->getSize().y + 10));
+	background.setPosition(sf::Vector2f((window->getSize().x / 2) - (background.getSize().x / 2), (window->getSize().y / 2) - (background.getSize().x / 2)));
 	background.setOutlineColor(sf::Color::Black);
 	background.setOutlineThickness(4);
 
-	options[0]->setPosition(sf::Vector2f(background.getPosition().x, (background.getPosition().y - background.getGlobalBounds().height / 2) + (options[0]->getSize().x / 2) + 10));
-
-	for (size_t i = 1; i < options.size(); i++)
-	{
-		options[i]->setPosition(sf::Vector2f(background.getPosition().x, (options[i - 1]->getPosition().y + (options[i - 1]->getSize().x / 2)) + (options[i]->getSize().x / 2) + 10));
-	}
+	menu->setPosition(sf::Vector2f(background.getPosition().x + 5, background.getPosition().y + 5));
 
 	logger::INFO("Created " + title + " Menu");
-
-	selectedButton = options[0];
-	selectedButton->onStateChanged(SFUI::State::Focused);
 }
 
 Menu::~Menu()
 {
-	for (size_t i = 0; i < options.size(); i++)
-		delete options[i];
+	delete menu;
 
-	options.clear();
+	logger::INFO("PauseMenu destroyed.");
+}
 
-	logger::INFO("PauseMenu destroyed");
+void Menu::Update()
+{
 }
 
 void Menu::HandleEvents(sf::Event event)
 {
-	if (event.type == sf::Event::EventType::KeyPressed)
+	int id = menu->onEvent(event);
+
+	if (event.type == sf::Event::EventType::KeyPressed || event.type == sf::Event::EventType::MouseButtonReleased)
 	{
-		if (event.key.code == sf::Keyboard::Key::Up || event.key.code == sf::Keyboard::Key::Left)
+		if (event.key.code == sf::Keyboard::Key::Return || event.key.code == sf::Mouse::Left)
 		{
-			if (selectedButton != nullptr)
-				selectedButton->onStateChanged(SFUI::State::Default);
+			selectedOption = id;
 
-			if (selectedButtonNum > 0)
+			if (id == -1)
 			{
-				selectedButton = options[selectedButtonNum - 1];
-				selectedButton->onStateChanged(SFUI::State::Focused);
-				selectedButtonNum -= 1;
+				logger::INFO("No widget ID was returned, skipping. (" + std::to_string(id) + ")");
 			}
 			else
 			{
-				selectedButton = options[options.size() - 1];
-				selectedButton->onStateChanged(SFUI::State::Focused);
-				selectedButtonNum = options.size() - 1;
+				std::cout << "option: " << options[id].first << " (" << id << ")" << std::endl;
+
+				std::cout << "options" << std::endl;
+				done = true;
 			}
 		}
-		else if (event.key.code == sf::Keyboard::Key::Down || event.key.code == sf::Keyboard::Key::Right)
-		{
-			if (selectedButton != nullptr)
-				selectedButton->onStateChanged(SFUI::State::Default);
-
-			if (selectedButtonNum < options.size() - 1)
-			{
-				selectedButton = options[selectedButtonNum + 1];
-				selectedButton->onStateChanged(SFUI::State::Focused);
-				selectedButtonNum += 1;
-			}
-			else
-			{
-				selectedButton = options[0];
-				selectedButton->onStateChanged(SFUI::State::Focused);
-				selectedButtonNum = 0;
-			}
-		}
-		else if (event.key.code == sf::Keyboard::Key::Return)
-		{
-			logger::INFO("selected option " + std::to_string(selectedButtonNum));
-
-			selectedOption = selectedButtonNum;
-			done = true;
-		}
-		else if (event.key.code == sf::Keyboard::Key::Return)
-		{
-			logger::INFO("dont fuck me");
-		}
-
-		logger::DEBUG("key: " + std::to_string(event.key.code), true);
-		logger::DEBUG("return: " + std::to_string(sf::Keyboard::Key::Return), true);
 	}
 }
 
@@ -111,6 +71,5 @@ void Menu::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(background);
 
-	for (size_t i = 0; i < options.size(); i++)
-		target.draw(*options[i]);
+	target.draw(*menu);
 }

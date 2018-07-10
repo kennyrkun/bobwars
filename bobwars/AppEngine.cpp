@@ -6,6 +6,11 @@
 
 namespace fs = std::experimental::filesystem;
 
+// INFO: keep this bare minimums
+// AppEngine is the core of the application,
+// and should rely on as little external
+// resources as reasonably possible.
+
 void AppEngine::Init(std::string title_, AppSettings settings_)
 {
 	std::cout << "AppEngine Init" << std::endl;
