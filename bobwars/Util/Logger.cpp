@@ -31,7 +31,7 @@ namespace logger
 {
 	void DEBUG(std::string output, bool silent)
 	{
-		output = util::getTimestamp() + "] DEBUG: " + output;
+		output = util::getTimestamp() + " DEBUG: " + output;
 
 		if (!silent)
 			std::cout << output << std::endl;
@@ -41,7 +41,7 @@ namespace logger
 
 	void INFO(std::string output, bool silent)
 	{
-		output = util::getTimestamp() + "] INFO: " + output;
+		output = util::getTimestamp() + " INFO: " + output;
 
 		if (!silent)
 			std::cout << output << std::endl;
@@ -51,7 +51,7 @@ namespace logger
 
 	void WARNING(std::string output, bool silent)
 	{
-		output = util::getTimestamp() + "] WARNING: " + output;
+		output = util::getTimestamp() + " WARNING: " + output;
 		
 		if (!silent)
 			std::cout << output << std::endl;
@@ -61,7 +61,7 @@ namespace logger
 
 	void ERROR(std::string output, bool silent)
 	{
-		output = util::getTimestamp() + "] ERROR: " + output;
+		output = util::getTimestamp() + " ERROR: " + output;
 		
 		if (!silent)
 			std::cerr << output << std::endl;
