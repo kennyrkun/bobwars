@@ -12,9 +12,13 @@
 
 GamePlayState GamePlayState::GamePlayState_dontfuckwithme;
 
+sf::CircleShape test;
+
 void GamePlayState::Init(AppEngine* app_)
 {
 	app = app_;
+
+	test.setRadius(10);
 
 	logger::INFO("Initialising GamePlayState");
 
@@ -205,8 +209,16 @@ void GamePlayState::HandleEvents()
 
 				if (event.key.code == sf::Mouse::Button::Left)
 				{
-					if (ui->delete_ent_button->containsPoint(sf::Vector2f(sf::Mouse::getPosition(*app->window).x, sf::Mouse::getPosition(*app->window).y)))
+					test.setPosition(sf::Vector2f(sf::Mouse::getPosition(*app->window).x, sf::Mouse::getPosition(*app->window).y));
+
+					std::cout << "X: " << sf::Mouse::getPosition().x << ", Y: " << sf::Mouse::getPosition().y << std::endl;
+
+					std::cout << "X: " << ui->create_ent_button->getPosition().x << ", Y: " << ui->create_ent_button->getPosition().y << std::endl;
+
+					if (ui->create_ent_button->containsPoint(sf::Vector2f(sf::Mouse::getPosition(*app->window).x, sf::Mouse::getPosition(*app->window).y) - ui->create_ent_button->getPosition()))
 					{
+						ui->create_ent_button->onStateChanged(SFUI::State::Focused_Pressed);
+
 						if (entMan->entities.size() >= entMan->maxEnts)
 						{
 							ui->createEnabled = false;
@@ -233,9 +245,8 @@ void GamePlayState::HandleEvents()
 
 						break;
 					}
-					else if (ui->delete_ent_button->containsPoint(sf::Vector2f(sf::Mouse::getPosition(*app->window).x, sf::Mouse::getPosition(*app->window).y)) && !entMan->selectedEnts.empty())
+					else if (ui->delete_ent_button->containsPoint(sf::Vector2f(sf::Mouse::getPosition(*app->window).x, sf::Mouse::getPosition(*app->window).y) - ui->delete_ent_button->getPosition()) && !entMan->selectedEnts.empty())
 					{
-
 						deleteButton();
 					}
 
@@ -507,6 +518,8 @@ void GamePlayState::Draw()
 		app->window->draw(left);
 		app->window->draw(right);
 		app->window->draw(bottom);
+
+		app->window->draw(test);
 	}
 
 	app->window->display();

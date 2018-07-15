@@ -10,7 +10,6 @@
 #include <SFML/System/Vector2.hpp>
 #include <string>	
 
-class Button;
 class EntityManager;
 class Interface;
 
