@@ -7,6 +7,8 @@
 
 namespace logger
 {
+//	bool log_using_buffer = false;
+
 	void DEBUG(std::string output, bool silent = false);
 
 	void INFO(std::string output, bool silent = false);

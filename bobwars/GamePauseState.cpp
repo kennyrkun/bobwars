@@ -12,7 +12,7 @@ GamePauseState GamePauseState::GamePauseState_dontfuckwithme;
 
 void GamePauseState::Init(AppEngine* app_)
 {
-	logger::INFO("GamePauseState Init");
+	logger::INFO("Initialising GamePauseState.");
 
 	app = app_;
 
@@ -48,12 +48,12 @@ void GamePauseState::Cleanup()
 
 void GamePauseState::Pause()
 {
-	logger::INFO("GamePauseState Paused");
+	logger::INFO("GamePauseState paused.");
 }
 
 void GamePauseState::Resume()
 {
-	logger::INFO("GamePauseState Resumed");
+	logger::INFO("GamePauseState resumed.");
 }
 
 void GamePauseState::HandleEvents()
@@ -70,8 +70,7 @@ void GamePauseState::HandleEvents()
 			if (event.key.code == sf::Keyboard::Key::Escape)
 			{
 				app->PopState();
-
-				break;
+				return;
 			}
 		}
 
@@ -81,8 +80,6 @@ void GamePauseState::HandleEvents()
 
 void GamePauseState::Update()
 {
-	 // TODO: function callbacks for buttons, instead of hard coded options
-
 	if (pauseMenu->done)
 	{
 		// continue
@@ -98,10 +95,14 @@ void GamePauseState::Update()
 		else if (pauseMenu->selectedOption == 1)
 		{
 			// nothing
+
+			pauseMenu->done = false; // not done, because this option is not real.
 		}
 		else if (pauseMenu->selectedOption == 2)
 		{
-			// nothing
+			// nothing 
+
+			pauseMenu->done = false; // not done, because this option is not real.
 		}
 		else if (pauseMenu->selectedOption == 3)
 		{
