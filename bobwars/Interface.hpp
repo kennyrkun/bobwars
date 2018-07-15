@@ -37,6 +37,7 @@ public:
 
 	bool createEnabled = true;
 	SFUI::Button* create_ent_button;
+
 	bool deleteEnabled = false;
 	SFUI::Button* delete_ent_button;
 	// TODO: replace these with SFUI::Button
@@ -52,6 +53,8 @@ private:
 	sf::View *viewAnchor;
 	sf::View *mainView;
 	sf::Font arial;
+
+	// TODO: replace these counters with ResourceCounter class
 
 	sf::RectangleShape unitCounterIcon;
 	sf::Texture unitCounterIcon_tex;

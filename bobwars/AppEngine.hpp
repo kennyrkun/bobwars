@@ -41,8 +41,8 @@ public:
 	void Update();
 	void Draw();
 
-	bool Running() { return running; }
-	void Quit() { running = false; }
+	bool isRunning() { return running; }
+	void Quit();
 
 	std::string title;
 	bool debugModeActive = false;

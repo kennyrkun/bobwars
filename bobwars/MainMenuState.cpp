@@ -23,38 +23,13 @@ void MainMenuState::Init(AppEngine* app_)
 	logoShape.setPosition(sf::Vector2f(app->window->getDefaultView().getCenter().x, app->window->getSize().y / 2 - ((app->window->getSize().y / 2) / 2)));
 
 	menu = new SFUI::Menu(*app->window);
-	menu->setPosition(app->window->getDefaultView().getCenter());
 	menu->addButton("New Game", MENU_CALLBACKS::PLAY_BUTTON);
 	menu->addButton("Load", MENU_CALLBACKS::LOAD_BUTTON);
 	menu->addButton("Settings", MENU_CALLBACKS::SETTINGS_BUTTON);
 	menu->addButton("Exit", MENU_CALLBACKS::EXIT_BUTTON);
 
-	playButton = new SFUI::Button("new game :D");
-	//playButton.setString("new game :D");
-	//playButton.setSizeMultiplier(2);
-	playButton->setPosition(sf::Vector2f(app->window->getDefaultView().getCenter().x, app->window->getDefaultView().getCenter().y));
-	// HACK: something in SFUI causes buttons to be blank when not explicity enabled.
-	//playButton.disable();
-	//playButton.enable();
-
-	loadButton = new SFUI::Button("settings");
-	//loadButton.setString("settings");
-	//loadButton.setSizeMultiplier(1);
-	loadButton->setPosition(sf::Vector2f(app->window->getDefaultView().getCenter().x, playButton->getPosition().y + 50));
-	//loadButton.disable();
-
-	settingsButton = new SFUI::Button("settings");
-	//settingsButton.setString("settings");
-	settingsButton->setPosition(sf::Vector2f(app->window->getDefaultView().getCenter().x, loadButton->getPosition().y + 25));
-	//settingsButton.disable();
-
-	exitButton = new SFUI::Button("exit");
-	//exitButton.setString("exit");
-	//exitButton.setSizeMultiplier(2);
-	exitButton->setPosition(sf::Vector2f(app->window->getDefaultView().getCenter().x, settingsButton->getPosition().y + 50));
-	// HACK: something in SFUI causes buttons to be blank when not explicity enabled.
-//	exitButton.disable();
-//	exitButton.enable();
+	menu->setPosition(app->window->getDefaultView().getCenter());
+	menu->setPosition(sf::Vector2f(app->window->getSize().x / 2 - (menu->getSize().x / 2), app->window->getSize().y / 2 - (menu->getSize().y / 2)));
 
 	logger::INFO("MainMenuState ready.");
 }
@@ -65,10 +40,7 @@ void MainMenuState::Cleanup()
 
 	app->resMan->freeAllTextures();
 
-	delete this->playButton;
-	delete this->loadButton;
-	delete this->settingsButton;
-	delete this->exitButton;
+	delete menu;
 
 	logger::INFO("Cleaned up MainMenuState.");
 }

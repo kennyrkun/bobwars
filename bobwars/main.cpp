@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
 //	MainMenuState* mainMenuState = new MainMenuState(appEngine);
 //	appEngine->ChangeState(mainMenuState);
 
-	while (app.Running())
+	while (app.isRunning())
 	{
 		app.HandleEvents();
 		app.Update();

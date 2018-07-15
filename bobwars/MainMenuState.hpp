@@ -43,11 +43,6 @@ private:
 		SETTINGS_BUTTON,
 		EXIT_BUTTON
 	};
-
-	SFUI::Button* playButton;
-	SFUI::Button* loadButton;
-	SFUI::Button* settingsButton;
-	SFUI::Button* exitButton;
 };
 
 #endif // !MAIN_MENU_STATE

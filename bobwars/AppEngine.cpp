@@ -128,3 +128,15 @@ void AppEngine::Draw()
 	if (running)
 		states.back()->Draw();
 }
+
+void AppEngine::Quit()
+{
+	for (size_t i = 0; i < states.size(); i++)
+		PopState();
+
+	// we don't delete the states because they're static
+
+	states.clear();
+
+	running = false;
+}
