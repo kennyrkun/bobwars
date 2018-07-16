@@ -20,6 +20,7 @@ namespace util
 		bool mouseIsOver(sf::Sprite &object, sf::RenderWindow &window);
 	}
 
+	// TODO: take screen shot, save screenshot, game screenshot functions
 	void screenshot(sf::RenderWindow &window);
 
 	std::string getTimestamp();

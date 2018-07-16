@@ -4,7 +4,7 @@
 #include "AppEngine.hpp"
 #include "AppState.hpp"
 
-#include <SFUI/TextButton.hpp>
+#include <SFUI\SFUI.hpp>
 
 class MainMenuState : public AppState
 {
@@ -34,10 +34,15 @@ private:
 	sf::Uint8 r = 255, g = 0, b = 0;
 	sf::RectangleShape logoShape;
 
-	SFUI::TextButton playButton;
-	SFUI::TextButton loadButton;
-	SFUI::TextButton settingsButton;
-	SFUI::TextButton exitButton;
+	SFUI::Menu *menu;
+
+	enum MENU_CALLBACKS
+	{
+		PLAY_BUTTON,
+		LOAD_BUTTON,
+		SETTINGS_BUTTON,
+		EXIT_BUTTON
+	};
 };
 
 #endif // !MAIN_MENU_STATE

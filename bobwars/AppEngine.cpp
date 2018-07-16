@@ -6,6 +6,11 @@
 
 namespace fs = std::experimental::filesystem;
 
+// INFO: keep this bare minimums
+// AppEngine is the core of the application,
+// and should rely on as little external
+// resources as reasonably possible.
+
 void AppEngine::Init(std::string title_, AppSettings settings_)
 {
 	std::cout << "AppEngine Init" << std::endl;
@@ -122,4 +127,16 @@ void AppEngine::Draw()
 	// let the state draw the screen
 	if (running)
 		states.back()->Draw();
+}
+
+void AppEngine::Quit()
+{
+	for (size_t i = 0; i < states.size(); i++)
+		PopState();
+
+	// we don't delete the states because they're static
+
+	states.clear();
+
+	running = false;
 }

@@ -25,7 +25,7 @@ BaseEntity::BaseEntity(int entityID, int team, int armour, int hitpoints, int he
 
 BaseEntity::~BaseEntity()
 {
-	logger::SILENT("DEBUG", "Entity base class deconstructed.");
+	logger::DEBUG("Entity base class deconstructed.", true);
 }
 
 void BaseEntity::moveTo(const sf::Vector2f &pos)

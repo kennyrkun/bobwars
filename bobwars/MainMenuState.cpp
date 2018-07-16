@@ -18,32 +18,18 @@ void MainMenuState::Init(AppEngine* app_)
 	app->resMan->getTexture("title_screen_logo")->setSmooth(true);
 	logoShape.setSize(sf::Vector2f(app->resMan->getTexture("title_screen_logo")->getSize().x, app->resMan->getTexture("title_screen_logo")->getSize().y));
 	logoShape.setTexture(&*app->resMan->getTexture("title_screen_logo"));
-//	logoTexture.setSmooth(true);
+	//logoTexture.setSmooth(true);
 	logoShape.setOrigin(logoShape.getLocalBounds().width / 2, logoShape.getLocalBounds().height / 2);
 	logoShape.setPosition(sf::Vector2f(app->window->getDefaultView().getCenter().x, app->window->getSize().y / 2 - ((app->window->getSize().y / 2) / 2)));
 
-	playButton.setString("new game :D");
-	playButton.setSizeMultiplier(2);
-	playButton.setPosition(app->window->getDefaultView().getCenter());
-	// HACK: something in SFUI causes buttons to be blank when not explicity enabled.
-	playButton.disable();
-	playButton.enable();
+	menu = new SFUI::Menu(*app->window);
+	menu->addButton("New Game", MENU_CALLBACKS::PLAY_BUTTON);
+	menu->addButton("Load", MENU_CALLBACKS::LOAD_BUTTON);
+	menu->addButton("Settings", MENU_CALLBACKS::SETTINGS_BUTTON);
+	menu->addButton("Exit", MENU_CALLBACKS::EXIT_BUTTON);
 
-	loadButton.setString("settings");
-	loadButton.setSizeMultiplier(1);
-	loadButton.setPosition(sf::Vector2f(app->window->getDefaultView().getCenter().x, playButton.m_shape.getPosition().y + 50));
-	loadButton.disable();
-
-	settingsButton.setString("settings");
-	settingsButton.setPosition(sf::Vector2f(app->window->getDefaultView().getCenter().x, loadButton.m_shape.getPosition().y + 25));
-	settingsButton.disable();
-
-	exitButton.setString("exit");
-	exitButton.setSizeMultiplier(2);
-	exitButton.setPosition(sf::Vector2f(app->window->getDefaultView().getCenter().x, settingsButton.m_shape.getPosition().y + 50));
-	// HACK: something in SFUI causes buttons to be blank when not explicity enabled.
-	exitButton.disable();
-	exitButton.enable();
+	menu->setPosition(app->window->getDefaultView().getCenter());
+	menu->setPosition(sf::Vector2f(app->window->getSize().x / 2 - (menu->getSize().x / 2), app->window->getSize().y / 2 - (menu->getSize().y / 2)));
 
 	logger::INFO("MainMenuState ready.");
 }
@@ -53,6 +39,8 @@ void MainMenuState::Cleanup()
 	logger::INFO("Cleaning up MainMenuState.");
 
 	app->resMan->freeAllTextures();
+
+	delete menu;
 
 	logger::INFO("Cleaned up MainMenuState.");
 }
@@ -72,33 +60,29 @@ void MainMenuState::HandleEvents()
 	sf::Event event;
 	while (app->window->pollEvent(event))
 	{
-		if (event.type == sf::Event::EventType::Closed)
+		int id = menu->onEvent(event);
+		switch (id)
 		{
+		case MENU_CALLBACKS::PLAY_BUTTON:
+			logger::INFO("Starting a new game...");
+			// TODO: we should ChangeState and rebuild the menu everytime, to save memory.
+			app->PushState(GameCreationState::Instance());
+			break;
+		case MENU_CALLBACKS::LOAD_BUTTON:
+			logger::ERROR("Saving/Loading system not yet implemented.");
+			break;
+		case MENU_CALLBACKS::SETTINGS_BUTTON:
+			logger::ERROR("Settings functions not yet implemented.");
+			break;
+		case MENU_CALLBACKS::EXIT_BUTTON:
+			logger::INFO("Exiting game...");
 			app->Quit();
+		default:
+			break;
 		}
-		else if (event.type == sf::Event::EventType::MouseButtonPressed)
-		{
-			if (mouseIsOver(playButton.m_shape))
-			{
-				logger::INFO("Starting a new game...");
 
-				app->PushState(GameCreationState::Instance());
-			}
-			else if (mouseIsOver(loadButton.m_shape))
-			{
-				logger::ERROR("Saving/Loading system not yet implemented.");
-			}
-			else if (mouseIsOver(settingsButton.m_shape))
-			{
-				logger::ERROR("Settings functions not yet implemented.");
-			}
-			else if (mouseIsOver(exitButton.m_shape))
-			{
-				logger::INFO("Exiting game...");
-
-				app->Quit();
-			}
-		}
+		if (event.type == sf::Event::EventType::Closed)
+			app->Quit();
 	}
 }
 
@@ -134,10 +118,13 @@ void MainMenuState::Draw()
 	app->window->clear(sf::Color(100, 100, 100));
 
 	app->window->draw(logoShape);
-	app->window->draw(playButton);
-	app->window->draw(loadButton);
-	app->window->draw(settingsButton);
-	app->window->draw(exitButton);
+
+	app->window->draw(*menu);
+
+//	app->window->draw(*playButton);
+//	app->window->draw(*loadButton);
+//	app->window->draw(*settingsButton);
+//	app->window->draw(*exitButton);
 
 	app->window->display();
 }

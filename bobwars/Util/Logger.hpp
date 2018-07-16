@@ -7,17 +7,19 @@
 
 namespace logger
 {
-	void INFO(std::string output);
+//	bool log_using_buffer = false;
 
-	void WARNING(std::string output);
+	void DEBUG(std::string output, bool silent = false);
 
-	void ERROR(std::string output);
+	void INFO(std::string output, bool silent = false);
 
-	void SILENT(std::string type, std::string output);
+	void WARNING(std::string output, bool silent = false);
 
-	void CUSTOM(std::string type, std::string output);
+	void ERROR(std::string output, bool silent = false);
 
-	void BREAK();
+	void CUSTOM(std::string type, std::string output, bool silent = false);
+
+	void LINE_BREAK();
 
 	void setOutputDir(const std::string dir);
 	void setOutputDir(const std::string dir, const std::string filename);
@@ -26,11 +28,13 @@ namespace logger
 namespace loggerv2
 {
 	extern int logLevel;
-	/* 0 = no logging
-	// 1 = log to files only
-	// 2 = only print info, warnings, and errors
-	// 3 = 1 + light debug messages
-	// 4 = print all debug messages */
+	/* 
+	/ 0 = no logging
+	/ 1 = log to files only
+	/ 2 = only print info, warnings, and errors
+	/ 3 = 1 + light debug messages
+	/ 4 = print all debug messages 
+	*/
 
 	extern std::string logLocation;
 
@@ -49,16 +53,26 @@ namespace loggerv2
 class Logger
 {
 public:
+	enum class LogType
+	{
+		INFO,
+		WARN,
+		ERROR
+	};
+
 	Logger(std::string loggerOutputDirectory);
 	~Logger();
 
-	void log(std::string type, std::string message);
+	void log(LogType type, std::string message);
 	void info(std::string message);
 	void warn(std::string message);
 	void error(std::string message);
 
 	std::string outputfile = ".//bobwars.log";
 	int loglevel;
+
+	bool writeToConsole;
+	bool writeToFile;
 
 private:
 	void printLog(std::string log);

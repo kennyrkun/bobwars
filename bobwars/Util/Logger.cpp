@@ -29,48 +29,60 @@ void writeLog(const std::string output)
 
 namespace logger
 {
-	void INFO(std::string output)
+	void DEBUG(std::string output, bool silent)
+	{
+		output = util::getTimestamp() + " DEBUG: " + output;
+
+		if (!silent)
+			std::cout << output << std::endl;
+
+		writeLog(output);
+	}
+
+	void INFO(std::string output, bool silent)
 	{
 		output = util::getTimestamp() + " INFO: " + output;
 
-		std::cout << output << std::endl;
+		if (!silent)
+			std::cout << output << std::endl;
+
 		writeLog(output);
 	}
 
-	void WARNING(std::string output)
+	void WARNING(std::string output, bool silent)
 	{
 		output = util::getTimestamp() + " WARNING: " + output;
-		std::cout << output << std::endl;
+		
+		if (!silent)
+			std::cout << output << std::endl;
 
 		writeLog(output);
 	}
 
-	void ERROR(std::string output)
+	void ERROR(std::string output, bool silent)
 	{
 		output = util::getTimestamp() + " ERROR: " + output;
-		std::cerr << output << std::endl;
+		
+		if (!silent)
+			std::cerr << output << std::endl;
 
 		writeLog(output);
 	}
 
-	void SILENT(std::string type, std::string output)
+	void CUSTOM(std::string type, std::string output, bool silent)
 	{
 		output = util::getTimestamp() + " " + type + ": " + output;
+		
+		if (!silent)
+			std::cout << output << std::endl;
 
 		writeLog(output);
 	}
 
-	void CUSTOM(std::string type, std::string output)
-	{
-		output = util::getTimestamp() + " " + type + ": " + output;
-		std::cout << output << std::endl;
-
-		writeLog(output);
-	}
-
-	void BREAK()
+	void LINE_BREAK()
 	{
 		std::cout << std::endl;
+		writeLog("\n");
 	}
 
 	void setOutputDir(const std::string dir)
@@ -185,9 +197,11 @@ Logger::~Logger()
 	std::cout << "Logger destroyed" << std::endl;
 }
 
-void Logger::log(std::string type, std::string message)
+void Logger::log(LogType type, std::string message)
 {
-	message = util::getTimestamp() + " " + type + ": " + message;
+	// TODO: translate Type to String
+
+	//message = util::getTimestamp() + " " + type + ": " + message;
 
 	std::cout << message << std::endl;
 	writeLog(message);

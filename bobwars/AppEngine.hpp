@@ -28,17 +28,21 @@ public:
 	void Init(std::string title, AppSettings settings_);
 	void Cleanup();
 
+	// Note: code after this function is still executed.
 	void ChangeState(AppState* state);
+	// Note: code after this function is still executed.
 	void PushState(AppState* state);
+	// Note: code after this function is still executed.
 	void PopState();
+	// Note: code after this function is still executed.
 	void PopState(int amount);
 
 	void HandleEvents();
 	void Update();
 	void Draw();
 
-	bool Running() { return running; }
-	void Quit() { running = false; }
+	bool isRunning() { return running; }
+	void Quit();
 
 	std::string title;
 	bool debugModeActive = false;

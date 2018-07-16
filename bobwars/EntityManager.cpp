@@ -10,7 +10,7 @@
 
 EntityManager::EntityManager()
 {
-	logger::SILENT("DEBUG", "ObjectManager constructed.");
+	logger::DEBUG("ObjectManager constructed.", true);
 
 	maxEntsPerTeam = maxEnts / util::maxPlayers;
 }
@@ -32,7 +32,7 @@ EntityManager::~EntityManager()
 	selectedEnts.clear();
 	entities.clear();
 
-	logger::SILENT("DEBUG", "ObjectManager deconstructed.");
+	logger::DEBUG("ObjectManager deconstructed.", true);
 }
 
 BaseEntity* EntityManager::newBob()

@@ -12,11 +12,15 @@
 
 GamePlayState GamePlayState::GamePlayState_dontfuckwithme;
 
+sf::CircleShape test;
+
 void GamePlayState::Init(AppEngine* app_)
 {
 	app = app_;
 
-	logger::INFO("GamePlayState Init...");
+	test.setRadius(10);
+
+	logger::INFO("Initialising GamePlayState");
 
 	logger::INFO("Pre-game setup.");
 
@@ -24,7 +28,7 @@ void GamePlayState::Init(AppEngine* app_)
 
 	if (!Arial.loadFromFile("C:/Windows/Fonts/Arial.ttf"))
 	{
-		logger::SILENT("ERROR", "Failed to load font Arial!");
+		logger::ERROR("Failed to load font Arial!", true);
 	}
 	else
 	{
@@ -37,11 +41,12 @@ void GamePlayState::Init(AppEngine* app_)
 	worldTexture = new sf::Texture; // fix not running in debug
 
 	if (!worldTexture->loadFromFile("bobwars/resource/textures/world.png"))
-		logger::SILENT("ERROR", "Failed to load world textures!");
+		logger::ERROR("Failed to load world textures!", true);
 
 	//TODO: make camera align with world center on game start
 	world.setSize(sf::Vector2f(800, 600));
 	world.setTexture(*&worldTexture);
+	world.setOrigin(sf::Vector2f(world.getSize().x / 2, world.getSize().y / 2));
 
 	logger::INFO("Preparing user interface elements...");
 	debugFrameCounter.setFont(Arial);
@@ -173,7 +178,8 @@ void GamePlayState::HandleEvents()
 							for (size_t i = 0; i < entMan->entities.size(); i++)
 								entMan->entities[i]->isSelected = true;
 
-							ui->delete_ent_button.enable();
+							ui->deleteEnabled = true;
+//							ui->delete_ent_button.enable();
 
 							logger::INFO("selected " + std::to_string(entMan->selectedEnts.size()) + " entities (of " + std::to_string(entMan->entities.size()) + ")");
 						}
@@ -199,13 +205,18 @@ void GamePlayState::HandleEvents()
 			}
 			else if (event.type == sf::Event::EventType::MouseButtonPressed)
 			{
+				// TODO: disregard clicks if over interface
+
 				if (event.key.code == sf::Mouse::Button::Left)
 				{
-					if (util::logic::mouseIsOver(ui->create_ent_button.m_shape, *app->window, *ui->getViewAnchor())) // create new entity
+					test.setPosition(sf::Vector2f(sf::Mouse::getPosition(*app->window).x, sf::Mouse::getPosition(*app->window).y));
+
+					if (ui->create_ent_button->containsPoint(sf::Vector2f(sf::Mouse::getPosition(*app->window).x, sf::Mouse::getPosition(*app->window).y) - ui->create_ent_button->getPosition()))
 					{
 						if (entMan->entities.size() >= entMan->maxEnts)
 						{
-							ui->create_ent_button.disable();
+							ui->createEnabled = false;
+//							ui->create_ent_button.disable();
 							ui->unitCounterText.setFillColor(sf::Color::Red);
 							logger::INFO("Unit cap reached.");
 						}
@@ -214,11 +225,13 @@ void GamePlayState::HandleEvents()
 							entMan->deselectAllEnts();
 							entMan->newBob();
 
-							ui->delete_ent_button.enable();
+							ui->deleteEnabled = true;
+//							ui->delete_ent_button.enable();
 
 							if (entMan->entities.size() >= entMan->maxEnts)
 							{
-								ui->create_ent_button.disable();
+								ui->createEnabled = false;
+//								ui->create_ent_button.disable();
 								ui->unitCounterText.setFillColor(sf::Color::Red);
 								logger::INFO("Unit cap reached.");
 							}
@@ -226,7 +239,7 @@ void GamePlayState::HandleEvents()
 
 						break;
 					}
-					else if (util::logic::mouseIsOver(ui->delete_ent_button.m_shape, *app->window, *ui->getViewAnchor()) && !entMan->selectedEnts.empty())
+					else if (ui->delete_ent_button->containsPoint(sf::Vector2f(sf::Mouse::getPosition(*app->window).x, sf::Mouse::getPosition(*app->window).y) - ui->delete_ent_button->getPosition()) && !entMan->selectedEnts.empty())
 					{
 						deleteButton();
 					}
@@ -270,7 +283,9 @@ void GamePlayState::HandleEvents()
 								entMan->selectEnt(entMan->entities[i]);
 
 								logger::INFO("selected entity" + std::to_string(entMan->entities[i]->entityID));
-								ui->delete_ent_button.enable();
+
+								ui->deleteEnabled = true;
+//								ui->delete_ent_button.enable();
 
 								selectedNothing = false;
 							}
@@ -282,7 +297,9 @@ void GamePlayState::HandleEvents()
 					if (selectedNothing && !entMan->selectedEnts.empty()) // selected nothing and didn't already have nothing
 					{
 						entMan->deselectAllEnts();
-						ui->delete_ent_button.disable();
+
+						ui->deleteEnabled = false;
+//						ui->delete_ent_button.disable();
 
 						logger::INFO("All entities deselected");
 						break;
@@ -495,6 +512,8 @@ void GamePlayState::Draw()
 		app->window->draw(left);
 		app->window->draw(right);
 		app->window->draw(bottom);
+
+		app->window->draw(test);
 	}
 
 	app->window->display();
@@ -521,10 +540,12 @@ void GamePlayState::deleteButton()
 			i--;
 		}
 
-		ui->delete_ent_button.disable();
+		ui->deleteEnabled = false;
+		//ui->delete_ent_button.disable();
 
 		if (entMan->entities.size() < entMan->maxEnts)
-			ui->create_ent_button.enable();
+			ui->createEnabled = true;
+			//ui->create_ent_button.enable();
 	}
 	else
 	{

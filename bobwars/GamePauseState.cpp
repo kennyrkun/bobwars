@@ -12,7 +12,7 @@ GamePauseState GamePauseState::GamePauseState_dontfuckwithme;
 
 void GamePauseState::Init(AppEngine* app_)
 {
-	logger::INFO("GamePauseState Init");
+	logger::INFO("Initialising GamePauseState.");
 
 	app = app_;
 
@@ -26,46 +26,34 @@ void GamePauseState::Init(AppEngine* app_)
 	background.setTexture(*&backgroundTexture);
 	background.setFillColor(sf::Color(255, 255, 255, 155));
 
-	std::vector<SFUI::TextButton*> buttons;
+	std::vector<std::pair<std::string, int>> options = { std::pair<std::string, int>{"Continue", 0},
+														 std::pair<std::string, int>{"Save Game", 1},
+														 std::pair<std::string, int>{"Options", 2},
+														 std::pair<std::string, int>{"Exit to Menu", 3} };
 
-	SFUI::TextButton* continueButton = new SFUI::TextButton("Continue");
-	continueButton->setSizeMultiplier(2);
-	SFUI::TextButton* saveButton = new SFUI::TextButton("Save Game");
-	saveButton->setSizeMultiplier(2);
-	saveButton->disable();
-	SFUI::TextButton* optionsButton = new SFUI::TextButton("Options");
-	optionsButton->setSizeMultiplier(2);
-	optionsButton->disable();
-	SFUI::TextButton* exitButton = new SFUI::TextButton("Exit to Menu");
-	exitButton->setSizeMultiplier(2);
-	buttons.push_back(continueButton);
-	buttons.push_back(saveButton);
-	buttons.push_back(optionsButton);
-	buttons.push_back(exitButton);
-
-	pauseMenu = new Menu(app->window, "Pause", buttons);
+	pauseMenu = new Menu(app->window, "Pause", options);
 
 	logger::INFO("GamePauseState ready.");
 }
 
 void GamePauseState::Cleanup()
 {
-	logger::INFO("GamePauseState Cleaningup");
+	logger::INFO("Cleaning up GamePauseState.");
 
 	delete pauseMenu;
 	delete backgroundTexture;
 
-	logger::INFO("GamePauseState Cleanedup");
+	logger::INFO("Cleaned up GamePauseState.");
 }
 
 void GamePauseState::Pause()
 {
-	logger::INFO("GamePauseState Paused");
+	logger::INFO("GamePauseState paused.");
 }
 
 void GamePauseState::Resume()
 {
-	logger::INFO("GamePauseState Resumed");
+	logger::INFO("GamePauseState resumed.");
 }
 
 void GamePauseState::HandleEvents()
@@ -82,13 +70,13 @@ void GamePauseState::HandleEvents()
 			if (event.key.code == sf::Keyboard::Key::Escape)
 			{
 				app->PopState();
+				return;
 			}
 		}
 
 		pauseMenu->HandleEvents(event);
 	}
 }
-
 
 void GamePauseState::Update()
 {
@@ -101,19 +89,29 @@ void GamePauseState::Update()
 
 		if (pauseMenu->selectedOption == 0)
 		{
+			// FIXME: should we return after this to avoid access violations?
 			app->PopState();
 		}
 		else if (pauseMenu->selectedOption == 1)
 		{
 			// nothing
+
+			pauseMenu->done = false; // not done, because this option is not real.
 		}
 		else if (pauseMenu->selectedOption == 2)
 		{
-			// nothing
+			// nothing 
+
+			pauseMenu->done = false; // not done, because this option is not real.
 		}
 		else if (pauseMenu->selectedOption == 3)
 		{
+			// FIXME: should we return after this to avoid access violations?
 			app->PopState(2);
+		}
+		else
+		{
+			logger::ERROR("Wrong option ID was returned (" + std::to_string(pauseMenu->selectedOption) + ")");
 		}
 	}
 }

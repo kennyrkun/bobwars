@@ -90,7 +90,9 @@
     <ClInclude Include="EntityManager.hpp">
       <Filter>BOBWARS\Game\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="Util\SettingsParser.hpp" />
+    <ClInclude Include="Util\SettingsParser.hpp">
+      <Filter>BOBWARS\Game\Systems</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseEntity.cpp">
@@ -150,6 +152,8 @@
     <ClCompile Include="ResourceManager.cpp">
       <Filter>BOBWARS\Game\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="Util\SettingsParser.cpp" />
+    <ClCompile Include="Util\SettingsParser.cpp">
+      <Filter>BOBWARS\Game\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

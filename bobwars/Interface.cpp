@@ -72,12 +72,14 @@ Interface::Interface(sf::RenderWindow *_targetWindow, sf::View *_mainView)
 	unitCounterText.setOrigin(sf::Vector2f(0, unitCounterText.getLocalBounds().height / 2));
 	unitCounterText.setPosition(sf::Vector2f(unitCounterBackground.getPosition().x + 4, unitCounterBackground.getPosition().y - 6));
 
-	create_ent_button.setString("create");
-	create_ent_button.setPosition(sf::Vector2f(leftX + 50, bottomMiddleY - 55));
+	create_ent_button = new SFUI::Button("create");
+//	create_ent_button.setString("create");
+	create_ent_button->setPosition(sf::Vector2f(leftX + 50, bottomMiddleY - 55));
 
-	delete_ent_button.setString("delete");
-	delete_ent_button.disable();
-	delete_ent_button.setPosition(sf::Vector2f(leftX + 150, bottomMiddleY - 55));
+	delete_ent_button = new SFUI::Button("delete");
+//	delete_ent_button.setString("delete");
+//	delete_ent_button.disable();
+	delete_ent_button->setPosition(sf::Vector2f(leftX + 150, bottomMiddleY - 55));
 
 	logger::INFO("New interface created.");
 }
@@ -139,6 +141,6 @@ void Interface::Draw()
 
 	targetWindow->draw(bottomBar);
 
-	targetWindow->draw(create_ent_button);
-	targetWindow->draw(delete_ent_button);
+	targetWindow->draw(*create_ent_button);
+	targetWindow->draw(*delete_ent_button);
 }
