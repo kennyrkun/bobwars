@@ -35,7 +35,7 @@ EntityManager::~EntityManager()
 	logger::DEBUG("ObjectManager deconstructed.", true);
 }
 
-BaseEntity* EntityManager::newBob()
+Bob* EntityManager::newBob()
 {
 	//TODO: optimise entity creation
 
@@ -48,10 +48,10 @@ BaseEntity* EntityManager::newBob()
 
 	return newBobEntity;
 									   
-//	logger::INFO("creating new entity (" + std::to_string(newEnt->entityID) + ")");
+	logger::DEBUG("creating new entity (" + std::to_string(newBobEntity->entityID) + ")");
 }
 
-BaseEntity* EntityManager::newCommentSection()
+CommentSection* EntityManager::newCommentSection()
 {
 	//TODO: optimise entity creation
 	//TODO: comment sections might not want to be selected on creation

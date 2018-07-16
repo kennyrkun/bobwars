@@ -23,10 +23,10 @@ void MainMenuState::Init(AppEngine* app_)
 	logoShape.setPosition(sf::Vector2f(app->window->getDefaultView().getCenter().x, app->window->getSize().y / 2 - ((app->window->getSize().y / 2) / 2)));
 
 	menu = new SFUI::Menu(*app->window);
-	menu->addButton("New Game", MENU_CALLBACKS::PLAY_BUTTON);
-	menu->addButton("Load", MENU_CALLBACKS::LOAD_BUTTON);
-	menu->addButton("Settings", MENU_CALLBACKS::SETTINGS_BUTTON);
-	menu->addButton("Exit", MENU_CALLBACKS::EXIT_BUTTON);
+	menu->addButton("New Game", MAIN_MENU_CALLBACKS::PLAY_BUTTON);
+	menu->addButton("Load", MAIN_MENU_CALLBACKS::LOAD_BUTTON);
+	menu->addButton("Settings", MAIN_MENU_CALLBACKS::SETTINGS_BUTTON);
+	menu->addButton("Exit", MAIN_MENU_CALLBACKS::EXIT_BUTTON);
 
 	menu->setPosition(app->window->getDefaultView().getCenter());
 	menu->setPosition(sf::Vector2f(app->window->getSize().x / 2 - (menu->getSize().x / 2), app->window->getSize().y / 2 - (menu->getSize().y / 2)));
@@ -63,18 +63,18 @@ void MainMenuState::HandleEvents()
 		int id = menu->onEvent(event);
 		switch (id)
 		{
-		case MENU_CALLBACKS::PLAY_BUTTON:
+		case MAIN_MENU_CALLBACKS::PLAY_BUTTON:
 			logger::INFO("Starting a new game...");
 			// TODO: we should ChangeState and rebuild the menu everytime, to save memory.
 			app->PushState(GameCreationState::Instance());
 			break;
-		case MENU_CALLBACKS::LOAD_BUTTON:
-			logger::ERROR("Saving/Loading system not yet implemented.");
+		case MAIN_MENU_CALLBACKS::LOAD_BUTTON:
+			logger::WARNING("Saving/Loading system not yet implemented.");
 			break;
-		case MENU_CALLBACKS::SETTINGS_BUTTON:
-			logger::ERROR("Settings functions not yet implemented.");
+		case MAIN_MENU_CALLBACKS::SETTINGS_BUTTON:
+			logger::WARNING("Settings functions not yet implemented.");
 			break;
-		case MENU_CALLBACKS::EXIT_BUTTON:
+		case MAIN_MENU_CALLBACKS::EXIT_BUTTON:
 			logger::INFO("Exiting game...");
 			app->Quit();
 		default:
