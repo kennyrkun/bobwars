@@ -211,14 +211,8 @@ void GamePlayState::HandleEvents()
 				{
 					test.setPosition(sf::Vector2f(sf::Mouse::getPosition(*app->window).x, sf::Mouse::getPosition(*app->window).y));
 
-					std::cout << "X: " << sf::Mouse::getPosition().x << ", Y: " << sf::Mouse::getPosition().y << std::endl;
-
-					std::cout << "X: " << ui->create_ent_button->getPosition().x << ", Y: " << ui->create_ent_button->getPosition().y << std::endl;
-
 					if (ui->create_ent_button->containsPoint(sf::Vector2f(sf::Mouse::getPosition(*app->window).x, sf::Mouse::getPosition(*app->window).y) - ui->create_ent_button->getPosition()))
 					{
-						ui->create_ent_button->onStateChanged(SFUI::State::Focused_Pressed);
-
 						if (entMan->entities.size() >= entMan->maxEnts)
 						{
 							ui->createEnabled = false;
