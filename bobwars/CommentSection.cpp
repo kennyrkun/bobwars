@@ -20,7 +20,7 @@ CommentSection::CommentSection()
 	armor = 0;
 	hitpoints = 1;
 	type = "commentsection";
-	movable = false;
+	isMoving = false;
 }
 
 CommentSection::~CommentSection()

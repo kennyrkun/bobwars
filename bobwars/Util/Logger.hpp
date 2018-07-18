@@ -9,6 +9,10 @@ namespace logger
 {
 //	bool log_using_buffer = false;
 
+	// TODO: have cl_debug override silents
+	// so that when debug is enabled, all logs
+	// are shown in the active console.
+
 	void DEBUG(std::string output, bool silent = false);
 
 	void INFO(std::string output, bool silent = false);

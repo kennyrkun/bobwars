@@ -63,6 +63,7 @@ private:
 	sf::Text debugFrameCounter;
 	sf::Text debugText;
 
+	// TODO: rename this
 	Camera* mainView2;
 	int baseViewSpeed = 500;
 

@@ -30,16 +30,16 @@ BaseEntity::~BaseEntity()
 
 void BaseEntity::moveTo(const sf::Vector2f &pos)
 {
-	if (movable)
+	if (isMovable)
 	{
 		logger::INFO("Moving to X: " + std::to_string(pos.x) + ", Y: " + std::to_string(pos.y) + ". (" + std::to_string(entityID) + ")");
 		movePos = pos;
 		moveDest.setPosition(pos);
-		moving = true;
+		isMoving = true;
 	}
 	else
 	{
-		logger::INFO("This entity is not movable! (" + type + ")");
+		logger::INFO("This entity is not isMovable! (" + type + ")");
 	}
 }
 
@@ -49,7 +49,9 @@ void BaseEntity::HandleEvents(const sf::Event & event)
 
 void BaseEntity::Update()
 {
-	if (moving)
+	// TODO: stop entities from isMoving into each other
+
+	if (isMoving)
 	{
 		int sX = static_cast<int>(sprite.getPosition().x);
 		int sY = static_cast<int>(sprite.getPosition().y);
@@ -68,9 +70,9 @@ void BaseEntity::Update()
 
 		if (sX == gX && sY == gY)
 		{
-			logger::INFO("Done moving! (" + std::to_string(entityID) + ")");
+			logger::INFO("Done isMoving! (" + std::to_string(entityID) + ")");
 
-			moving = false;
+			isMoving = false;
 		}
 		else
 		{

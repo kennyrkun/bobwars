@@ -13,7 +13,8 @@ enum class EntityType
 	BaseEntity,
 	Bob,
 	CommentSection,
-	GooglePlus
+	GooglePlus, 
+	Google
 };
 
 class BaseEntity
@@ -23,11 +24,6 @@ public:
 	BaseEntity(int entityID, int team, int armour, int hitpoints, int health);
 	~BaseEntity();
 
-	sf::Sprite sprite;
-
-	//TODO: move this out of the entity class itself and have the renderer draw one for each ent, since this is just used in debug mode.
-	sf::CircleShape moveDest;
-
 	int entityID;
 
 	int team;
@@ -35,11 +31,23 @@ public:
 	int hitpoints;
 	int health;
 
+	bool isLand;
+	bool isSea;
+	bool isRanged;
+	float rateOfFire;
+
 	bool isSelected;
-	bool movable;
-	bool moving;
+	bool isMovable;
+	bool isMoving;
 
 	std::string type;
+
+	sf::Vector2f movePos;
+	sf::CircleShape moveDest;
+	//TODO: move this out of the entity class itself and have the renderer draw one for each ent, since this is just used in debug mode.
+
+	sf::Sprite sprite;
+	sf::Texture texture;
 
 	virtual void moveTo(const sf::Vector2f &dest);
 
@@ -49,9 +57,6 @@ public:
 
 	virtual void setPosition(const sf::Vector2f& pos);
 	virtual sf::Vector2f getPosition();
-
-	sf::Vector2f movePos;
-	sf::Texture texture;
 };
 
 #endif // !BASE_ENTITY_HPP

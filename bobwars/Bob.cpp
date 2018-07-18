@@ -20,7 +20,7 @@ Bob::Bob()
 	armor = 0;
 	hitpoints = 1;
 	type = "bob";
-	movable = true;
+	isMovable = true;
 }
 
 Bob::~Bob()
