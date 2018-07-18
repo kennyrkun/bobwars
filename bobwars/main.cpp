@@ -7,6 +7,65 @@
 
 #include <SFUI/SFUI.hpp>
 
+#include <DISCORD/discord_rpc.h>
+
+class DiscordRPC
+{
+public:
+	static void handleDiscordReady(const DiscordUser* connectedUser)
+	{
+		logger::INFO("[DISCORD] Connected!");
+		logger::INFO("[DISCORD] User: " + std::string(connectedUser->username) + std::string(connectedUser->discriminator) + " (" + std::string(connectedUser->userId) + ")");
+	}
+
+	static void handleDiscordError(int errorCode, const char* message)
+	{
+		logger::ERROR("[DISCORD] Disconnected: " + std::string(message) + " (" + std::to_string(errorCode) + ")");
+	}
+
+	static void handleDiscordDisconnected(int errorCode, const char* message)
+	{
+		logger::ERROR("[DISCORD] " + std::string(message) + " (" + std::to_string(errorCode) + ")");
+	}
+
+	void updateDiscordPresence()
+	{
+		char buffer[256];
+
+		DiscordRichPresence discordPresence;
+		memset(&discordPresence, 0, sizeof(discordPresence));
+		discordPresence.state = "in Main Menu";
+		//	sprintf(buffer, "Frustration level: %d", FrustrationLevel);
+		//	discordPresence.details = "probably beating off";
+		//	discordPresence.endTimestamp = time(0) + 5 * 60;
+		discordPresence.largeImageKey = "large-bob";
+		discordPresence.smallImageKey = "side-google";
+		//	discordPresence.partyId = "party1234";
+		//	discordPresence.partySize = 1;
+		//	discordPresence.partyMax = 6;
+		//	discordPresence.instance = 0;
+
+		Discord_UpdatePresence(&discordPresence);
+	}
+
+	void InitDiscord()
+	{
+		DiscordEventHandlers handlers;
+		memset(&handlers, 0, sizeof(handlers));
+
+		handlers.ready = &this->handleDiscordReady;
+		handlers.errored = &this->handleDiscordError;
+		handlers.disconnected = &this->handleDiscordDisconnected;
+		//	handlers.joinGame = handleDiscordJoinGame;
+		//	handlers.spectateGame = handleDiscordSpectateGame;
+		//	handlers.joinRequest = handleDiscordJoinRequest;
+
+		// Discord_Initialize(const char* applicationId, DiscordEventHandlers* handlers, int autoRegister, const char* optionalSteamId)
+		Discord_Initialize("468957546359685121", &handlers, false, nullptr);
+	}
+};
+
+
 int main(int argc, char *argv[])
 {
 	std::cout << "Launched with " << argc << " arguments: " << std::endl;
@@ -46,6 +105,10 @@ int main(int argc, char *argv[])
 	SFUI::Theme::windowBgColor = SFUI::Theme::hexToRgb("#dddbde");
 	SFUI::Theme::PADDING = 2.f;
 
+	DiscordRPC dRPC;
+	dRPC.InitDiscord();
+	dRPC.updateDiscordPresence();
+
 	AppEngine app;
 	app.Init("bobwars", options);
 
@@ -61,7 +124,12 @@ int main(int argc, char *argv[])
 		app.HandleEvents();
 		app.Update();
 		app.Draw();
+
+//		Discord_UpdateConnection();
+		Discord_RunCallbacks();
 	}
+
+	Discord_Shutdown();
 
 	logger::INFO("Exiting...");
 	return EXIT_SUCCESS;
