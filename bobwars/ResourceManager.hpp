@@ -14,7 +14,7 @@ public:
 
 	// TODO: this should probably be a bool
 	// to return whether or not we loaded the texture
-	void loadTexture(std::string resourceName, std::string fileLocation);
+	sf::Texture* loadTexture(std::string resourceName, std::string fileLocation);
 	bool textureLoaded(std::string filename);
 	sf::Texture* getTexture(std::string filename);
 	void freeTexture(std::string filename);
