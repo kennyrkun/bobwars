@@ -49,12 +49,7 @@ int main(int argc, char *argv[])
 	AppEngine app;
 	app.Init("bobwars", options);
 
-	app.PushState(MainMenuState::Instance());
-
-//	AppEngine2* appEngine = new AppEngine2("bobwars", options);
-
-//	MainMenuState* mainMenuState = new MainMenuState(appEngine);
-//	appEngine->ChangeState(mainMenuState);
+	app.PushState(new MainMenuState);
 
 	while (app.isRunning())
 	{

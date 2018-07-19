@@ -19,13 +19,7 @@ public:
 	void Update();
 	void Draw();
 
-	static MainMenuState* Instance()
-	{
-		return &MainMenuState_dontfuckwithme;
-	}
-
 private:
-	static MainMenuState MainMenuState_dontfuckwithme;
 	AppEngine* app;
 
 	bool mouseIsOver(sf::Shape &object);

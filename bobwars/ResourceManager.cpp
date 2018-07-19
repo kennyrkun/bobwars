@@ -18,6 +18,11 @@ ResourceManager::~ResourceManager()
 	logger::INFO("[RESMAN] ResourceManager deconstructed.");
 }
 
+void ResourceManager::print()
+{
+	logger::INFO("NOT BROKEN!");
+}
+
 sf::Texture* ResourceManager::loadTexture(std::string resourceName, std::string fileLocation)
 {
 	if (!textureLoaded(resourceName))
@@ -28,7 +33,11 @@ sf::Texture* ResourceManager::loadTexture(std::string resourceName, std::string 
 
 		logger::INFO("[RESMAN] Loaded \"" + resourceName + "\"");
 
-		return new_tex;
+		return loaded_textures[resourceName];
+	}
+	else
+	{
+		logger::ERROR("[RESMAN] " + resourceName + " is already loaded.");
 	}
 }
 
@@ -36,6 +45,11 @@ void ResourceManager::freeTexture(std::string filename)
 {
 	delete loaded_textures[filename];
 	loaded_textures[filename] = nullptr;
+
+	std::map<std::string, sf::Texture*>::iterator it;
+
+	it = loaded_textures.find(filename);
+	loaded_textures.erase(it);
 
 	logger::INFO("[RESMAN] Freed texture \"" + filename + "\"");
 }
@@ -50,6 +64,8 @@ void ResourceManager::freeAllTextures()
 		delete it->second;
 		it->second = nullptr;
 	}
+
+	loaded_textures.clear();
 
 	logger::INFO("[RESMAN] Freed all textures.");
 }

@@ -2,22 +2,25 @@
 #include "MainMenuState.hpp"
 
 #include "Util/Logger.hpp"
-#include <iostream>
+#include "Util\Graphics\Text.hpp"
 
 // public:
 
-MainMenuState MainMenuState::MainMenuState_dontfuckwithme;
-
 void MainMenuState::Init(AppEngine* app_)
 {
-	logger::INFO("MainMenuState Init...");
+	logger::INFO("Initialising MainMenuState");
 
 	app = app_;
 
-	app->resMan->loadTexture("title_screen_logo", "./bobwars/resource/textures/logo.png");
+	app->resMan->print();
+
+	if (!app->resMan->textureLoaded("title_screen_logo"))
+		app->resMan->loadTexture("title_screen_logo", "./bobwars/resource/textures/logo.png");
+
 	app->resMan->getTexture("title_screen_logo")->setSmooth(true);
 	logoShape.setSize(sf::Vector2f(app->resMan->getTexture("title_screen_logo")->getSize().x, app->resMan->getTexture("title_screen_logo")->getSize().y));
 	logoShape.setTexture(&*app->resMan->getTexture("title_screen_logo"));
+
 	//logoTexture.setSmooth(true);
 	logoShape.setOrigin(logoShape.getLocalBounds().width / 2, logoShape.getLocalBounds().height / 2);
 	logoShape.setPosition(sf::Vector2f(app->window->getDefaultView().getCenter().x, app->window->getSize().y / 2 - ((app->window->getSize().y / 2) / 2)));
@@ -66,8 +69,8 @@ void MainMenuState::HandleEvents()
 		case MAIN_MENU_CALLBACKS::PLAY_BUTTON:
 			logger::INFO("Starting a new game...");
 			// TODO: we should ChangeState and rebuild the menu everytime, to save memory.
-			app->PushState(GameCreationState::Instance());
-			break;
+			app->ChangeState(new GameCreationState);
+			return;
 		case MAIN_MENU_CALLBACKS::LOAD_BUTTON:
 			logger::WARNING("Saving/Loading system not yet implemented.");
 			break;
@@ -83,6 +86,15 @@ void MainMenuState::HandleEvents()
 
 		if (event.type == sf::Event::EventType::Closed)
 			app->Quit();
+		else if (event.type == sf::Event::EventType::KeyPressed)
+		{
+			if (event.key.code == sf::Keyboard::Key::Tilde)
+			{
+				app->settings.debug = !app->settings.debug;
+
+				logger::INFO("cl_debug set to " + std::to_string(app->settings.debug));
+			}
+		}
 	}
 }
 
@@ -103,10 +115,10 @@ void MainMenuState::Update()
 
 	if (r == 0 && g == 255 && b == 255)
 		dr = 0; dg = -1; db = 0;
-	
+
 	if (r == 0 && g == 0 && b == 255)
 		dr = 1; dg = 0; db = 0;
-	
+
 	if (r == 255 && g == 0 && b == 255)
 		dr = 0; dg = 0; db = -1;
 
@@ -118,13 +130,12 @@ void MainMenuState::Draw()
 	app->window->clear(sf::Color(100, 100, 100));
 
 	app->window->draw(logoShape);
-
 	app->window->draw(*menu);
 
-//	app->window->draw(*playButton);
-//	app->window->draw(*loadButton);
-//	app->window->draw(*settingsButton);
-//	app->window->draw(*exitButton);
+	if (app->settings.debug)
+	{
+		util::text::draw(*app->window, "states: " + app->states.size(), sf::Vector2f(0, 0));
+	}
 
 	app->window->display();
 }

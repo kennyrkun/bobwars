@@ -42,13 +42,7 @@ public:
 	void Update();
 	void Draw();
 
-	static GamePlayState* Instance()
-	{
-		return &GamePlayState_dontfuckwithme;
-	}
-
 private:
-	static GamePlayState GamePlayState_dontfuckwithme;
 	AppEngine* app;
 
 	sf::Time timePerFrame; // 60 frames per second

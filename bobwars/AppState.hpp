@@ -23,9 +23,6 @@ public:
 		app->ChangeState(state);
 	}
 
-protected:
-	AppState() { }
-
 private:
 	AppEngine* app;
 };

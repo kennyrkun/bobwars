@@ -1,4 +1,5 @@
 #include "GamePauseState.hpp"
+#include "MainMenuState.hpp"
 
 #include "AppEngine.hpp"
 #include "AppState.hpp"
@@ -7,8 +8,6 @@
 #include "Util/Graphics/Text.hpp"
 #include "Util/Util.hpp"
 #include "GamePlayState.hpp"
-
-GamePauseState GamePauseState::GamePauseState_dontfuckwithme;
 
 void GamePauseState::Init(AppEngine* app_)
 {
@@ -91,6 +90,7 @@ void GamePauseState::Update()
 		{
 			// FIXME: should we return after this to avoid access violations?
 			app->PopState();
+			return;
 		}
 		else if (pauseMenu->selectedOption == 1)
 		{
@@ -107,7 +107,9 @@ void GamePauseState::Update()
 		else if (pauseMenu->selectedOption == 3)
 		{
 			// FIXME: should we return after this to avoid access violations?
-			app->PopState(2);
+			app->PopState();
+			app->ChangeState(new MainMenuState);
+			return;
 		}
 		else
 		{

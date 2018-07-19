@@ -12,6 +12,8 @@ public:
 	ResourceManager();
 	~ResourceManager();
 
+	void print();
+
 	// TODO: this should probably be a bool
 	// to return whether or not we loaded the texture
 	sf::Texture* loadTexture(std::string resourceName, std::string fileLocation);

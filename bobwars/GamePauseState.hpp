@@ -19,16 +19,7 @@ public:
 	void Update();
 	void Draw();
 
-	static GamePauseState* Instance()
-	{
-		return &GamePauseState_dontfuckwithme;
-	}
-
-protected:
-	GamePauseState() { }
-
 private:
-	static GamePauseState GamePauseState_dontfuckwithme;
 	AppEngine* app;
 
 	sf::RectangleShape background;

@@ -10,8 +10,6 @@
 #include "Util/Graphics/Graphics.hpp"
 #include "Util/Graphics/Text.hpp"
 
-GamePlayState GamePlayState::GamePlayState_dontfuckwithme;
-
 sf::CircleShape test;
 
 void GamePlayState::Init(AppEngine* app_)
@@ -130,7 +128,8 @@ void GamePlayState::HandleEvents()
 			{
 				if (event.key.code == sf::Keyboard::Key::Escape)
 				{
-					app->PushState(GamePauseState::Instance());
+					app->PushState(new GamePauseState);
+					return;
 				}
 				else if (event.key.code == sf::Keyboard::Key::Space)
 				{
@@ -157,9 +156,9 @@ void GamePlayState::HandleEvents()
 				}
 				else if (event.key.code == sf::Keyboard::Key::Tilde)
 				{
-					app->debugModeActive = !app->debugModeActive;
+					app->settings.debug = !app->settings.debug;
 
-					logger::INFO("cl_debug set to " + std::to_string(app->debugModeActive));
+					logger::INFO("cl_debug set to " + std::to_string(app->settings.debug));
 				}
 				else if (event.key.code == sf::Keyboard::Key::Delete || event.key.code == sf::Keyboard::Key::End)
 				{
@@ -439,7 +438,7 @@ void GamePlayState::Draw()
 	for (size_t i = 0; i < entMan->entities.size(); i++)
 		app->window->draw(entMan->entities[i]->sprite);
 
-	if (app->debugModeActive)
+	if (app->settings.debug)
 	{
 		for (size_t i = 0; i < entMan->entities.size(); i++) // outline entities
 		{
@@ -497,7 +496,7 @@ void GamePlayState::Draw()
 	ui->Draw();
 
 	// debug info like coordinates and stuff
-	if (app->debugModeActive)
+	if (app->settings.debug)
 	{
 		sf::RectangleShape top;
 		sf::RectangleShape left;
@@ -525,6 +524,10 @@ void GamePlayState::Draw()
 		app->window->draw(left);
 		app->window->draw(right);
 		app->window->draw(bottom);
+
+		// TODO: we might use a different method to render text.
+		// perhaps create a string manager type class, and use only one piece of text to render everything with line breaks
+		// this could yeild a generous performance improvement.
 
 		app->window->draw(debugFrameCounter);
 
