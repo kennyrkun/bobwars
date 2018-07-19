@@ -93,6 +93,9 @@
     <ClInclude Include="Util\SettingsParser.hpp">
       <Filter>BOBWARS\Game\Systems</Filter>
     </ClInclude>
+    <ClInclude Include="Util\DiscordRPC.hpp">
+      <Filter>BOBWARS\Util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseEntity.cpp">
@@ -154,6 +157,9 @@
     </ClCompile>
     <ClCompile Include="Util\SettingsParser.cpp">
       <Filter>BOBWARS\Game\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\DiscordRPC.cpp">
+      <Filter>BOBWARS\Util</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -26,6 +26,8 @@ void AppEngine::Init(std::string title_, AppSettings settings_)
 
 	resMan = new ResourceManager;
 
+	dRPC.Init();
+
 	running = true;
 
 	std::cout << "AppEngine ready" << std::endl;
@@ -48,6 +50,9 @@ void AppEngine::Cleanup()
 	delete window;
 
 	resMan->freeAllTextures();
+	delete resMan;
+
+	dRPC.Shutdown();
 
 	std::cout << "AppEngine cleaned up." << std::endl;
 }
@@ -126,7 +131,10 @@ void AppEngine::Update()
 {
 	// let the state update the game
 	if (running)
+	{
+		dRPC.update();
 		states.back()->Update();
+	}
 }
 
 void AppEngine::Draw()

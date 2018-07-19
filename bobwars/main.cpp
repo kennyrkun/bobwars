@@ -1,11 +1,9 @@
 #include "AppEngine.hpp"
 #include "MainMenuState.hpp"
-
 #include "Util/Logger.hpp"
+#include "Util/DiscordRPC.hpp"
 
-#include <iostream>
-
-#include <SFUI/SFUI.hpp>
+#include <SFUI/Theme.hpp>
 
 int main(int argc, char *argv[])
 {
@@ -15,9 +13,7 @@ int main(int argc, char *argv[])
 		std::cout << i << ": " << argv[i] << std::endl;
 
 	AppSettings options;
-
-	int fpsLimit(60); // default 60
-
+	/*
 	for (int i = 0; i < argc; i++)
 	{
 		if (std::string(argv[i]) == "-fullscreen")
@@ -26,13 +22,13 @@ int main(int argc, char *argv[])
 		if (std::string(argv[i]) == "-vsync")
 			options.vsync = true;
 
-//		if (std::string(argv[i]) == "-fps")
-//		{
-			// next arg should be an int (the fps)
-//			fpsLimit == std::stoi(argv[i + 1]);
-//		}
+		if (std::string(argv[i]) == "-maxfps")
+		{
+			// next arg should be an int (the maxfps)
+			options.maxfps = std::stoi(argv[i += 1]);
+		}
 	}
-
+	*/
 	logger::INFO("Preparing SFUI");
 	SFUI::Theme::loadFont("bobwars/resource/interface/tahoma.ttf");
 	SFUI::Theme::loadTexture("bobwars/resource/interface/texture_square.png");
@@ -49,7 +45,7 @@ int main(int argc, char *argv[])
 	AppEngine app;
 	app.Init("bobwars", options);
 
-	app.PushState(new MainMenuState);
+	app.PushState(MainMenuState::Instance());
 
 	while (app.isRunning())
 	{
