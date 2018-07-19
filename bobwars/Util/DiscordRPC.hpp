@@ -1,9 +1,10 @@
 #ifndef DISCORD_RPC_HPP
 #define DISCORD_RPC_HPP
 
-#include <DISCORD/discord_rpc.h> // discord rpc functions
-
 #include <string>
+
+// TODO: find a way to not include this everywhere.
+#include <DISCORD\discord_rpc.h>
 
 class DiscordRPC
 {

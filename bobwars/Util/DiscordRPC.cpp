@@ -22,10 +22,12 @@ void DiscordRPC::Init()
 	// Discord_Initialize(const char* applicationId, DiscordEventHandlers* handlers, int autoRegister, const char* optionalSteamId)
 	Discord_Initialize("468957546359685121", &handlers, false, nullptr);
 
-	update();
+	//update();
 }
 void DiscordRPC::Shutdown()
 {
+	logger::INFO("[DISCORD] Shutting down RPC.");
+
 	Discord_Shutdown();
 }
 
@@ -126,16 +128,18 @@ void DiscordRPC::setSpectateSecrete(std::string spectateSecret)
 
 void DiscordRPC::updatePresence()
 {
-
 	Discord_UpdatePresence(&presence);
+
+	logger::INFO("[DISCORD] Updated Presence");
 }
 
 void DiscordRPC::clearPresence()
 {
-	DiscordRichPresence pres;
-	presence = pres;
-
 	Discord_ClearPresence();
+
+	presence = {};
+
+	logger::INFO("[DISCORD] Presence cleared.");
 }
 
 void DiscordRPC::handleDiscordReady(const DiscordUser* connectedUser)

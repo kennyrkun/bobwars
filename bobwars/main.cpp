@@ -13,7 +13,6 @@ int main(int argc, char *argv[])
 		std::cout << i << ": " << argv[i] << std::endl;
 
 	AppSettings options;
-
 	/*
 	for (int i = 0; i < argc; i++)
 	{
@@ -30,7 +29,6 @@ int main(int argc, char *argv[])
 		}
 	}
 	*/
-
 	logger::INFO("Preparing SFUI");
 	SFUI::Theme::loadFont("bobwars/resource/interface/tahoma.ttf");
 	SFUI::Theme::loadTexture("bobwars/resource/interface/texture_square.png");
@@ -44,32 +42,17 @@ int main(int argc, char *argv[])
 	SFUI::Theme::windowBgColor = SFUI::Theme::hexToRgb("#dddbde");
 	SFUI::Theme::PADDING = 2.f;
 
-	DiscordRPC dRPC;
-	dRPC.Init();
-
-	dRPC.setState("at Main Menu");
-	dRPC.updatePresence();
-
 	AppEngine app;
 	app.Init("bobwars", options);
 
 	app.PushState(MainMenuState::Instance());
-
-//	AppEngine2* appEngine = new AppEngine2("bobwars", options);
-
-//	MainMenuState* mainMenuState = new MainMenuState(appEngine);
-//	appEngine->ChangeState(mainMenuState);
 
 	while (app.isRunning())
 	{
 		app.HandleEvents();
 		app.Update();
 		app.Draw();
-
-		dRPC.update();
 	}
-
-	dRPC.Shutdown();
 
 	logger::INFO("Exiting...");
 	return EXIT_SUCCESS;
