@@ -1,9 +1,12 @@
 #ifndef INTERFACE_HPP
 #define INTERFACE_HPP
 
-#include <SFUI/Button.hpp>
+#include "BaseEntity.hpp"
 
 #include <SFML/Graphics.hpp>
+#include <SFUI/Layouts/Menu.hpp>
+#include <SFUI/Layouts/HorizontalBoxLayout.hpp>
+#include <SFUI/Layouts/HorizontalBoxLayout.hpp>
 
 /*
 class IInterface
@@ -36,17 +39,31 @@ public:
 	void Draw();
 
 	bool createEnabled = true;
-	SFUI::Button* create_ent_button;
+//	SFUI::Button* create_ent_button;
 
 	bool deleteEnabled = false;
-	SFUI::Button* delete_ent_button;
+//	SFUI::Button* delete_ent_button;
 	// TODO: replace these with SFUI::Button
+
+	SFUI::Menu* menu;
+
+	sf::Texture bobIcon;
 
 	sf::Text unitCounterText;
 	sf::Text memesCounterText;
 	
 	sf::RectangleShape bottomBar;
 	sf::RectangleShape topBar;
+
+	enum class State
+	{
+		NoEntitiesSelected,
+		SingleEntitySelected,
+		MultipleEntitiesSelected
+//		SelectedCommentSection
+	};
+
+	void updateUnitInfo(State state, BaseEntity *entitiy);
 
 private:
 	sf::RenderWindow *targetWindow;

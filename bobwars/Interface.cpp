@@ -2,14 +2,10 @@
 
 #include "Util/Logger.hpp"
 
-Interface::Interface(sf::RenderWindow *_targetWindow, sf::View *_mainView)
+#include <SFUI\Image.hpp>
+
+Interface::Interface(sf::RenderWindow *_targetWindow, sf::View *_mainView) : targetWindow(_targetWindow), mainView(_mainView)
 {
-//	Button create_ent_button(sf::Vector2f(50, 25), "create");
-//	Button delete_ent_button(sf::Vector2f(50, 25), "delete");
-
-	targetWindow = _targetWindow;
-	mainView = _mainView;
-
 	viewAnchor = new sf::View(mainView->getCenter(), sf::Vector2f(targetWindow->getSize().x, targetWindow->getSize().y));
 
 	topBar.setSize(sf::Vector2f(targetWindow->getSize().x, 40));
@@ -72,21 +68,25 @@ Interface::Interface(sf::RenderWindow *_targetWindow, sf::View *_mainView)
 	unitCounterText.setOrigin(sf::Vector2f(0, unitCounterText.getLocalBounds().height / 2));
 	unitCounterText.setPosition(sf::Vector2f(unitCounterBackground.getPosition().x + 4, unitCounterBackground.getPosition().y - 6));
 
-	create_ent_button = new SFUI::Button("create");
-//	create_ent_button.setString("create");
-	create_ent_button->setPosition(sf::Vector2f(leftX + 50, bottomMiddleY - 55));
+	menu = new SFUI::Menu(*targetWindow);
+	menu->setPosition(sf::Vector2f(leftX + 25, bottomMiddleY - 55));
+	menu->addButton("test", 1);
 
-	delete_ent_button = new SFUI::Button("delete");
+	//create_ent_button = new SFUI::Button("create");
+//	create_ent_button.setString("create");
+	//create_ent_button->setPosition(sf::Vector2f(leftX + 50, bottomMiddleY - 55));
+
+	//delete_ent_button = new SFUI::Button("delete");
 //	delete_ent_button.setString("delete");
 //	delete_ent_button.disable();
-	delete_ent_button->setPosition(sf::Vector2f(leftX + 150, bottomMiddleY - 55));
+	//delete_ent_button->setPosition(sf::Vector2f(leftX + 150, bottomMiddleY - 55));
 
-	logger::INFO("New interface created.");
+	logger::DEBUG("New interface created.");
 }
 
 Interface::~Interface()
 {
-	logger::INFO("Interface destroyed.");
+	logger::DEBUG("Interface destroyed.");
 }
 
 // public:
@@ -141,6 +141,43 @@ void Interface::Draw()
 
 	targetWindow->draw(bottomBar);
 
-	targetWindow->draw(*create_ent_button);
-	targetWindow->draw(*delete_ent_button);
+	targetWindow->draw(*menu);
+
+//	targetWindow->draw(*create_ent_button);
+//	targetWindow->draw(*delete_ent_button);
+}
+
+void Interface::updateUnitInfo(State state, BaseEntity *entity)
+{
+	sf::Vector2f pos = menu->getPosition();
+	delete menu;
+	menu = new SFUI::Menu(*targetWindow);
+	menu->setPosition(pos);
+
+	if (state == State::SingleEntitySelected)
+	{
+		SFUI::HorizontalBoxLayout *mainContainer = menu->addHorizontalBoxLayout();
+		SFUI::VerticalBoxLayout *iconContainer = mainContainer->addVerticalBoxLayout();
+		SFUI::VerticalBoxLayout *textContainer = mainContainer->addVerticalBoxLayout();
+
+		// TODO: cache this
+		bobIcon.loadFromFile("bobwars/resource/textures/bob.png");
+		SFUI::Image* iconImage = new SFUI::Image(bobIcon);
+		iconContainer->add(iconImage);
+
+		textContainer->addLabel("health: " + std::to_string(entity->health));
+		textContainer->addLabel("hitpoints: " + std::to_string(entity->hitpoints));
+		textContainer->addLabel("team: " + std::to_string(entity->team));
+	}
+	else if (state == State::MultipleEntitiesSelected)
+	{
+		menu->addButton("delete all");
+	}
+	else if (state == State::NoEntitiesSelected)
+	{
+		menu->addButton("create bob");
+		menu->addButton("create commentsection");
+	}
+
+	logger::DEBUG("[INTERFACE] Updated Unit Information");
 }

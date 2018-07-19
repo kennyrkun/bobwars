@@ -16,7 +16,7 @@ Bob::Bob()
 	moveDest.setOrigin(sf::Vector2f(moveDest.getLocalBounds().width / 2, moveDest.getLocalBounds().height / 2));
 	
 	team = 1;
-	health = 10;
+	health = 100;
 	armor = 0;
 	hitpoints = 1;
 	type = "bob";

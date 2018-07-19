@@ -70,7 +70,7 @@ void BaseEntity::Update()
 
 		if (sX == gX && sY == gY)
 		{
-			logger::INFO("Done isMoving! (" + std::to_string(entityID) + ")");
+			logger::INFO("Done moving! (" + std::to_string(entityID) + ")");
 
 			isMoving = false;
 		}

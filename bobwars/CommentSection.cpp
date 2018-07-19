@@ -16,7 +16,7 @@ CommentSection::CommentSection()
 	moveDest.setOrigin(sf::Vector2f(moveDest.getLocalBounds().width / 2, moveDest.getLocalBounds().height / 2));
 
 	team = 1;
-	health = 10;
+	health = 200;
 	armor = 0;
 	hitpoints = 1;
 	type = "commentsection";

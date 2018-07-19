@@ -17,7 +17,7 @@ struct AppSettings
 	bool vsync = true;
 	bool debug = false;
 	bool console = false;
-	int fps = 60;
+	int maxfps = 60;
 	int width = 1080;
 	int height = 720;
 };

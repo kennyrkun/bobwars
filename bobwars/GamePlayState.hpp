@@ -68,7 +68,7 @@ private:
 	int baseViewSpeed = 500;
 
 	sf::Clock deltaClock;  // tracks how much time has past since the last frame
-	sf::Clock framesClock; // for fps
+	sf::Clock framesClock; // for maxfps
 
 	void deleteButton();
 

@@ -73,7 +73,7 @@ void EntityManager::deselectAllEnts()
 
 	for (size_t i = 0; i < selectedEnts.size(); i++)
 	{
-		logger::INFO("deselecting entity" + std::to_string(selectedEnts[i]->entityID));
+		logger::DEBUG("deselecting entity" + std::to_string(selectedEnts[i]->entityID));
 
 		//delesectEnt(selectedEnts[i]); // broken
 		selectedEnts[i]->isSelected = false;
@@ -144,5 +144,5 @@ void EntityManager::deselectEnt(BaseEntity *ent)
 	ent->isSelected = false;
 	selectedEnts.erase(std::remove(selectedEnts.begin(), selectedEnts.end(), ent), selectedEnts.end());
 
-	logger::INFO("deselected entity" + std::to_string(ent->entityID));
+	logger::DEBUG("deselected entity" + std::to_string(ent->entityID));
 }

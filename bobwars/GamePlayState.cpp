@@ -71,6 +71,8 @@ void GamePlayState::Init(AppEngine* app_)
 	baseViewSpeed = 500;
 
 	entMan->newCommentSection()->setPosition(sf::Vector2f(app->window->getSize().x / 2, app->window->getSize().y / 2));
+	entMan->newBob()->setPosition(sf::Vector2f(app->window->getSize().x / 2, app->window->getSize().y / 2));
+	entMan->newBob()->setPosition(sf::Vector2f(app->window->getSize().x / 2, app->window->getSize().y / 2));
 
 	logger::INFO("GamePlayState ready!");
 }
@@ -118,7 +120,7 @@ void GamePlayState::HandleEvents()
 		sf::Event event;
 		while (app->window->pollEvent(event))
 		{
-			app->events.push_back(event);
+			int id = ui->menu->onEvent(event);
 
 			if (event.type == sf::Event::EventType::Closed)
 			{
@@ -211,7 +213,8 @@ void GamePlayState::HandleEvents()
 				{
 					test.setPosition(sf::Vector2f(sf::Mouse::getPosition(*app->window).x, sf::Mouse::getPosition(*app->window).y));
 
-					if (ui->create_ent_button->containsPoint(sf::Vector2f(sf::Mouse::getPosition(*app->window).x, sf::Mouse::getPosition(*app->window).y) - ui->create_ent_button->getPosition()))
+					if (false)
+//					if (ui->create_ent_button->containsPoint(sf::Vector2f(sf::Mouse::getPosition(*app->window).x, sf::Mouse::getPosition(*app->window).y) - ui->create_ent_button->getPosition()))
 					{
 						if (entMan->entities.size() >= entMan->maxEnts)
 						{
@@ -239,7 +242,8 @@ void GamePlayState::HandleEvents()
 
 						break;
 					}
-					else if (ui->delete_ent_button->containsPoint(sf::Vector2f(sf::Mouse::getPosition(*app->window).x, sf::Mouse::getPosition(*app->window).y) - ui->delete_ent_button->getPosition()) && !entMan->selectedEnts.empty())
+					else if (false)
+//					else if (ui->delete_ent_button->containsPoint(sf::Vector2f(sf::Mouse::getPosition(*app->window).x, sf::Mouse::getPosition(*app->window).y) - ui->delete_ent_button->getPosition()) && !entMan->selectedEnts.empty())
 					{
 						deleteButton();
 					}
@@ -250,32 +254,40 @@ void GamePlayState::HandleEvents()
 					{
 						if (util::logic::mouseIsOver(entMan->entities[i]->sprite, *app->window, mainView2->view))
 						{
-							if (entMan->entities[i]->isSelected)
+							if (entMan->entities[i]->isSelected) // entity is already selected
 							{
-								if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl))
+								if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl)) // selecting multiple units
 								{
+									// in Age of Empires II, if you hold control and click
+									// on an already selected entity it is deselected
 									entMan->deselectEnt(entMan->entities[i]);
 									selectedNothing = false;
+
+									logger::INFO("removed entity" + std::to_string(entMan->entities[i]->entityID) + " from group selection");
 								}
-								else
+								else // we're going to single out a unit
 								{
-									if (!entMan->selectedEnts.empty())
+									// unit is already selected.
+									// in AoE2, if you have multiple units selected
+									// and then select one of them, it will deselect
+									// all entities except that one.
+
+									if (entMan->selectedEnts.size() == 1)
+									{
+										logger::INFO("entity " + std::to_string(entMan->entities[i]->entityID) + " already selected");
+									}
+									else // singling out one unit
 									{
 										entMan->deselectAllEnts();
 										entMan->selectEnt(entMan->entities[i]);
 
-										logger::INFO("selected entity" + std::to_string(entMan->entities[i]->entityID));
+										logger::INFO("focused entity" + std::to_string(entMan->entities[i]->entityID));
+									}
 
-										selectedNothing = false;
-									}
-									else
-									{
-										logger::INFO("entity" + std::to_string(entMan->entities[i]->entityID) + " is already selected");
-										selectedNothing = false;
-									}
+									selectedNothing = false;
 								}
 							}
-							else
+							else // selecting multiple units
 							{
 								if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl))
 									entMan->deselectAllEnts();
@@ -290,6 +302,17 @@ void GamePlayState::HandleEvents()
 								selectedNothing = false;
 							}
 
+							if (entMan->selectedEnts.size() > 1)
+								ui->updateUnitInfo(Interface::State::MultipleEntitiesSelected, nullptr);
+							else if (entMan->selectedEnts.size() == 1)
+								ui->updateUnitInfo(Interface::State::SingleEntitySelected, entMan->entities[i]);
+							else
+							{
+								logger::ERROR("DOES THIS HAPPEN?");
+
+								abort();
+							}
+
 							break;
 						}
 					} // what entity did we click
@@ -301,9 +324,12 @@ void GamePlayState::HandleEvents()
 						ui->deleteEnabled = false;
 //						ui->delete_ent_button.disable();
 
+						ui->updateUnitInfo(Interface::State::NoEntitiesSelected, nullptr);
+
 						logger::INFO("All entities deselected");
 						break;
 					}
+
 				} // left mouse button
 				else if (event.key.code == sf::Mouse::Button::Right)
 				{
