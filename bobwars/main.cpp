@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
 	AppEngine app;
 	app.Init("bobwars", options);
 
-	app.PushState(MainMenuState::Instance());
+	app.PushState(new MainMenuState);
 
 	while (app.isRunning())
 	{

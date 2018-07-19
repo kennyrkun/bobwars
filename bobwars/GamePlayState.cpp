@@ -74,8 +74,9 @@ void GamePlayState::Init(AppEngine* app_)
 
 	app->dRPC.clearPresence();
 	app->dRPC.setState("in a game");
-	app->dRPC.setLargeImage("large-bob", "in-game");
+	app->dRPC.setLargeImage("standard-game", "standard game");
 	app->dRPC.setSmallImage("side-bob", "team bob");
+	app->dRPC.setStartTime(time(0));
 	app->dRPC.updatePresence();
 
 	logger::INFO("GamePlayState ready!");

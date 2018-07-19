@@ -33,6 +33,10 @@ void GameCreationState::Init(AppEngine* app_)
 	form->addButton("Start Game", START_GAME);
 	menu->addButton("back to Main Menu", RETURN_TO_MAIN_MENU);
 
+	app->dRPC.clearPresence();
+	app->dRPC.setState("creating a game");
+	app->dRPC.updatePresence();
+
 	logger::INFO("GameCreationState ready.");
 }
 
