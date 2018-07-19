@@ -14,6 +14,10 @@ void GameCreationState::Init(AppEngine* app_)
 
 	app = app_;
 
+	app->dRPC.clearPresence();
+	app->dRPC.setState("creating a game");
+	app->dRPC.updatePresence();
+
 	logger::INFO("GameCreationState ready.");
 }
 

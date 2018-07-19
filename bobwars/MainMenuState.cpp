@@ -31,6 +31,10 @@ void MainMenuState::Init(AppEngine* app_)
 	menu->setPosition(app->window->getDefaultView().getCenter());
 	menu->setPosition(sf::Vector2f(app->window->getSize().x / 2 - (menu->getSize().x / 2), app->window->getSize().y / 2 - (menu->getSize().y / 2)));
 
+	app->dRPC.clearPresence();
+	app->dRPC.setState("at Main Menu");
+	app->dRPC.updatePresence();
+
 	logger::INFO("MainMenuState ready.");
 }
 

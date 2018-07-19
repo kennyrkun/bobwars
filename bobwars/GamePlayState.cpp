@@ -72,6 +72,12 @@ void GamePlayState::Init(AppEngine* app_)
 
 	entMan->newCommentSection()->setPosition(sf::Vector2f(app->window->getSize().x / 2, app->window->getSize().y / 2));
 
+	app->dRPC.clearPresence();
+	app->dRPC.setState("in a game");
+	app->dRPC.setLargeImage("large-bob", "in-game");
+	app->dRPC.setSmallImage("side-bob", "team bob");
+	app->dRPC.updatePresence();
+
 	logger::INFO("GamePlayState ready!");
 }
 

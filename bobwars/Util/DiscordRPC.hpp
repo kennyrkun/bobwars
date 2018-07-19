@@ -14,18 +14,18 @@ public:
 
 	void update();
 
-	void setState(std::string state);
-	void setDetails(std::string details);
+	void setState(const char* state);
+	void setDetails(const char* details);
 	void setStartTime(int64_t startTime);
 	void setEndTime(int64_t endTime);
-	void setLargeImage(std::string imageKey, std::string imageText = "");
-	void setSmallImage(std::string imageKey, std::string imageText = "");
-	void setPartyID(std::string partyID);
+	void setLargeImage(const char* imageKey, const char* imageText = "");
+	void setSmallImage(const char* imageKey, const char* imageText = "");
+	void setPartyID(const char* partyID);
 	void setPartySize(int partySize);
 	void setPartyMaxPlayers(int maxPlayers);
-	void setMatchSecret(std::string matchSecret);
-	void setJoinSecrete(std::string joinSecret);
-	void setSpectateSecrete(std::string spectateSecret);
+	void setMatchSecret(const char* matchSecret);
+	void setJoinSecrete(const char* joinSecret);
+	void setSpectateSecrete(const char* spectateSecret);
 
 	void updatePresence();
 	void clearPresence();

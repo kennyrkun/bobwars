@@ -39,18 +39,18 @@ void DiscordRPC::update()
 	Discord_RunCallbacks();
 }
 
-void DiscordRPC::setState(std::string state)
+void DiscordRPC::setState(const char* state)
 {
-	presence.state = state.c_str();
+	presence.state = state;
 
-	logger::DEBUG("[DISCORD] State: " + state);
+	logger::DEBUG("[DISCORD] State: " + std::string(state));
 }
 
-void DiscordRPC::setDetails(std::string details)
+void DiscordRPC::setDetails(const char* details)
 {
-	presence.details = details.c_str();
+	presence.details = details;
 
-	logger::DEBUG("[DISCORD] Details: " + details);
+	logger::DEBUG("[DISCORD] Details: " + std::string(details));
 }
 
 void DiscordRPC::setStartTime(int64_t startTime)
@@ -66,34 +66,34 @@ void DiscordRPC::setEndTime(int64_t endTime)
 	logger::DEBUG("[DISCORD] EndTimestamp: " + std::to_string(endTime));
 }
 
-void DiscordRPC::setLargeImage(std::string imageKey, std::string imageText)
+void DiscordRPC::setLargeImage(const char* imageKey, const char* imageText)
 {
-	presence.largeImageKey = imageKey.c_str();
-	logger::DEBUG("[DISCORD] LargeImageKey: " + imageKey);
+	presence.largeImageKey = imageKey;
+	logger::DEBUG("[DISCORD] LargeImageKey: " + std::string(imageKey));
 
-	if (!imageText.empty())
+	if (strlen(imageText) > 0)
 	{
-		presence.largeImageText = imageText.c_str();
-		logger::DEBUG("[DISCORD] LargeImageText: " + imageText);
+		presence.largeImageText = imageText;
+		logger::DEBUG("[DISCORD] LargeImageText: " + std::string(imageText));
 	}
 }
 
-void DiscordRPC::setSmallImage(std::string imageKey, std::string imageText)
+void DiscordRPC::setSmallImage(const char* imageKey, const char* imageText)
 {
-	presence.smallImageKey = imageKey.c_str();
-	logger::DEBUG("[DISCORD] SmallImageKey: " + imageKey);
+	presence.smallImageKey = imageKey;
+	logger::DEBUG("[DISCORD] SmallImageKey: " + std::string(imageKey));
 
-	if (!imageText.empty())
+	if (strlen(imageText) > 0)
 	{
-		presence.smallImageText = imageText.c_str();
-		logger::DEBUG("[DISCORD] SmallImageText: " + imageText);
+		presence.smallImageText = imageText;
+		logger::DEBUG("[DISCORD] SmallImageText: " + std::string(imageText));
 	}
 }
 
-void DiscordRPC::setPartyID(std::string partyID)
+void DiscordRPC::setPartyID(const char* partyID)
 {
-	presence.partyId = partyID.c_str();
-	logger::DEBUG("[DISCORD] PartyID: " + partyID);
+	presence.partyId = partyID;
+	logger::DEBUG("[DISCORD] PartyID: " + std::string(partyID));
 }
 
 void DiscordRPC::setPartySize(int partySize)
@@ -108,22 +108,22 @@ void DiscordRPC::setPartyMaxPlayers(int maxPlayers)
 	logger::DEBUG("[DISCORD] PartyMaxSize: " + std::to_string(maxPlayers));
 }
 
-void DiscordRPC::setMatchSecret(std::string matchSecret)
+void DiscordRPC::setMatchSecret(const char*  matchSecret)
 {
-	presence.matchSecret = matchSecret.c_str();
-	logger::DEBUG("[DISCORD] MatchSecret: " + matchSecret);
+	presence.matchSecret = matchSecret;
+	logger::DEBUG("[DISCORD] MatchSecret: " + std::string(matchSecret));
 }
 
-void DiscordRPC::setJoinSecrete(std::string joinSecret)
+void DiscordRPC::setJoinSecrete(const char*  joinSecret)
 {
-	presence.joinSecret = joinSecret.c_str();
-	logger::DEBUG("[DISCORD] JoinSecret: " + joinSecret);
+	presence.joinSecret = joinSecret;
+	logger::DEBUG("[DISCORD] JoinSecret: " + std::string(joinSecret));
 }
 
-void DiscordRPC::setSpectateSecrete(std::string spectateSecret)
+void DiscordRPC::setSpectateSecrete(const char*  spectateSecret)
 {
-	presence.spectateSecret = spectateSecret.c_str();
-	logger::DEBUG("[DISCORD] SpectateSecret: " + spectateSecret);
+	presence.spectateSecret = spectateSecret;
+	logger::DEBUG("[DISCORD] SpectateSecret: " + std::string(spectateSecret));
 }
 
 void DiscordRPC::updatePresence()
