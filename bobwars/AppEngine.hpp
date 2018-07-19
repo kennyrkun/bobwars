@@ -2,6 +2,7 @@
 #define APP_ENGINE_HPP
 
 #include "ResourceManager.hpp"
+#include "Util\DiscordRPC.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <vector>
@@ -54,6 +55,8 @@ public:
 	std::vector<sf::Event> events;
 
 	ResourceManager* resMan;
+
+	DiscordRPC dRPC;
 
 private:
 	bool running;
