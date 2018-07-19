@@ -42,13 +42,7 @@ public:
 	void Update();
 	void Draw();
 
-	static GamePlayState* Instance()
-	{
-		return &GamePlayState_dontfuckwithme;
-	}
-
 private:
-	static GamePlayState GamePlayState_dontfuckwithme;
 	AppEngine* app;
 
 	sf::Time timePerFrame; // 60 frames per second
@@ -68,7 +62,7 @@ private:
 	int baseViewSpeed = 500;
 
 	sf::Clock deltaClock;  // tracks how much time has past since the last frame
-	sf::Clock framesClock; // for fps
+	sf::Clock framesClock; // for maxfps
 
 	void deleteButton();
 

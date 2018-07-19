@@ -3,6 +3,8 @@
 
 #include "AppState.hpp"
 
+#include <SFUI\SFUi.hpp>
+
 class GameCreationState : public AppState
 {
 public:
@@ -16,14 +18,12 @@ public:
 	void Update();
 	void Draw();
 
-	static GameCreationState* Instance()
-	{
-		return &GameCreationState_dontfuckwithme;
-	}
+	SFUI::Menu* menu;
 
 private:
-	static GameCreationState GameCreationState_dontfuckwithme;
 	AppEngine* app;
+
+	bool isClientReady = false;
 };
 
 #endif // !GAME_CREATION_STATE

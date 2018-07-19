@@ -10,8 +10,6 @@
 #include "Util/Graphics/Graphics.hpp"
 #include "Util/Graphics/Text.hpp"
 
-GamePlayState GamePlayState::GamePlayState_dontfuckwithme;
-
 sf::CircleShape test;
 
 void GamePlayState::Init(AppEngine* app_)
@@ -71,6 +69,8 @@ void GamePlayState::Init(AppEngine* app_)
 	baseViewSpeed = 500;
 
 	entMan->newCommentSection()->setPosition(sf::Vector2f(app->window->getSize().x / 2, app->window->getSize().y / 2));
+	entMan->newBob()->setPosition(sf::Vector2f(app->window->getSize().x / 2, app->window->getSize().y / 2));
+	entMan->newBob()->setPosition(sf::Vector2f(app->window->getSize().x / 2, app->window->getSize().y / 2));
 
 	app->dRPC.clearPresence();
 	app->dRPC.setState("in a game");
@@ -124,7 +124,7 @@ void GamePlayState::HandleEvents()
 		sf::Event event;
 		while (app->window->pollEvent(event))
 		{
-			app->events.push_back(event);
+			int id = ui->menu->onEvent(event);
 
 			if (event.type == sf::Event::EventType::Closed)
 			{
@@ -134,7 +134,8 @@ void GamePlayState::HandleEvents()
 			{
 				if (event.key.code == sf::Keyboard::Key::Escape)
 				{
-					app->PushState(GamePauseState::Instance());
+					app->PushState(new GamePauseState);
+					return;
 				}
 				else if (event.key.code == sf::Keyboard::Key::Space)
 				{
@@ -161,9 +162,9 @@ void GamePlayState::HandleEvents()
 				}
 				else if (event.key.code == sf::Keyboard::Key::Tilde)
 				{
-					app->debugModeActive = !app->debugModeActive;
+					app->settings.debug = !app->settings.debug;
 
-					logger::INFO("cl_debug set to " + std::to_string(app->debugModeActive));
+					logger::INFO("cl_debug set to " + std::to_string(app->settings.debug));
 				}
 				else if (event.key.code == sf::Keyboard::Key::Delete || event.key.code == sf::Keyboard::Key::End)
 				{
@@ -217,7 +218,8 @@ void GamePlayState::HandleEvents()
 				{
 					test.setPosition(sf::Vector2f(sf::Mouse::getPosition(*app->window).x, sf::Mouse::getPosition(*app->window).y));
 
-					if (ui->create_ent_button->containsPoint(sf::Vector2f(sf::Mouse::getPosition(*app->window).x, sf::Mouse::getPosition(*app->window).y) - ui->create_ent_button->getPosition()))
+					if (false)
+//					if (ui->create_ent_button->containsPoint(sf::Vector2f(sf::Mouse::getPosition(*app->window).x, sf::Mouse::getPosition(*app->window).y) - ui->create_ent_button->getPosition()))
 					{
 						if (entMan->entities.size() >= entMan->maxEnts)
 						{
@@ -245,7 +247,8 @@ void GamePlayState::HandleEvents()
 
 						break;
 					}
-					else if (ui->delete_ent_button->containsPoint(sf::Vector2f(sf::Mouse::getPosition(*app->window).x, sf::Mouse::getPosition(*app->window).y) - ui->delete_ent_button->getPosition()) && !entMan->selectedEnts.empty())
+					else if (false)
+//					else if (ui->delete_ent_button->containsPoint(sf::Vector2f(sf::Mouse::getPosition(*app->window).x, sf::Mouse::getPosition(*app->window).y) - ui->delete_ent_button->getPosition()) && !entMan->selectedEnts.empty())
 					{
 						deleteButton();
 					}
@@ -256,32 +259,40 @@ void GamePlayState::HandleEvents()
 					{
 						if (util::logic::mouseIsOver(entMan->entities[i]->sprite, *app->window, mainView2->view))
 						{
-							if (entMan->entities[i]->isSelected)
+							if (entMan->entities[i]->isSelected) // entity is already selected
 							{
-								if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl))
+								if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl)) // selecting multiple units
 								{
+									// in Age of Empires II, if you hold control and click
+									// on an already selected entity it is deselected
 									entMan->deselectEnt(entMan->entities[i]);
 									selectedNothing = false;
+
+									logger::INFO("removed entity" + std::to_string(entMan->entities[i]->entityID) + " from group selection");
 								}
-								else
+								else // we're going to single out a unit
 								{
-									if (!entMan->selectedEnts.empty())
+									// unit is already selected.
+									// in AoE2, if you have multiple units selected
+									// and then select one of them, it will deselect
+									// all entities except that one.
+
+									if (entMan->selectedEnts.size() == 1)
+									{
+										logger::INFO("entity " + std::to_string(entMan->entities[i]->entityID) + " already selected");
+									}
+									else // singling out one unit
 									{
 										entMan->deselectAllEnts();
 										entMan->selectEnt(entMan->entities[i]);
 
-										logger::INFO("selected entity" + std::to_string(entMan->entities[i]->entityID));
+										logger::INFO("focused entity" + std::to_string(entMan->entities[i]->entityID));
+									}
 
-										selectedNothing = false;
-									}
-									else
-									{
-										logger::INFO("entity" + std::to_string(entMan->entities[i]->entityID) + " is already selected");
-										selectedNothing = false;
-									}
+									selectedNothing = false;
 								}
 							}
-							else
+							else // selecting multiple units
 							{
 								if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl))
 									entMan->deselectAllEnts();
@@ -296,6 +307,17 @@ void GamePlayState::HandleEvents()
 								selectedNothing = false;
 							}
 
+							if (entMan->selectedEnts.size() > 1)
+								ui->updateUnitInfo(Interface::State::MultipleEntitiesSelected, nullptr);
+							else if (entMan->selectedEnts.size() == 1)
+								ui->updateUnitInfo(Interface::State::SingleEntitySelected, entMan->entities[i]);
+							else
+							{
+								logger::ERROR("DOES THIS HAPPEN?");
+
+								abort();
+							}
+
 							break;
 						}
 					} // what entity did we click
@@ -307,9 +329,12 @@ void GamePlayState::HandleEvents()
 						ui->deleteEnabled = false;
 //						ui->delete_ent_button.disable();
 
+						ui->updateUnitInfo(Interface::State::NoEntitiesSelected, nullptr);
+
 						logger::INFO("All entities deselected");
 						break;
 					}
+
 				} // left mouse button
 				else if (event.key.code == sf::Mouse::Button::Right)
 				{
@@ -419,7 +444,7 @@ void GamePlayState::Draw()
 	for (size_t i = 0; i < entMan->entities.size(); i++)
 		app->window->draw(entMan->entities[i]->sprite);
 
-	if (app->debugModeActive)
+	if (app->settings.debug)
 	{
 		for (size_t i = 0; i < entMan->entities.size(); i++) // outline entities
 		{
@@ -477,7 +502,7 @@ void GamePlayState::Draw()
 	ui->Draw();
 
 	// debug info like coordinates and stuff
-	if (app->debugModeActive)
+	if (app->settings.debug)
 	{
 		sf::RectangleShape top;
 		sf::RectangleShape left;
@@ -505,6 +530,10 @@ void GamePlayState::Draw()
 		app->window->draw(left);
 		app->window->draw(right);
 		app->window->draw(bottom);
+
+		// TODO: we might use a different method to render text.
+		// perhaps create a string manager type class, and use only one piece of text to render everything with line breaks
+		// this could yeild a generous performance improvement.
 
 		app->window->draw(debugFrameCounter);
 

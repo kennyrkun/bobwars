@@ -41,6 +41,8 @@ void AppEngine::Cleanup()
 	while (!states.empty())
 	{
 		states.back()->Cleanup();
+
+		delete states.back();
 		states.pop_back();
 	}
 
@@ -60,10 +62,13 @@ void AppEngine::ChangeState(AppState* state)
 	if (!states.empty()) 
 	{
 		states.back()->Cleanup();
+
+		delete states.back();
 		states.pop_back();
 	}
 
-	// store and init the new state
+	std::cout << "changing state" << std::endl;
+
 	states.push_back(state);
 	states.back()->Init(this);
 }
@@ -73,6 +78,8 @@ void AppEngine::PushState(AppState* state)
 	// pause current state
 	if (!states.empty())
 		states.back()->Pause();
+
+	std::cout << "pushing state" << std::endl;
 
 	// store and init the new state
 	states.push_back(state);
@@ -85,6 +92,8 @@ void AppEngine::PopState()
 	if (!states.empty())
 	{
 		states.back()->Cleanup();
+
+		delete states.back();
 		states.pop_back();
 	}
 
@@ -101,6 +110,8 @@ void AppEngine::PopState(int amount)
 		if (!states.empty())
 		{
 			states.back()->Cleanup();
+
+			delete states.back();
 			states.pop_back();
 		}
 
@@ -136,9 +147,11 @@ void AppEngine::Draw()
 void AppEngine::Quit()
 {
 	for (size_t i = 0; i < states.size(); i++)
-		PopState();
-
-	// we don't delete the states because they're static
+	{
+		states.back()->Cleanup();
+		delete states.back();
+		states.pop_back();
+	}
 
 	states.clear();
 

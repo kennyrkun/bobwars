@@ -18,7 +18,7 @@ struct AppSettings
 	bool vsync = true;
 	bool debug = false;
 	bool console = false;
-	int fps = 60;
+	int maxfps = 60;
 	int width = 1080;
 	int height = 720;
 };
@@ -29,13 +29,10 @@ public:
 	void Init(std::string title, AppSettings settings_);
 	void Cleanup();
 
-	// Note: code after this function is still executed.
+	// Note: code after these functions is still executed.
 	void ChangeState(AppState* state);
-	// Note: code after this function is still executed.
 	void PushState(AppState* state);
-	// Note: code after this function is still executed.
 	void PopState();
-	// Note: code after this function is still executed.
 	void PopState(int amount);
 
 	void HandleEvents();
@@ -46,7 +43,6 @@ public:
 	void Quit();
 
 	std::string title;
-	bool debugModeActive = false;
 
 	sf::RenderWindow* window;
 	AppSettings settings;
