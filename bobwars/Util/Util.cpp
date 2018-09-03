@@ -1,7 +1,7 @@
 #include "Util.hpp"
 
 #include <string>
-#include <time.h>
+#include <ctime>
 #include <fstream>
 #include <filesystem>
 

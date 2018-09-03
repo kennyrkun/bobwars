@@ -6,6 +6,8 @@
 // TODO: find a way to not include this everywhere.
 #include <DISCORD\discord_rpc.h>
 
+// TODO: test std::string for null terminator
+
 class DiscordRPC
 {
 public:
