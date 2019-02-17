@@ -16,8 +16,6 @@ void GamePlayState::Init(AppEngine* app_)
 {
 	app = app_;
 
-	test.setRadius(10);
-
 	logger::DEBUG("Initialising GamePlayState");
 
 	logger::INFO("Pre-game setup.");
@@ -50,6 +48,10 @@ void GamePlayState::Init(AppEngine* app_)
 	world.setTexture(*&worldTexture);
 
 	logger::INFO("Preparing user interface elements...");
+
+	test.setRadius(8);
+	test.setOrigin(test.getLocalBounds().width / 2, test.getLocalBounds().height / 2);
+
 	debugFrameCounter.setFont(Arial);
 	debugFrameCounter.setPosition(20, 40);
 	debugFrameCounter.setCharacterSize(14);
@@ -63,17 +65,17 @@ void GamePlayState::Init(AppEngine* app_)
 	sf::View tempViewBecuaseIDonTKnowTheCorrectFunctionCallsToAchieveWhatTheConstructorDoes(screendimensions, screendimensions);
 	mainView2->view = tempViewBecuaseIDonTKnowTheCorrectFunctionCallsToAchieveWhatTheConstructorDoes;
 
-	mainView2->setPosition(sf::Vector2f(0, 0));
-
 	// TODO: clean up old viewanchor stuff
 //	viewAnchor = new sf::View(screendimensions, sf::Vector2f(app->window->getSize().x, app->window->getSize().y));
 
 	ui = new Interface(app->window, &mainView2->view);
 
+	mainView2->setPosition(sf::Vector2f(0, 0));
+
 	baseViewSpeed = 500;
 
 	entMan->newCommentSection();
-	entMan->newBob();
+	entMan->selectEnt(entMan->newBob());
 
 	app->dRPC.clearPresence();
 	app->dRPC.setState("in a game");
@@ -541,6 +543,7 @@ void GamePlayState::Draw()
 
 		app->window->draw(debugFrameCounter);
 
+		// TODO: add camera rotation to debug text
 		std::string viewCoordinates = "Camera: X: " + std::to_string(static_cast<int>(mainView2->getCenter().x)) + " Y: " + std::to_string(static_cast<int>(mainView2->getCenter().y));
 		util::text::draw(*app->window, debugText, viewCoordinates, sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 12));
 		util::text::draw(*app->window, debugText, "selectedEntities: " + std::to_string(entMan->selectedEnts.size()), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 24));

@@ -18,9 +18,7 @@ EntityManager::EntityManager()
 EntityManager::~EntityManager()
 {
 	for (size_t i = 0; i < entities.size(); i++)
-	{
 		delete entities[i];
-	}
 
 //	is this needed?
 //	in theory, there can be no more selected entities than entities,
@@ -41,14 +39,11 @@ Bob* EntityManager::newBob()
 
 	Bob *newBobEntity = new Bob();
 	newBobEntity->entityID = entities.size() + 1;
-	newBobEntity->isSelected = true;
 
 	entities.push_back(newBobEntity); // add it to the stack
-	selectedEnts.push_back(newBobEntity); // select it
 
+	logger::DEBUG("creating new bob entity (" + std::to_string(newBobEntity->entityID) + ")");
 	return newBobEntity;
-									   
-	logger::DEBUG("creating new entity (" + std::to_string(newBobEntity->entityID) + ")");
 }
 
 CommentSection* EntityManager::newCommentSection()
@@ -58,13 +53,11 @@ CommentSection* EntityManager::newCommentSection()
 
 	CommentSection *newBobEntity = new CommentSection();
 	newBobEntity->entityID = entities.size() + 1;
-	newBobEntity->isSelected = true;
 
-	entities.push_back(newBobEntity); // add it to the stack
-	selectedEnts.push_back(newBobEntity); // select it
+	entities.push_back(newBobEntity);
 				
+	logger::DEBUG("created comment section entity (" + std::to_string(newBobEntity->entityID) + ")");
 	return newBobEntity;
-//	logger::INFO("creating new entity (" + std::to_string(newEnt->entityID) + ")");
 }
 
 void EntityManager::deselectAllEnts()
