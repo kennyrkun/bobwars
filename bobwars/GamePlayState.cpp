@@ -18,7 +18,7 @@ void GamePlayState::Init(AppEngine* app_)
 
 	test.setRadius(10);
 
-	logger::INFO("Initialising GamePlayState");
+	logger::DEBUG("Initialising GamePlayState");
 
 	logger::INFO("Pre-game setup.");
 
@@ -34,17 +34,20 @@ void GamePlayState::Init(AppEngine* app_)
 		debugText.setCharacterSize(14);
 	}
 
+	// TODO: actually "create" the gameworld in GameCreationState, or maybe GameWorldLoadState
+
 	logger::INFO("Loading world texture...");
 
 	worldTexture = new sf::Texture; // fix not running in debug
 
 	if (!worldTexture->loadFromFile("bobwars/resource/textures/world.png"))
-		logger::ERROR("Failed to load world textures!", true);
+		logger::ERROR("Failed to load world textures!");
 
 	//TODO: make camera align with world center on game start
 	world.setSize(sf::Vector2f(800, 600));
-	world.setTexture(*&worldTexture);
 	world.setOrigin(sf::Vector2f(world.getSize().x / 2, world.getSize().y / 2));
+	world.setPosition(sf::Vector2f(0, 0));
+	world.setTexture(*&worldTexture);
 
 	logger::INFO("Preparing user interface elements...");
 	debugFrameCounter.setFont(Arial);
@@ -56,10 +59,11 @@ void GamePlayState::Init(AppEngine* app_)
 	screendimensions.y = app->window->getSize().y / 2;
 
 	mainView2 = new Camera;
-	{
-		sf::View tempViewBecuaseIDonTKnowTheCorrectFunctionCallsToAchieveWhatTheConstructorDoes(screendimensions, screendimensions);
-		mainView2->view = tempViewBecuaseIDonTKnowTheCorrectFunctionCallsToAchieveWhatTheConstructorDoes;
-	}
+
+	sf::View tempViewBecuaseIDonTKnowTheCorrectFunctionCallsToAchieveWhatTheConstructorDoes(screendimensions, screendimensions);
+	mainView2->view = tempViewBecuaseIDonTKnowTheCorrectFunctionCallsToAchieveWhatTheConstructorDoes;
+
+	mainView2->setPosition(sf::Vector2f(0, 0));
 
 	// TODO: clean up old viewanchor stuff
 //	viewAnchor = new sf::View(screendimensions, sf::Vector2f(app->window->getSize().x, app->window->getSize().y));
@@ -68,9 +72,8 @@ void GamePlayState::Init(AppEngine* app_)
 
 	baseViewSpeed = 500;
 
-	entMan->newCommentSection()->setPosition(sf::Vector2f(app->window->getSize().x / 2, app->window->getSize().y / 2));
-	entMan->newBob()->setPosition(sf::Vector2f(app->window->getSize().x / 2, app->window->getSize().y / 2));
-	entMan->newBob()->setPosition(sf::Vector2f(app->window->getSize().x / 2, app->window->getSize().y / 2));
+	entMan->newCommentSection();
+	entMan->newBob();
 
 	app->dRPC.clearPresence();
 	app->dRPC.setState("in a game");
@@ -79,12 +82,12 @@ void GamePlayState::Init(AppEngine* app_)
 	app->dRPC.setStartTime(time(0));
 	app->dRPC.updatePresence();
 
-	logger::INFO("GamePlayState ready!");
+	logger::DEBUG("GamePlayState ready!");
 }
 
 void GamePlayState::Cleanup()
 {
-	logger::INFO("GamePlayState cleaning up");
+	logger::DEBUG("GamePlayState cleaning up");
 
 	app->window->setView(app->window->getDefaultView());
 
@@ -93,7 +96,7 @@ void GamePlayState::Cleanup()
 	delete ui;
 	delete worldTexture;
 
-	logger::INFO("GamePlayState cleaned up");
+	logger::DEBUG("GamePlayState cleaned up");
 }
 
 // Public
@@ -102,12 +105,12 @@ void GamePlayState::Pause()
 {
 	app->window->setView(app->window->getDefaultView());
 
-	logger::INFO("GamePlayState paused");
+	logger::DEBUG("GamePlayState paused");
 }
 
 void GamePlayState::Resume()
 {
-	logger::INFO("GamePlayState resumed");
+	logger::DEBUG("GamePlayState resumed");
 }
 
 void GamePlayState::HandleEvents()
