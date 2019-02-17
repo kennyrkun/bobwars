@@ -63,7 +63,7 @@ public:
 //		SelectedCommentSection
 	};
 
-	void updateUnitInfo(State state, BaseEntity *entitiy);
+	void updateUnitInfo(State state, BaseEntity *entity);
 
 private:
 	sf::RenderWindow *targetWindow;

@@ -4,6 +4,13 @@
 
 #include <SFUI\Image.hpp>
 
+enum MENU_CALLBACKS
+{
+	CREATE_BOB,
+	CREATE_COMMENT_SECTION,
+	DELETE_ENTITY
+};
+
 Interface::Interface(sf::RenderWindow *_targetWindow, sf::View *_mainView) : targetWindow(_targetWindow), mainView(_mainView)
 {
 	viewAnchor = new sf::View(mainView->getCenter(), sf::Vector2f(targetWindow->getSize().x, targetWindow->getSize().y));
@@ -154,6 +161,7 @@ void Interface::updateUnitInfo(State state, BaseEntity *entity)
 	menu = new SFUI::Menu(*targetWindow);
 	menu->setPosition(pos);
 
+	// TODO: this does not work with comment sections
 	if (state == State::SingleEntitySelected)
 	{
 		SFUI::HorizontalBoxLayout *mainContainer = menu->addHorizontalBoxLayout();
@@ -175,9 +183,9 @@ void Interface::updateUnitInfo(State state, BaseEntity *entity)
 	}
 	else if (state == State::NoEntitiesSelected)
 	{
-		menu->addButton("create bob");
-		menu->addButton("create commentsection");
+		menu->addButton("create bob", MENU_CALLBACKS::CREATE_BOB);
+		menu->addButton("create commentsection", MENU_CALLBACKS::CREATE_COMMENT_SECTION);
 	}
 
-	logger::DEBUG("[INTERFACE] Updated Unit Information");
+	logger::DEBUG("[INTERFACE] Updated Unit Information.");
 }

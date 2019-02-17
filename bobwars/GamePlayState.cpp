@@ -12,6 +12,13 @@
 
 sf::CircleShape test;
 
+enum MENU_CALLBACKS
+{
+	CREATE_BOB,
+	CREATE_COMMENT_SECTION,
+	DELETE_ENTITY
+};
+
 void GamePlayState::Init(AppEngine* app_)
 {
 	app = app_;
@@ -131,6 +138,12 @@ void GamePlayState::HandleEvents()
 		while (app->window->pollEvent(event))
 		{
 			int id = ui->menu->onEvent(event);
+
+			if (id == MENU_CALLBACKS::CREATE_BOB)
+				entMan->newBob();
+			else if (id == MENU_CALLBACKS::CREATE_COMMENT_SECTION)
+				entMan->newCommentSection();
+			// TODO: delete selected entities
 
 			if (event.type == sf::Event::EventType::Closed)
 			{
@@ -420,11 +433,8 @@ void GamePlayState::HandleEvents()
 			if (mainView2->getCenter().y < 0)
 				mainView2->setCenter(sf::Vector2f(mainView2->getCenter().x, 0));
 
-			{ //FRAMES PER SECOND
-				float frames_per_second = framesClock.restart().asSeconds();
-
-				debugFrameCounter.setString("FPS: " + std::to_string(static_cast<int>(1.0f / frames_per_second)));
-			}
+			float frames_per_second = framesClock.restart().asSeconds();
+			debugFrameCounter.setString("FPS: " + std::to_string(static_cast<int>(1.0f / frames_per_second)));
 		} // app->window.hasFocus()
 
 		sf::Time deltaTime = deltaClock.restart();  // get elapsed time and reset clock
