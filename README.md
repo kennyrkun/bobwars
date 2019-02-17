@@ -7,7 +7,7 @@ Make sure you have [SFML 2.4](http://www.sfml-dev.org/download/sfml/2.4.2/) in t
 
 If you want to build the game without dynamic runtime library linking then you'll have to [build SFML yourself](http://en.sfml-dev.org/forums/index.php?topic=8158.msg54553#msg54553).
 
----
+You'll also need [SFUI2](https://github.com/kennyrkun/SFUI/tree/SFUI2) and [DiscordRPC](https://github.com/discordapp/discord-rpc).
 
 ## Playing
 While in the game, the WASD are used to control the main view, and the arrow keys are used to move selected units. Units can be created with the create button, and delete with the delete button or the DEL key. To select a unit, simply left click the desired unit. To deselect that unit, either click another unit or click something that is not a unit. 
@@ -31,8 +31,6 @@ While in the game, the WASD are used to control the main view, and the arrow key
 
 ##### Debug
 <kbd>~</kbd> or <kbd>`</kbd> - Toggle debug mode<br>
-
----
 
 ## Built With
 * [Simple and Fast Media Library (SFML)](http://www.sfml-dev.org) - The Graphics library used.
