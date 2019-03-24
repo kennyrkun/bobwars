@@ -15,8 +15,21 @@ void AppEngine::Init(std::string title_, AppSettings settings_)
 {
 	std::cout << "AppEngine Init" << std::endl;
 
-	settings = settings_;
 	title = title_;
+	settings = settings_;
+
+	for (int i = 0; i < settings.launchOptions.argc; i++)
+	{
+		if (std::string(settings.launchOptions.argv[i]) == "-fullscreen")
+			settings.fullscreen = true;
+
+		if (std::string(settings.launchOptions.argv[i]) == "-vsync")
+			settings.vsync = true;
+
+		if (std::string(settings.launchOptions.argv[i]) == "-maxfps")
+			// next arg should be an int (the maxfps)
+			settings.maxfps = std::stoi(settings.launchOptions.argv[i += 1]);
+	}
 
 	if (!fs::exists("./bobwars"))
 		fs::create_directory("./bobwars");

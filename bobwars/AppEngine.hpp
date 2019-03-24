@@ -21,6 +21,12 @@ struct AppSettings
 	int maxfps = 60;
 	int width = 1080;
 	int height = 720;
+
+	struct CommandLineArguments
+	{
+		int argc;
+		char** argv;
+	} launchOptions;
 };
 
 class AppEngine

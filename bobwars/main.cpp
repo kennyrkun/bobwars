@@ -1,5 +1,6 @@
 #include "AppEngine.hpp"
 #include "MainMenuState.hpp"
+
 #include "Util/Logger.hpp"
 #include "Util/DiscordRPC.hpp"
 
@@ -13,6 +14,8 @@ int main(int argc, char *argv[])
 		std::cout << i << ": " << argv[i] << std::endl;
 
 	AppSettings options;
+	options.launchOptions.argc = argc;
+	options.launchOptions.argv = argv;
 	/*
 	for (int i = 0; i < argc; i++)
 	{
@@ -29,7 +32,9 @@ int main(int argc, char *argv[])
 		}
 	}
 	*/
+
 	logger::INFO("Preparing SFUI");
+
 	SFUI::Theme::loadFont("bobwars/resource/interface/tahoma.ttf");
 	SFUI::Theme::loadTexture("bobwars/resource/interface/texture_square.png");
 	SFUI::Theme::textCharacterSize = 11;
@@ -55,5 +60,6 @@ int main(int argc, char *argv[])
 	}
 
 	logger::INFO("Exiting...");
+
 	return EXIT_SUCCESS;
 }
