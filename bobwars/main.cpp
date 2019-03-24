@@ -1,5 +1,5 @@
 #include "AppEngine.hpp"
-#include "MainMenuState.hpp"
+#include "GameStartupState.hpp"
 
 #include "Util/Logger.hpp"
 #include "Util/DiscordRPC.hpp"
@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
 	AppEngine app;
 	app.Init("bobwars", options);
 
-	app.PushState(new MainMenuState);
+	app.PushState(new GameStartupState);
 
 	while (app.isRunning())
 	{

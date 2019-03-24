@@ -16,7 +16,7 @@ struct AppSettings
 	std::string title = "bobwars " + version;
 	bool fullscreen = false;
 	bool vsync = true;
-	bool debug = false;
+	bool debug = true;
 	bool console = false;
 	int maxfps = 60;
 	int width = 1080;

@@ -19,17 +19,14 @@
     <Filter Include="BOBWARS\Util\Graphics">
       <UniqueIdentifier>{30b74059-0d1f-4f20-b842-bf9e81b51ce5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="BOBWARS\Game\Manager &amp; Base">
+    <Filter Include="BOBWARS\Util\Systems">
+      <UniqueIdentifier>{def6ba95-b885-4f3f-afc1-a15a31805962}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BOBWARS\Util\Systems\AppEngine">
       <UniqueIdentifier>{b0e65a1e-d8f1-4afe-9a89-ea101c211d7f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="BOBWARS\Game\Graphics">
-      <UniqueIdentifier>{371f4bb8-4ecb-4516-8845-55265c76a8b1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="BOBWARS\Game\Graphics\Interface">
+    <Filter Include="BOBWARS\Util\Graphics\Interface">
       <UniqueIdentifier>{26b73e13-2708-465d-8f44-258c11ad1be6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="BOBWARS\Game\Systems">
-      <UniqueIdentifier>{def6ba95-b885-4f3f-afc1-a15a31805962}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -43,25 +40,19 @@
       <Filter>BOBWARS\Game\GameStates</Filter>
     </ClInclude>
     <ClInclude Include="AppState.hpp">
-      <Filter>BOBWARS\Game\Manager &amp; Base</Filter>
+      <Filter>BOBWARS\Util\Systems\AppEngine</Filter>
     </ClInclude>
     <ClInclude Include="AppEngine.hpp">
-      <Filter>BOBWARS\Game\Manager &amp; Base</Filter>
+      <Filter>BOBWARS\Util\Systems\AppEngine</Filter>
     </ClInclude>
     <ClInclude Include="GameCreationState.hpp">
       <Filter>BOBWARS\Game\GameStates</Filter>
-    </ClInclude>
-    <ClInclude Include="Menu.hpp">
-      <Filter>BOBWARS\Game\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.hpp">
-      <Filter>BOBWARS\Game\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Bob.hpp">
       <Filter>BOBWARS\Game\Entities</Filter>
     </ClInclude>
     <ClInclude Include="Interface.hpp">
-      <Filter>BOBWARS\Game\Graphics\Interface</Filter>
+      <Filter>BOBWARS\Util\Graphics\Interface</Filter>
     </ClInclude>
     <ClInclude Include="CommentSection.hpp">
       <Filter>BOBWARS\Game\Entities</Filter>
@@ -85,16 +76,25 @@
       <Filter>BOBWARS\Util</Filter>
     </ClInclude>
     <ClInclude Include="ResourceManager.hpp">
-      <Filter>BOBWARS\Game\Systems</Filter>
+      <Filter>BOBWARS\Util\Systems</Filter>
     </ClInclude>
     <ClInclude Include="EntityManager.hpp">
-      <Filter>BOBWARS\Game\Systems</Filter>
+      <Filter>BOBWARS\Util\Systems</Filter>
     </ClInclude>
     <ClInclude Include="Util\SettingsParser.hpp">
-      <Filter>BOBWARS\Game\Systems</Filter>
+      <Filter>BOBWARS\Util\Systems</Filter>
     </ClInclude>
     <ClInclude Include="Util\DiscordRPC.hpp">
       <Filter>BOBWARS\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="GameStartupState.hpp">
+      <Filter>BOBWARS\Game\GameStates</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.hpp">
+      <Filter>BOBWARS\Util\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Menu.hpp">
+      <Filter>BOBWARS\Util\Graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -111,22 +111,16 @@
       <Filter>BOBWARS</Filter>
     </ClCompile>
     <ClCompile Include="AppEngine.cpp">
-      <Filter>BOBWARS\Game\Manager &amp; Base</Filter>
+      <Filter>BOBWARS\Util\Systems\AppEngine</Filter>
     </ClCompile>
     <ClCompile Include="GameCreationState.cpp">
       <Filter>BOBWARS\Game\GameStates</Filter>
-    </ClCompile>
-    <ClCompile Include="Menu.cpp">
-      <Filter>BOBWARS\Game\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>BOBWARS\Game\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Bob.cpp">
       <Filter>BOBWARS\Game\Entities</Filter>
     </ClCompile>
     <ClCompile Include="Interface.cpp">
-      <Filter>BOBWARS\Game\Graphics\Interface</Filter>
+      <Filter>BOBWARS\Util\Graphics\Interface</Filter>
     </ClCompile>
     <ClCompile Include="CommentSection.cpp">
       <Filter>BOBWARS\Game\Entities</Filter>
@@ -150,16 +144,25 @@
       <Filter>BOBWARS\Util</Filter>
     </ClCompile>
     <ClCompile Include="EntityManager.cpp">
-      <Filter>BOBWARS\Game\Systems</Filter>
+      <Filter>BOBWARS\Util\Systems</Filter>
     </ClCompile>
     <ClCompile Include="ResourceManager.cpp">
-      <Filter>BOBWARS\Game\Systems</Filter>
+      <Filter>BOBWARS\Util\Systems</Filter>
     </ClCompile>
     <ClCompile Include="Util\SettingsParser.cpp">
-      <Filter>BOBWARS\Game\Systems</Filter>
+      <Filter>BOBWARS\Util\Systems</Filter>
     </ClCompile>
     <ClCompile Include="Util\DiscordRPC.cpp">
       <Filter>BOBWARS\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="GameStartupState.cpp">
+      <Filter>BOBWARS\Game\GameStates</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>BOBWARS\Util\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Menu.cpp">
+      <Filter>BOBWARS\Util\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

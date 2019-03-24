@@ -28,6 +28,7 @@
     <ClInclude Include="GameCreationState.hpp" />
     <ClInclude Include="GamePauseState.hpp" />
     <ClInclude Include="GamePlayState.hpp" />
+    <ClInclude Include="GameStartupState.hpp" />
     <ClInclude Include="MainMenuState.hpp" />
     <ClInclude Include="Menu.hpp" />
     <ClInclude Include="ResourceManager.hpp" />
@@ -53,6 +54,7 @@
     <ClCompile Include="GameCreationState.cpp" />
     <ClCompile Include="GamePauseState.cpp" />
     <ClCompile Include="GamePlayState.cpp" />
+    <ClCompile Include="GameStartupState.cpp" />
     <ClCompile Include="Interface.cpp" />
     <ClCompile Include="MainMenuState.cpp" />
     <ClCompile Include="EntityManager.cpp">
@@ -124,6 +126,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <TargetName>$(ProjectName)-d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
