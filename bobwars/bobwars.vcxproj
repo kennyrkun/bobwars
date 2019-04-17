@@ -38,6 +38,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Util\DiscordRPC.hpp" />
+    <ClInclude Include="Util\Graphics\DisabledButton.hpp" />
     <ClInclude Include="Util\SettingsParser.hpp" />
     <ClInclude Include="Util\Util.hpp" />
     <ClInclude Include="Util\Graphics\Graphics.hpp" />
@@ -65,6 +66,7 @@
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Util\DiscordRPC.cpp" />
+    <ClCompile Include="Util\Graphics\DisabledButton.cpp" />
     <ClCompile Include="Util\SettingsParser.cpp" />
     <ClCompile Include="Util\Util.cpp" />
     <ClCompile Include="Util\Graphics\Graphics.cpp" />

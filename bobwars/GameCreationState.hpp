@@ -2,8 +2,9 @@
 #define GAME_CREATION_STATE
 
 #include "AppState.hpp"
+#include "util/Graphics/DisabledButton.hpp"
 
-#include <SFUI\SFUi.hpp>
+#include <SFUI/SFUI.hpp>
 
 class GameCreationState : public AppState
 {
@@ -24,6 +25,8 @@ private:
 	AppEngine* app;
 
 	bool isClientReady = false;
+
+	DisabledButton* startGameButton;
 };
 
 #endif // !GAME_CREATION_STATE

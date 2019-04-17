@@ -5,11 +5,12 @@
 #include "AppState.hpp"
 
 #include "Util/Logger.hpp"
+#include "Util/Graphics/DisabledButton.hpp"
 #include "GamePlayState.hpp"
 
 enum Callback
 {
-	CLIENT_READY,
+	CLIENT_READY_TICK_BOX,
 	START_GAME,
 	RETURN_TO_MAIN_MENU,
 };
@@ -29,8 +30,11 @@ void GameCreationState::Init(AppEngine* app_)
 	// Slider for scale
 	SFUI::CheckBox* clientReadyToStartGame = new SFUI::CheckBox();
 
-	form->addRow("ClientReady:", clientReadyToStartGame, CLIENT_READY);
-	form->addButton("Start Game", START_GAME);
+	form->addRow("ClientReady:", clientReadyToStartGame, CLIENT_READY_TICK_BOX);
+
+	startGameButton = new DisabledButton("Start Game");
+	form->add(startGameButton, START_GAME);
+
 	menu->addButton("back to Main Menu", RETURN_TO_MAIN_MENU);
 
 	app->dRPC.clearPresence();
@@ -62,14 +66,22 @@ void GameCreationState::HandleEvents()
 	sf::Event event;
 	while (app->window->pollEvent(event))
 	{
+		if (event.type == sf::Event::EventType::Closed)
+			app->Quit();
+
 		int id = menu->onEvent(event);
 		switch (id)
 		{
-		case Callback::CLIENT_READY:
+		case Callback::CLIENT_READY_TICK_BOX:
 		{
-			logger::INFO("Client toggled ready.");
+			logger::INFO("Ready state for Client 1 switched.");
 
 			isClientReady = !isClientReady;
+
+			if (isClientReady)
+				startGameButton->enable();
+			else
+				startGameButton->disable();
 
 			break;
 		}
@@ -98,6 +110,8 @@ void GameCreationState::HandleEvents()
 
 void GameCreationState::Update()
 {
+	if (!isClientReady)
+		startGameButton->onStateChanged(SFUI::State::Default);
 }
 
 void GameCreationState::Draw()

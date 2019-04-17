@@ -96,6 +96,9 @@
     <ClInclude Include="Menu.hpp">
       <Filter>BOBWARS\Util\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Util\Graphics\DisabledButton.hpp">
+      <Filter>BOBWARS\Util\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseEntity.cpp">
@@ -162,6 +165,9 @@
       <Filter>BOBWARS\Util\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Menu.cpp">
+      <Filter>BOBWARS\Util\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Graphics\DisabledButton.cpp">
       <Filter>BOBWARS\Util\Graphics</Filter>
     </ClCompile>
   </ItemGroup>

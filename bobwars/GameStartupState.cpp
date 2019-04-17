@@ -6,8 +6,6 @@
 
 #include <SFML/Graphics.hpp>
 
-// public:
-
 void GameStartupState::Init(AppEngine* app_)
 {
 	logger::INFO("Initialising GameStartupState");
@@ -78,8 +76,6 @@ void GameStartupState::Draw()
 
 	app->window->display();
 }
-
-// public:
 
 bool GameStartupState::mouseIsOver(sf::Shape &object)
 {

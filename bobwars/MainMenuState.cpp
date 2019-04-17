@@ -137,9 +137,7 @@ void MainMenuState::Draw()
 	app->window->draw(*menu);
 
 	if (app->settings.debug)
-	{
-		util::text::draw(*app->window, "states: " + app->states.size(), sf::Vector2f(0, 0));
-	}
+		util::text::draw(*app->window, "states: " + std::to_string(app->states.size()), sf::Vector2f(0, 0));
 
 	app->window->display();
 }
