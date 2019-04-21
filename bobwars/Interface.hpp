@@ -2,6 +2,7 @@
 #define INTERFACE_HPP
 
 #include "BaseEntity.hpp"
+#include "ResourceCounter.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <SFUI/Layouts/Menu.hpp>
@@ -49,11 +50,11 @@ public:
 
 	sf::Texture bobIcon;
 
-	sf::Text unitCounterText;
-	sf::Text memesCounterText;
-	
 	sf::RectangleShape bottomBar;
 	sf::RectangleShape topBar;
+
+	ResourceCounter* memesCounter;
+	ResourceCounter* unitCounter;
 
 	enum class State
 	{
@@ -72,14 +73,6 @@ private:
 	sf::Font arial;
 
 	// TODO: replace these counters with ResourceCounter class
-
-	sf::RectangleShape unitCounterIcon;
-	sf::Texture unitCounterIcon_tex;
-	sf::RectangleShape unitCounterBackground;
-
-	sf::RectangleShape memesCounterIcon;
-	sf::Texture memesCounterIcon_tex;
-	sf::RectangleShape memesCounterBackground;
 };
 
 #endif /* INTERFACE_HPP */

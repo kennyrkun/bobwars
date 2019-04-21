@@ -33,47 +33,8 @@ Interface::Interface(sf::RenderWindow *_targetWindow, sf::View *_mainView) : tar
 	bottomBar.setOrigin(bottomBar.getLocalBounds().width / 2, bottomBar.getLocalBounds().height / 2);
 	bottomBar.setPosition(sf::Vector2f(viewAnchor->getCenter().x, bottomMiddleY));
 
-	float padding = 3.0f; // for the counters
-
-	// gold
-	memesCounterBackground.setFillColor(sf::Color(70, 70, 70));
-	memesCounterBackground.setSize(sf::Vector2f(46 - padding, 26 - padding));
-	memesCounterBackground.setOrigin(sf::Vector2f(memesCounterBackground.getSize().x / 2, memesCounterBackground.getSize().y / 2));
-	memesCounterBackground.setOutlineThickness(padding);
-	memesCounterBackground.setOutlineColor(sf::Color(50, 50, 50));
-	memesCounterBackground.setPosition(sf::Vector2f(leftX + 30, topMiddleY));
-
-	memesCounterIcon_tex.loadFromFile("./bobwars/resource/textures/silk/heart.png");
-	memesCounterIcon.setTexture(&memesCounterIcon_tex);
-	memesCounterIcon.setSize(sf::Vector2f(16, 16));
-	memesCounterIcon.setOrigin(sf::Vector2f(8, 8));
-	memesCounterIcon.setPosition(sf::Vector2f(memesCounterBackground.getPosition().x - 10, memesCounterBackground.getPosition().y));
-
-	memesCounterText.setFont(arial);
-	memesCounterText.setCharacterSize(22);
-	memesCounterText.setString("100");
-	memesCounterText.setOrigin(sf::Vector2f(0, memesCounterText.getLocalBounds().height / 2));
-	memesCounterText.setPosition(sf::Vector2f(memesCounterBackground.getPosition().x + 4, memesCounterBackground.getPosition().y - 6));
-
-	// unit counter
-	unitCounterBackground.setFillColor(sf::Color(70, 70, 70));
-	unitCounterBackground.setSize(sf::Vector2f(46 - padding, 26 - padding));
-	unitCounterBackground.setOrigin(sf::Vector2f(unitCounterBackground.getSize().x / 2, unitCounterBackground.getSize().y / 2));
-	unitCounterBackground.setOutlineThickness(padding);
-	unitCounterBackground.setOutlineColor(sf::Color(50, 50, 50));
-	unitCounterBackground.setPosition(sf::Vector2f(leftX + 125, topMiddleY));
-
-	unitCounterIcon_tex.loadFromFile("./bobwars/resource/textures/silk/user.png");
-	unitCounterIcon.setTexture(&unitCounterIcon_tex);
-	unitCounterIcon.setSize(sf::Vector2f(16, 16));
-	unitCounterIcon.setOrigin(sf::Vector2f(8, 8));
-	unitCounterIcon.setPosition(sf::Vector2f(unitCounterBackground.getPosition().x - 10, unitCounterBackground.getPosition().y));
-
-	unitCounterText.setFont(arial);
-	unitCounterText.setCharacterSize(22);
-	unitCounterText.setString("0");
-	unitCounterText.setOrigin(sf::Vector2f(0, unitCounterText.getLocalBounds().height / 2));
-	unitCounterText.setPosition(sf::Vector2f(unitCounterBackground.getPosition().x + 4, unitCounterBackground.getPosition().y - 6));
+	memesCounter = new ResourceCounter("heart.png", { leftX + 8, 8}, 100);
+	unitCounter = new ResourceCounter("user.png", { leftX + memesCounter->getGlobalBounds().width + 16, 8}, 100);
 
 	menu = new SFUI::Menu(*targetWindow);
 	menu->setPosition(sf::Vector2f(leftX + 25, bottomMiddleY - 55));
@@ -93,6 +54,9 @@ Interface::Interface(sf::RenderWindow *_targetWindow, sf::View *_mainView) : tar
 
 Interface::~Interface()
 {
+	delete memesCounter;
+	delete unitCounter;
+
 	logger::DEBUG("Interface destroyed.");
 }
 
@@ -128,8 +92,6 @@ void Interface::HandleEvents(sf::Event& event)
 
 void Interface::Update()
 {
-	unitCounterBackground.setSize(sf::Vector2f(unitCounterText.getGlobalBounds().width + 32, unitCounterBackground.getSize().y));
-	memesCounterBackground.setSize(sf::Vector2f(memesCounterText.getGlobalBounds().width + 32, unitCounterBackground.getSize().y));
 }
 
 void Interface::Draw()
@@ -138,13 +100,8 @@ void Interface::Draw()
 	
 	targetWindow->draw(topBar);
 
-	targetWindow->draw(unitCounterBackground);
-	targetWindow->draw(unitCounterIcon);
-	targetWindow->draw(unitCounterText);
-
-	targetWindow->draw(memesCounterBackground);
-	targetWindow->draw(memesCounterIcon);
-	targetWindow->draw(memesCounterText);
+	targetWindow->draw(*memesCounter);
+	targetWindow->draw(*unitCounter);
 
 	targetWindow->draw(bottomBar);
 
