@@ -8,7 +8,8 @@ enum MENU_CALLBACKS
 {
 	CREATE_BOB,
 	CREATE_COMMENT_SECTION,
-	DELETE_ENTITY
+	DELETE_ENTITY,
+	DELETE_ALL,
 };
 
 Interface::Interface(sf::RenderWindow *_targetWindow, sf::View *_mainView) : targetWindow(_targetWindow), mainView(_mainView)
@@ -38,7 +39,6 @@ Interface::Interface(sf::RenderWindow *_targetWindow, sf::View *_mainView) : tar
 
 	menu = new SFUI::Menu(*targetWindow);
 	menu->setPosition(sf::Vector2f(leftX + 25, bottomMiddleY - 55));
-	menu->addButton("test", 1);
 
 	//create_ent_button = new SFUI::Button("create");
 //	create_ent_button.setString("create");
@@ -125,10 +125,28 @@ void Interface::updateUnitInfo(State state, BaseEntity *entity)
 		SFUI::VerticalBoxLayout *iconContainer = mainContainer->addVerticalBoxLayout();
 		SFUI::VerticalBoxLayout *textContainer = mainContainer->addVerticalBoxLayout();
 
-		// TODO: cache this
-		bobIcon.loadFromFile("bobwars/resource/textures/bob.png");
-		SFUI::Image* iconImage = new SFUI::Image(bobIcon);
-		iconContainer->add(iconImage);
+		if (entity->type == "bob")
+		{
+			// TODO: cache this
+			bobIcon.loadFromFile("bobwars/resource/textures/bob.png");
+			SFUI::Image* iconImage = new SFUI::Image(bobIcon);
+			iconContainer->add(iconImage);
+
+			mainContainer->addButton("create commentsection", MENU_CALLBACKS::CREATE_COMMENT_SECTION);
+		}
+		else if (entity->type == "commentsection")
+		{
+			// TODO: cache this
+			bobIcon.loadFromFile("bobwars/resource/textures/commentsection.png");
+			SFUI::Image* iconImage = new SFUI::Image(bobIcon);
+			iconContainer->add(iconImage);
+
+			mainContainer->addButton("create bob", MENU_CALLBACKS::CREATE_BOB);
+		}
+		else
+		{
+			logger::WARNING("trying to update entity info for unknown entity");
+		}
 
 		textContainer->addLabel("health: " + std::to_string(entity->health));
 		textContainer->addLabel("hitpoints: " + std::to_string(entity->hitpoints));
@@ -136,12 +154,10 @@ void Interface::updateUnitInfo(State state, BaseEntity *entity)
 	}
 	else if (state == State::MultipleEntitiesSelected)
 	{
-		menu->addButton("delete all");
+		menu->addButton("delete all", MENU_CALLBACKS::DELETE_ALL);
 	}
 	else if (state == State::NoEntitiesSelected)
 	{
-		menu->addButton("create bob", MENU_CALLBACKS::CREATE_BOB);
-		menu->addButton("create commentsection", MENU_CALLBACKS::CREATE_COMMENT_SECTION);
 	}
 
 	logger::DEBUG("[INTERFACE] Updated Unit Information.");

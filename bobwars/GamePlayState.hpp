@@ -17,7 +17,7 @@ struct GameWorld
 {
 	void loadMapFile(std::string file);
 
-	sf::Texture mapTex;
+	sf::Texture mapTexture;
 	sf::RectangleShape map;
 
 	size_t mapSizeX;
@@ -50,6 +50,7 @@ private:
 
 	EntityManager *entMan;
 	Interface *ui;
+
 	sf::RectangleShape world;
 	sf::Texture		   *worldTexture;
 

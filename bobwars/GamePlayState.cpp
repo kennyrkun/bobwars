@@ -16,7 +16,8 @@ enum MENU_CALLBACKS
 {
 	CREATE_BOB,
 	CREATE_COMMENT_SECTION,
-	DELETE_ENTITY
+	DELETE_ENTITY,
+	DELETE_ALL
 };
 
 void GamePlayState::Init(AppEngine* app_)
@@ -76,6 +77,7 @@ void GamePlayState::Init(AppEngine* app_)
 //	viewAnchor = new sf::View(screendimensions, sf::Vector2f(app->window->getSize().x, app->window->getSize().y));
 
 	ui = new Interface(app->window, &mainView2->view);
+	ui->unitCounter->setMax(entMan->maxEntsPerTeam);
 
 	mainView2->setPosition(sf::Vector2f(0, 0));
 
@@ -83,6 +85,8 @@ void GamePlayState::Init(AppEngine* app_)
 
 	entMan->newCommentSection();
 	entMan->selectEnt(entMan->newBob());
+
+	ui->unitCounter->setCount(2);
 
 	app->dRPC.clearPresence();
 	app->dRPC.setState("in a game");
@@ -140,10 +144,36 @@ void GamePlayState::HandleEvents()
 			int id = ui->menu->onEvent(event);
 
 			if (id == MENU_CALLBACKS::CREATE_BOB)
-				entMan->newBob();
+			{
+				if (entMan->entities.size() >= entMan->maxEnts)
+				{
+					logger::INFO("Cannot create new Bob because the unit cap has been reached");
+				}
+				else
+				{
+					Bob* bob = entMan->newBob();
+
+					if (entMan->selectedEnts.size() == 1)
+						bob->setPosition(entMan->selectedEnts[0]->getPosition());
+
+					if (entMan->entities.size() >= entMan->maxEnts)
+					{
+						ui->unitCounter->text.setFillColor(sf::Color::Red);
+						logger::INFO("Unit cap reached.");
+
+						ui->createEnabled = false;
+					}
+				}
+			}
 			else if (id == MENU_CALLBACKS::CREATE_COMMENT_SECTION)
-				entMan->newCommentSection();
-			// TODO: delete selected entities
+			{
+				CommentSection* commentSection = entMan->newCommentSection();
+
+				if (entMan->selectedEnts.size() == 1)
+					commentSection->setPosition(entMan->selectedEnts[0]->getPosition());
+			}
+			else if (id == MENU_CALLBACKS::DELETE_ALL)
+				deleteButton();
 
 			if (event.type == sf::Event::EventType::Closed)
 			{
@@ -233,146 +263,153 @@ void GamePlayState::HandleEvents()
 			{
 				// TODO: disregard clicks if over interface
 
-				if (event.key.code == sf::Mouse::Button::Left)
+				if (!util::logic::mouseIsOver(ui->bottomBar, *app->window))
 				{
-					test.setPosition(sf::Vector2f(sf::Mouse::getPosition(*app->window).x, sf::Mouse::getPosition(*app->window).y));
-
-					if (false)
-//					if (ui->create_ent_button->containsPoint(sf::Vector2f(sf::Mouse::getPosition(*app->window).x, sf::Mouse::getPosition(*app->window).y) - ui->create_ent_button->getPosition()))
+					if (event.key.code == sf::Mouse::Button::Left)
 					{
-						if (entMan->entities.size() >= entMan->maxEnts)
-						{
-							ui->createEnabled = false;
-//							ui->create_ent_button.disable();
-							ui->unitCounterText.setFillColor(sf::Color::Red);
-							logger::INFO("Unit cap reached.");
-						}
-						else
-						{
-							entMan->deselectAllEnts();
-							entMan->newBob();
+						test.setPosition(sf::Vector2f(sf::Mouse::getPosition(*app->window).x, sf::Mouse::getPosition(*app->window).y));
 
-							ui->deleteEnabled = true;
-//							ui->delete_ent_button.enable();
-
+						if (false)
+							//					if (ui->create_ent_button->containsPoint(sf::Vector2f(sf::Mouse::getPosition(*app->window).x, sf::Mouse::getPosition(*app->window).y) - ui->create_ent_button->getPosition()))
+						{
 							if (entMan->entities.size() >= entMan->maxEnts)
 							{
 								ui->createEnabled = false;
-//								ui->create_ent_button.disable();
-								ui->unitCounterText.setFillColor(sf::Color::Red);
+								//							ui->create_ent_button.disable();
+								ui->unitCounter->text.setFillColor(sf::Color::Red);
 								logger::INFO("Unit cap reached.");
 							}
-						}
-
-						break;
-					}
-					else if (false)
-//					else if (ui->delete_ent_button->containsPoint(sf::Vector2f(sf::Mouse::getPosition(*app->window).x, sf::Mouse::getPosition(*app->window).y) - ui->delete_ent_button->getPosition()) && !entMan->selectedEnts.empty())
-					{
-						deleteButton();
-					}
-
-					// if we haven't broken the loop already, it means we either clicked an entity or clicked nothing
-					bool selectedNothing(true);
-					for (size_t i = 0; i < entMan->entities.size(); i++)
-					{
-						if (util::logic::mouseIsOver(entMan->entities[i]->sprite, *app->window, mainView2->view))
-						{
-							if (entMan->entities[i]->isSelected) // entity is already selected
+							else
 							{
-								if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl)) // selecting multiple units
-								{
-									// in Age of Empires II, if you hold control and click
-									// on an already selected entity it is deselected
-									entMan->deselectEnt(entMan->entities[i]);
-									selectedNothing = false;
-
-									logger::INFO("removed entity" + std::to_string(entMan->entities[i]->entityID) + " from group selection");
-								}
-								else // we're going to single out a unit
-								{
-									// unit is already selected.
-									// in AoE2, if you have multiple units selected
-									// and then select one of them, it will deselect
-									// all entities except that one.
-
-									if (entMan->selectedEnts.size() == 1)
-									{
-										logger::INFO("entity " + std::to_string(entMan->entities[i]->entityID) + " already selected");
-									}
-									else // singling out one unit
-									{
-										entMan->deselectAllEnts();
-										entMan->selectEnt(entMan->entities[i]);
-
-										logger::INFO("focused entity" + std::to_string(entMan->entities[i]->entityID));
-									}
-
-									selectedNothing = false;
-								}
-							}
-							else // selecting multiple units
-							{
-								if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl))
-									entMan->deselectAllEnts();
-
-								entMan->selectEnt(entMan->entities[i]);
-
-								logger::INFO("selected entity" + std::to_string(entMan->entities[i]->entityID));
+								entMan->deselectAllEnts();
+								entMan->newBob();
 
 								ui->deleteEnabled = true;
 //								ui->delete_ent_button.enable();
 
-								selectedNothing = false;
-							}
-
-							if (entMan->selectedEnts.size() > 1)
-								ui->updateUnitInfo(Interface::State::MultipleEntitiesSelected, nullptr);
-							else if (entMan->selectedEnts.size() == 1)
-								ui->updateUnitInfo(Interface::State::SingleEntitySelected, entMan->entities[i]);
-							else
-							{
-								logger::ERROR("DOES THIS HAPPEN?");
-
-								abort();
+								if (entMan->entities.size() >= entMan->maxEnts)
+								{
+									ui->createEnabled = false;
+//									ui->create_ent_button.disable();
+									ui->unitCounter->text.setFillColor(sf::Color::Red);
+									logger::INFO("Unit cap reached.");
+								}
 							}
 
 							break;
 						}
-					} // what entity did we click
-
-					if (selectedNothing && !entMan->selectedEnts.empty()) // selected nothing and didn't already have nothing
-					{
-						entMan->deselectAllEnts();
-
-						ui->deleteEnabled = false;
-//						ui->delete_ent_button.disable();
-
-						ui->updateUnitInfo(Interface::State::NoEntitiesSelected, nullptr);
-
-						logger::INFO("All entities deselected");
-						break;
-					}
-
-				} // left mouse button
-				else if (event.key.code == sf::Mouse::Button::Right)
-				{
-					if (!entMan->selectedEnts.empty())
-					{
-						sf::Vector2f movePos(app->window->mapPixelToCoords(sf::Mouse::getPosition(*app->window), mainView2->view));
-
-						if (!world.getGlobalBounds().contains(movePos))
+						else if (false)
+							//					else if (ui->delete_ent_button->containsPoint(sf::Vector2f(sf::Mouse::getPosition(*app->window).x, sf::Mouse::getPosition(*app->window).y) - ui->delete_ent_button->getPosition()) && !entMan->selectedEnts.empty())
 						{
-							logger::INFO("Cannot move target out of bounds!");
+							deleteButton();
 						}
-						else
+
+						// if we haven't broken the loop already, it means we either clicked an entity or clicked nothing
+						bool selectedNothing(true);
+						for (size_t i = 0; i < entMan->entities.size(); i++)
 						{
-							for (size_t i = 0; i < entMan->selectedEnts.size(); i++)
+							if (util::logic::mouseIsOver(entMan->entities[i]->sprite, *app->window, mainView2->view))
 							{
-								entMan->selectedEnts[i]->moveTo(movePos);
+								if (entMan->entities[i]->isSelected) // entity is already selected
+								{
+									if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl)) // selecting multiple units
+									{
+										// in Age of Empires II, if you hold control and click
+										// on an already selected entity it is deselected
+										entMan->deselectEnt(entMan->entities[i]);
+										selectedNothing = false;
+
+										logger::INFO("removed entity" + std::to_string(entMan->entities[i]->entityID) + " from group selection");
+									}
+									else // we're going to single out a unit
+									{
+										// unit is already selected.
+										// in AoE2, if you have multiple units selected
+										// and then select one of them, it will deselect
+										// all entities except that one.
+
+										if (entMan->selectedEnts.size() == 1)
+										{
+											logger::INFO("entity " + std::to_string(entMan->entities[i]->entityID) + " already selected");
+										}
+										else // singling out one unit
+										{
+											entMan->deselectAllEnts();
+											entMan->selectEnt(entMan->entities[i]);
+
+											logger::INFO("focused entity" + std::to_string(entMan->entities[i]->entityID));
+										}
+
+										selectedNothing = false;
+									}
+								}
+								else // selecting multiple units
+								{
+									if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl))
+										entMan->deselectAllEnts();
+
+									entMan->selectEnt(entMan->entities[i]);
+
+									logger::INFO("selected entity" + std::to_string(entMan->entities[i]->entityID));
+
+									ui->deleteEnabled = true;
+									//								ui->delete_ent_button.enable();
+
+									selectedNothing = false;
+								}
+
+								if (entMan->selectedEnts.size() > 1)
+									ui->updateUnitInfo(Interface::State::MultipleEntitiesSelected, nullptr);
+								else if (entMan->selectedEnts.size() == 1)
+									ui->updateUnitInfo(Interface::State::SingleEntitySelected, entMan->entities[i]);
+								else
+								{
+									logger::ERROR("DOES THIS HAPPEN?");
+
+									abort();
+								}
+
+								break;
+							}
+						} // what entity did we click
+
+						if (selectedNothing && !entMan->selectedEnts.empty()) // selected nothing and didn't already have nothing
+						{
+							entMan->deselectAllEnts();
+
+							ui->deleteEnabled = false;
+							//						ui->delete_ent_button.disable();
+
+							ui->updateUnitInfo(Interface::State::NoEntitiesSelected, nullptr);
+
+							logger::INFO("All entities deselected");
+							break;
+						}
+
+					} // left mouse button
+					else if (event.key.code == sf::Mouse::Button::Right)
+					{
+						if (!entMan->selectedEnts.empty())
+						{
+							sf::Vector2f movePos(app->window->mapPixelToCoords(sf::Mouse::getPosition(*app->window), mainView2->view));
+
+							if (!world.getGlobalBounds().contains(movePos))
+							{
+								logger::INFO("Cannot move target out of bounds!");
+							}
+							else
+							{
+								for (size_t i = 0; i < entMan->selectedEnts.size(); i++)
+								{
+									entMan->selectedEnts[i]->moveTo(movePos);
+								}
 							}
 						}
 					}
+				}
+				else
+				{
+					logger::INFO("mouse is over the interface bottombar");
 				}
 			} // mouseButtonPressed
 			else if (event.type == sf::Event::EventType::MouseWheelMoved)
@@ -424,14 +461,14 @@ void GamePlayState::HandleEvents()
 					mainView2->rotate(-1);
 			}
 
-			if (mainView2->getCenter().x > 800)
-				mainView2->setCenter(sf::Vector2f(800, mainView2->getCenter().y));
-			if (mainView2->getCenter().y > 600)
-				mainView2->setCenter(sf::Vector2f(mainView2->getCenter().x, 600));
-			if (mainView2->getCenter().x < 0)
-				mainView2->setCenter(sf::Vector2f(0, mainView2->getCenter().y));
-			if (mainView2->getCenter().y < 0)
-				mainView2->setCenter(sf::Vector2f(mainView2->getCenter().x, 0));
+			if (mainView2->getCenter().x > 400)
+				mainView2->setCenter(sf::Vector2f(400, mainView2->getCenter().y));
+			if (mainView2->getCenter().y > 300)
+				mainView2->setCenter(sf::Vector2f(mainView2->getCenter().x, 300));
+			if (mainView2->getCenter().x < -400)
+				mainView2->setCenter(sf::Vector2f(-400, mainView2->getCenter().y));
+			if (mainView2->getCenter().y < -300)
+				mainView2->setCenter(sf::Vector2f(mainView2->getCenter().x, -300));
 
 			float frames_per_second = framesClock.restart().asSeconds();
 			debugFrameCounter.setString("FPS: " + std::to_string(static_cast<int>(1.0f / frames_per_second)));
@@ -446,6 +483,11 @@ void GamePlayState::Update()
 {
 	for (size_t i = 0; i < entMan->entities.size(); i++)
 		entMan->entities[i]->Update();
+
+	if (entMan->entities.size() <= 0)
+	{
+		logger::WARNING("you have lost!");
+	}
 }
 
 void GamePlayState::Draw()
@@ -512,8 +554,6 @@ void GamePlayState::Draw()
 
 	// ------------- ANCHOR
 	app->window->setView(*ui->getViewAnchor());
-
-	ui->unitCounterText.setString(std::to_string(entMan->entities.size()) + "/" + std::to_string(entMan->maxEntsPerTeam));
 
 	ui->Draw();
 
