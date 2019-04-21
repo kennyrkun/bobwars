@@ -6,8 +6,10 @@
 class CommentSection : public BaseEntity
 {
 public:
-	CommentSection();
+	CommentSection(const int entityID);
 	~CommentSection();
+
+	sf::Vector2f garrisonPoint;
 };
 
 #endif // !COMMENT_SECTION_HPP

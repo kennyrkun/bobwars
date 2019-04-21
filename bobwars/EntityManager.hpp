@@ -17,6 +17,7 @@ public:
 	std::vector<BaseEntity*> selectedEnts;
 
 	Bob* newBob();
+
 	CommentSection* newCommentSection();
 
 	void addEnt(BaseEntity *ent);

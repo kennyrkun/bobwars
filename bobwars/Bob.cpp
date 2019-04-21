@@ -2,7 +2,7 @@
 
 #include "Util/Logger.hpp"
 
-Bob::Bob()
+Bob::Bob(const int entityID) : BaseEntity(entityID)
 {
 	logger::INFO("Bob entity created.");
 

@@ -99,6 +99,9 @@
     <ClInclude Include="Util\Graphics\DisabledButton.hpp">
       <Filter>BOBWARS\Util\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="ResourceCounter.hpp">
+      <Filter>BOBWARS\Util\Graphics\Interface</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseEntity.cpp">
@@ -169,6 +172,9 @@
     </ClCompile>
     <ClCompile Include="Util\Graphics\DisabledButton.cpp">
       <Filter>BOBWARS\Util\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceCounter.cpp">
+      <Filter>BOBWARS\Util\Graphics\Interface</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

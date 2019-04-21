@@ -37,8 +37,7 @@ Bob* EntityManager::newBob()
 {
 	//TODO: optimise entity creation
 
-	Bob *newBobEntity = new Bob();
-	newBobEntity->entityID = entities.size() + 1;
+	Bob *newBobEntity = new Bob(entities.size() + 1);
 
 	entities.push_back(newBobEntity); // add it to the stack
 
@@ -51,8 +50,7 @@ CommentSection* EntityManager::newCommentSection()
 	//TODO: optimise entity creation
 	//TODO: comment sections might not want to be selected on creation
 
-	CommentSection *newBobEntity = new CommentSection();
-	newBobEntity->entityID = entities.size() + 1;
+	CommentSection *newBobEntity = new CommentSection(entities.size() + 1);
 
 	entities.push_back(newBobEntity);
 				

@@ -20,11 +20,11 @@ enum class EntityType
 class BaseEntity
 {
 public:
-	BaseEntity();
+	BaseEntity(const int entityID);
 	BaseEntity(int entityID, int team, int armour, int hitpoints, int health);
 	~BaseEntity();
 
-	int entityID;
+	const int entityID;
 
 	int team;
 	int armor;

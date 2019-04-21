@@ -31,6 +31,7 @@
     <ClInclude Include="GameStartupState.hpp" />
     <ClInclude Include="MainMenuState.hpp" />
     <ClInclude Include="Menu.hpp" />
+    <ClInclude Include="ResourceCounter.hpp" />
     <ClInclude Include="ResourceManager.hpp" />
     <ClInclude Include="Interface.hpp" />
     <ClInclude Include="EntityManager.hpp">
@@ -64,6 +65,7 @@
     </ClCompile>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="ResourceCounter.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Util\DiscordRPC.cpp" />
     <ClCompile Include="Util\Graphics\DisabledButton.cpp" />

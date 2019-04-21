@@ -3,7 +3,7 @@
 #include "Util/Graphics/Line.hpp"
 #include "Util/Util.hpp"
 
-BaseEntity::BaseEntity()
+BaseEntity::BaseEntity(const int entityID) : entityID(entityID)
 {
 	logger::INFO("Entity base class constructed.");
 

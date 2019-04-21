@@ -6,7 +6,7 @@
 class Bob : public BaseEntity
 {
 public:
-	Bob();
+	Bob(const int entityID);
 	~Bob();
 };
 
