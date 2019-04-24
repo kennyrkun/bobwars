@@ -12,6 +12,8 @@
 
 class EntityManager;
 class Interface;
+class BaseEntity;
+enum class EntityType;
 
 struct GameWorld
 {
@@ -64,6 +66,9 @@ private:
 
 	sf::Clock deltaClock;  // tracks how much time has past since the last frame
 	sf::Clock framesClock; // for maxfps
+
+	void createEntity(EntityType type, const sf::Vector2f& position);
+	void deleteEntities(const std::vector<BaseEntity*>& entities);
 
 	void deleteButton();
 

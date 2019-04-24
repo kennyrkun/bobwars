@@ -30,15 +30,13 @@ void GamePlayState::Init(AppEngine* app_)
 
 	entMan = new EntityManager;
 
-	if (!Arial.loadFromFile("C:/Windows/Fonts/Arial.ttf"))
-	{
-		logger::ERROR("Failed to load font Arial!", true);
-	}
-	else
+	if (Arial.loadFromFile("C:/Windows/Fonts/Arial.ttf"))
 	{
 		debugText.setFont(Arial);
 		debugText.setCharacterSize(14);
 	}
+	else
+		logger::ERROR("Failed to load font Arial!");
 
 	// TODO: actually "create" the gameworld in GameCreationState, or maybe GameWorldLoadState
 
@@ -145,23 +143,45 @@ void GamePlayState::HandleEvents()
 
 			if (id == MENU_CALLBACKS::CREATE_BOB)
 			{
-				if (entMan->entities.size() >= entMan->maxEnts)
+				if (entMan->entities.size() >= entMan->maxEntsPerTeam)
 				{
-					logger::INFO("Cannot create new Bob because the unit cap has been reached");
+					logger::INFO("Cannot create new Bob because the unit cap has been reached.");
 				}
 				else
 				{
-					Bob* bob = entMan->newBob();
-
-					if (entMan->selectedEnts.size() == 1)
-						bob->setPosition(entMan->selectedEnts[0]->getPosition());
-
-					if (entMan->entities.size() >= entMan->maxEnts)
+					if (entMan->entities.size() < entMan->maxEntsPerTeam)
 					{
-						ui->unitCounter->text.setFillColor(sf::Color::Red);
-						logger::INFO("Unit cap reached.");
+						Bob* bob = entMan->newBob();
 
-						ui->createEnabled = false;
+						if (entMan->selectedEnts.size() <= 1)
+						{
+							bob->setPosition(entMan->selectedEnts[0]->getPosition());
+
+							if (entMan->selectedEnts[0]->type == "commentsection")
+							{
+								CommentSection* comment = dynamic_cast<CommentSection*>(entMan->selectedEnts[0]);
+
+								if (comment != nullptr)
+								{
+									if (comment->hasGarrisonPoint)
+										bob->moveTo(comment->garrisonPoint);
+								}
+								else
+								{
+									logger::ERROR("commentsection is null");
+									logger::INFO("the first entity in the selected list is: " + entMan->selectedEnts[0]->type);
+								}
+							}
+						}
+
+						if (entMan->entities.size() >= entMan->maxEntsPerTeam)
+						{
+							logger::INFO("unit cap reached");
+							ui->unitCounter->text.setFillColor(sf::Color::Red);
+							ui->createEnabled = false;
+						}
+
+						ui->unitCounter->setCount(entMan->entities.size());
 					}
 				}
 			}
@@ -261,9 +281,7 @@ void GamePlayState::HandleEvents()
 			}
 			else if (event.type == sf::Event::EventType::MouseButtonPressed)
 			{
-				// TODO: disregard clicks if over interface
-
-				if (!util::logic::mouseIsOver(ui->bottomBar, *app->window))
+				if (!util::logic::mouseIsOver(ui->bottomBar, *app->window) && !util::logic::mouseIsOver(ui->bottomBar, *app->window))
 				{
 					if (event.key.code == sf::Mouse::Button::Left)
 					{
@@ -394,22 +412,15 @@ void GamePlayState::HandleEvents()
 							sf::Vector2f movePos(app->window->mapPixelToCoords(sf::Mouse::getPosition(*app->window), mainView2->view));
 
 							if (!world.getGlobalBounds().contains(movePos))
-							{
-								logger::INFO("Cannot move target out of bounds!");
-							}
+								logger::INFO("Cannot set garrison point out of bounds!");
 							else
-							{
 								for (size_t i = 0; i < entMan->selectedEnts.size(); i++)
-								{
-									entMan->selectedEnts[i]->moveTo(movePos);
-								}
-							}
+									if (entMan->selectedEnts[i]->isBuilding)
+										entMan->selectedEnts[i]->setGarrisonPoint(movePos);
+									else if (entMan->selectedEnts[i]->isMovable)
+										entMan->selectedEnts[i]->moveTo(movePos);
 						}
 					}
-				}
-				else
-				{
-					logger::INFO("mouse is over the interface bottombar");
 				}
 			} // mouseButtonPressed
 			else if (event.type == sf::Event::EventType::MouseWheelMoved)
@@ -485,9 +496,7 @@ void GamePlayState::Update()
 		entMan->entities[i]->Update();
 
 	if (entMan->entities.size() <= 0)
-	{
 		logger::WARNING("you have lost!");
-	}
 }
 
 void GamePlayState::Draw()
@@ -537,20 +546,21 @@ void GamePlayState::Draw()
 
 					app->window->draw(line.vertices, 4, sf::Quads);
 				}
+				else if (entMan->entities[i]->isBuilding)
+					if (entMan->entities[i]->isSelected)
+						app->window->draw(entMan->entities[i]->moveDest);
 			}
 		}
 	}
 	else
-	{
 		if (!entMan->selectedEnts.empty())
 			for (size_t i = 0; i < entMan->selectedEnts.size(); i++)
 			{
 				util::graphics::outline(*app->window, entMan->selectedEnts[i]->sprite, 2, sf::Color::Yellow);
 
-				if (entMan->selectedEnts[i]->isMoving)
+				if (entMan->selectedEnts[i]->isMoving || entMan->selectedEnts[i]->hasGarrisonPoint)
 					app->window->draw(entMan->selectedEnts[i]->moveDest);
 			}
-	}
 
 	// ------------- ANCHOR
 	app->window->setView(*ui->getViewAnchor());
@@ -622,6 +632,23 @@ void GamePlayState::Draw()
 }
 
 // Private
+
+void GamePlayState::createEntity(EntityType type, const sf::Vector2f& position)
+{
+	if (entMan->entities.size() >= entMan->maxEntsPerTeam)
+	{
+
+	}
+	else
+	{
+		logger::ERROR("Cannot create any more entities.");
+	}
+}
+
+void GamePlayState::deleteEntities(const std::vector<BaseEntity*>& entities)
+{
+
+}
 
 void GamePlayState::deleteButton()
 {
