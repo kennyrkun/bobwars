@@ -18,7 +18,7 @@ public:
 
 private:
 	sf::Color color = sf::Color::Red;
-	float thickness = 2.5f;
+	float thickness = 2.0f;
 };
 
 #endif /* LINE_HPP */
