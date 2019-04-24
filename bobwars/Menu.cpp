@@ -58,9 +58,8 @@ void Menu::HandleEvents(sf::Event event)
 			}
 			else
 			{
+				// FIXME: this is what causes crashes related to issue #14
 				std::cout << "option: " << options[id].first << " (" << id << ")" << std::endl;
-
-				std::cout << "options" << std::endl;
 				done = true;
 			}
 		}

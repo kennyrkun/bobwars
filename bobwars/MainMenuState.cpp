@@ -2,7 +2,9 @@
 #include "MainMenuState.hpp"
 
 #include "Util/Logger.hpp"
-#include "Util\Graphics\Text.hpp"
+#include "Util/Graphics/Text.hpp"
+
+#include "Util/Graphics/DisabledButton.hpp"
 
 // public:
 
@@ -27,8 +29,8 @@ void MainMenuState::Init(AppEngine* app_)
 
 	menu = new SFUI::Menu(*app->window);
 	menu->addButton("New Game", MAIN_MENU_CALLBACKS::PLAY_BUTTON);
-	menu->addButton("Load", MAIN_MENU_CALLBACKS::LOAD_BUTTON);
-	menu->addButton("Settings", MAIN_MENU_CALLBACKS::SETTINGS_BUTTON);
+	menu->add(new DisabledButton("Load"), MAIN_MENU_CALLBACKS::LOAD_BUTTON);
+	menu->add(new DisabledButton("Settings"), MAIN_MENU_CALLBACKS::SETTINGS_BUTTON);
 	menu->addButton("Exit", MAIN_MENU_CALLBACKS::EXIT_BUTTON);
 
 	menu->setPosition(app->window->getDefaultView().getCenter());

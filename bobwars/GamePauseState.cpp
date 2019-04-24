@@ -25,10 +25,10 @@ void GamePauseState::Init(AppEngine* app_)
 	background.setTexture(*&backgroundTexture);
 	background.setFillColor(sf::Color(255, 255, 255, 155));
 
-	std::vector<std::pair<std::string, int>> options = { std::pair<std::string, int>{"Continue", 0},
-														 std::pair<std::string, int>{"Save Game", 1},
-														 std::pair<std::string, int>{"Options", 2},
-														 std::pair<std::string, int>{"Exit to Menu", 3} };
+	std::vector<std::pair<std::string, int>> options = { {"Continue", 0},
+//															{"Save Game", 1},
+//															{"Options", 2},
+															{"Exit to Menu", 3} };
 
 	pauseMenu = new Menu(app->window, "Pause", options);
 
