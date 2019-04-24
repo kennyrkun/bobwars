@@ -3,7 +3,8 @@
 #include "Util/Graphics/Line.hpp"
 #include "Util/Util.hpp"
 
-BaseEntity::BaseEntity(const int entityID) : entityID(entityID)
+BaseEntity::BaseEntity(const int entityID, const bool isBuilding, const bool isLand, const bool isSea, const bool isRanged, const bool isMovable, EntityType type) :
+						entityID(entityID), isBuilding(isBuilding), isLand(isLand), isSea(isSea), isRanged(isRanged), isMovable(isMovable), typeEnum(type)
 {
 	logger::INFO("Entity base class constructed.");
 
@@ -11,21 +12,21 @@ BaseEntity::BaseEntity(const int entityID) : entityID(entityID)
 	moveDest.setPointCount(8);
 	moveDest.setFillColor(sf::Color::Red);
 	moveDest.setOrigin(sf::Vector2f(moveDest.getLocalBounds().width / 2, moveDest.getLocalBounds().height / 2));
-}
 
-BaseEntity::BaseEntity(int entityID, int team, int armour, int hitpoints, int health) : entityID(entityID), team(team), armor(armour), hitpoints(hitpoints), health(health)
-{
-	logger::INFO("Entity base class constructed.");
-
-	moveDest.setRadius(5);
-	moveDest.setPointCount(8);
-	moveDest.setFillColor(sf::Color::Red);
-	moveDest.setOrigin(sf::Vector2f(moveDest.getLocalBounds().width / 2, moveDest.getLocalBounds().height / 2));
+	this->type = "baseentity";
 }
 
 BaseEntity::~BaseEntity()
 {
 	logger::DEBUG("Entity base class deconstructed.", true);
+}
+
+void BaseEntity::setGarrisonPoint(const sf::Vector2f& point)
+{
+	hasGarrisonPoint = true;
+	garrisonPoint = point;
+
+	moveDest.setPosition(point);
 }
 
 void BaseEntity::moveTo(const sf::Vector2f &pos)
@@ -39,7 +40,7 @@ void BaseEntity::moveTo(const sf::Vector2f &pos)
 	}
 	else
 	{
-		logger::INFO("This entity is not isMovable! (" + type + ")");
+		logger::INFO("This entity is not moveable! (" + type + ")");
 	}
 }
 

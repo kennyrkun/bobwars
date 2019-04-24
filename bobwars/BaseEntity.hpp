@@ -20,8 +20,8 @@ enum class EntityType
 class BaseEntity
 {
 public:
-	BaseEntity(const int entityID);
-	BaseEntity(int entityID, int team, int armour, int hitpoints, int health);
+	BaseEntity(const int entityID, const bool isBuilding, const bool isLand, const bool isSea, const bool isRanged, const bool isMovable,
+				EntityType type);
 	~BaseEntity();
 
 	const int entityID;
@@ -30,17 +30,24 @@ public:
 	int armor;
 	int hitpoints;
 	int health;
-
-	bool isLand;
-	bool isSea;
-	bool isRanged;
 	float rateOfFire;
 
 	bool isSelected;
-	bool isMovable;
+
+	const bool isBuilding = false;
+	const bool isLand = false;
+	const bool isSea = false;
+	const bool isRanged = false;
+	const bool isMovable = false;
 	bool isMoving;
 
+	void setGarrisonPoint(const sf::Vector2f& point);
+
+	sf::Vector2f garrisonPoint;
+	bool hasGarrisonPoint;
+
 	std::string type;
+	const EntityType typeEnum = EntityType::BaseEntity;
 
 	sf::Vector2f movePos;
 	sf::CircleShape moveDest;

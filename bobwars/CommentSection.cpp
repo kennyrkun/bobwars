@@ -2,7 +2,7 @@
 
 #include "Util/Logger.hpp"
 
-CommentSection::CommentSection(const int entityID) : BaseEntity(entityID)
+CommentSection::CommentSection(const int entityID) : BaseEntity(entityID, true, true, false, false, false, EntityType::CommentSection)
 {
 	logger::INFO("CommentSection entity created.");
 
@@ -10,17 +10,14 @@ CommentSection::CommentSection(const int entityID) : BaseEntity(entityID)
 	sprite.setTexture(texture, true);
 	sprite.setOrigin(sf::Vector2f(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2));
 
-	moveDest.setRadius(5);
+	moveDest.setRadius(3);
 	moveDest.setPointCount(8);
-	moveDest.setFillColor(sf::Color::Red);
+	moveDest.setFillColor(sf::Color::Yellow);
 	moveDest.setOrigin(sf::Vector2f(moveDest.getLocalBounds().width / 2, moveDest.getLocalBounds().height / 2));
 
 	team = 1;
 	health = 200;
-	armor = 0;
-	hitpoints = 1;
 	type = "commentsection";
-	isMoving = false;
 }
 
 CommentSection::~CommentSection()

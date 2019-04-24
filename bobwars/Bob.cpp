@@ -2,7 +2,7 @@
 
 #include "Util/Logger.hpp"
 
-Bob::Bob(const int entityID) : BaseEntity(entityID)
+Bob::Bob(const int entityID) : BaseEntity(entityID, false, true, false, false, true, EntityType::Bob)
 {
 	logger::INFO("Bob entity created.");
 
@@ -10,17 +10,10 @@ Bob::Bob(const int entityID) : BaseEntity(entityID)
 	sprite.setTexture(texture, true);
 	sprite.setOrigin(sf::Vector2f(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2));
 
-	moveDest.setRadius(5);
-	moveDest.setPointCount(8);
-	moveDest.setFillColor(sf::Color::Red);
-	moveDest.setOrigin(sf::Vector2f(moveDest.getLocalBounds().width / 2, moveDest.getLocalBounds().height / 2));
-	
 	team = 1;
 	health = 100;
-	armor = 0;
 	hitpoints = 1;
 	type = "bob";
-	isMovable = true;
 }
 
 Bob::~Bob()
