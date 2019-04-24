@@ -107,7 +107,7 @@ void EntityManager::deleteEnt(BaseEntity* ent)
 //	}
 }
 
-int EntityManager::selectEnt(BaseEntity *ent)
+bool EntityManager::selectEnt(BaseEntity *ent)
 {
 	//TODO: should this be here, or in the event loop?
 
@@ -121,11 +121,11 @@ int EntityManager::selectEnt(BaseEntity *ent)
 //	}
 
 	if (ent->isSelected)
-		return 0;
+		return false;
 
 	ent->isSelected = true;
 	selectedEnts.push_back(ent);
-	return 1;
+	return true;
 }
 
 void EntityManager::deselectEnt(BaseEntity *ent)
