@@ -14,18 +14,28 @@ void MainMenuState::Init(AppEngine* app_)
 
 	app = app_;
 
-	app->resMan->print();
+	font.loadFromFile("C:/Windows/Fonts/Arial.ttf");
 
-	if (!app->resMan->textureLoaded("title_screen_logo"))
-		app->resMan->loadTexture("title_screen_logo", "./bobwars/resource/textures/logo.png");
+	bobwars.setFont(font);
+	bobwars.setString("bobwars");
+	bobwars.setCharacterSize(56);
 
-	app->resMan->getTexture("title_screen_logo")->setSmooth(true);
-	logoShape.setSize(sf::Vector2f(app->resMan->getTexture("title_screen_logo")->getSize().x, app->resMan->getTexture("title_screen_logo")->getSize().y));
-	logoShape.setTexture(&*app->resMan->getTexture("title_screen_logo"));
+	sf::Texture* backgroundMediaTexture = app->resMan->loadTexture("background_media", "./bobwars/resource/textures/background.png");
 
-	//logoTexture.setSmooth(true);
-	logoShape.setOrigin(logoShape.getLocalBounds().width / 2, logoShape.getLocalBounds().height / 2);
-	logoShape.setPosition(sf::Vector2f(app->window->getDefaultView().getCenter().x, app->window->getSize().y / 2 - ((app->window->getSize().y / 2) / 2)));
+	if (backgroundMediaTexture)
+	{
+		backgroundMediaTexture->setSmooth(true);
+		backgroundmedia.setSize(sf::Vector2f(app->window->getSize().y, app->window->getSize().y));
+		backgroundmedia.setTexture(backgroundMediaTexture);
+
+		//logoTexture.setSmooth(true);
+		backgroundmedia.setOrigin(backgroundmedia.getLocalBounds().width, 0);
+		backgroundmedia.setPosition(sf::Vector2f(app->window->getSize().x, 0));
+	}
+	else
+	{
+		logger::ERROR("Failed to load title screen logo.");
+	}
 
 	menu = new SFUI::Menu(*app->window);
 	menu->addButton("New Game", MAIN_MENU_CALLBACKS::PLAY_BUTTON);
@@ -33,8 +43,9 @@ void MainMenuState::Init(AppEngine* app_)
 	menu->add(new DisabledButton("Settings"), MAIN_MENU_CALLBACKS::SETTINGS_BUTTON);
 	menu->addButton("Exit", MAIN_MENU_CALLBACKS::EXIT_BUTTON);
 
-	menu->setPosition(app->window->getDefaultView().getCenter());
-	menu->setPosition(sf::Vector2f(app->window->getSize().x / 2 - (menu->getSize().x / 2), app->window->getSize().y / 2 - (menu->getSize().y / 2)));
+	menu->setPosition(sf::Vector2f((app->window->getSize().x / 2 - (menu->getSize().x / 2)) / 4, app->window->getSize().y / 2 - (menu->getSize().y / 2)));
+
+	bobwars.setPosition(menu->getPosition() - sf::Vector2f(50, bobwars.getLocalBounds().width / 2));
 
 	app->dRPC.clearPresence();
 	app->dRPC.setState("at Main Menu");
@@ -127,15 +138,16 @@ void MainMenuState::Update()
 
 	if (r == 255 && g == 0 && b == 255)
 		dr = 0; dg = 0; db = -1;
-
-	logoShape.setFillColor(sf::Color(r, g, b));
 }
 
 void MainMenuState::Draw()
 {
-	app->window->clear(sf::Color(100, 100, 100));
+	app->window->clear(sf::Color(64, 64, 64));
 
-	app->window->draw(logoShape);
+	app->window->draw(backgroundmedia);
+
+	app->window->draw(bobwars);
+
 	app->window->draw(*menu);
 
 	if (app->settings.debug)

@@ -26,7 +26,11 @@ private:
 
 	int dr, dg , db;
 	sf::Uint8 r = 255, g = 0, b = 0;
-	sf::RectangleShape logoShape;
+
+	sf::RectangleShape backgroundmedia;
+
+	sf::Font font;
+	sf::Text bobwars;
 
 	SFUI::Menu *menu;
 
