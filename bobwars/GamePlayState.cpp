@@ -1,5 +1,6 @@
 #include "GamePlayState.hpp"
 #include "GamePauseState.hpp"
+#include "GameEndState.hpp"
 
 #include "Interface.hpp"
 #include "EntityManager.hpp"
@@ -496,7 +497,7 @@ void GamePlayState::Update()
 		entMan->entities[i]->Update();
 
 	if (entMan->entities.size() <= 0)
-		logger::WARNING("you have lost!");
+		app->ChangeState(new GameEndState);
 }
 
 void GamePlayState::Draw()

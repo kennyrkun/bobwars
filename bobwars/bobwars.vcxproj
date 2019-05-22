@@ -26,6 +26,7 @@
     <ClInclude Include="Camera.hpp" />
     <ClInclude Include="CommentSection.hpp" />
     <ClInclude Include="GameCreationState.hpp" />
+    <ClInclude Include="GameEndState.hpp" />
     <ClInclude Include="GamePauseState.hpp" />
     <ClInclude Include="GamePlayState.hpp" />
     <ClInclude Include="GameStartupState.hpp" />
@@ -54,6 +55,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CommentSection.cpp" />
     <ClCompile Include="GameCreationState.cpp" />
+    <ClCompile Include="GameEndState.cpp" />
     <ClCompile Include="GamePauseState.cpp" />
     <ClCompile Include="GamePlayState.cpp" />
     <ClCompile Include="GameStartupState.cpp" />

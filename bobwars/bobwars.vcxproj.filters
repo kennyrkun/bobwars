@@ -102,6 +102,9 @@
     <ClInclude Include="ResourceCounter.hpp">
       <Filter>BOBWARS\Util\Graphics\Interface</Filter>
     </ClInclude>
+    <ClInclude Include="GameEndState.hpp">
+      <Filter>BOBWARS\Game\GameStates</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseEntity.cpp">
@@ -175,6 +178,9 @@
     </ClCompile>
     <ClCompile Include="ResourceCounter.cpp">
       <Filter>BOBWARS\Util\Graphics\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="GameEndState.cpp">
+      <Filter>BOBWARS\Game\GameStates</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
