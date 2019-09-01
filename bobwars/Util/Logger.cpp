@@ -25,10 +25,17 @@ void writeLog(const std::string output)
 	{
 		std::cerr << "/n" << "unable to open log file for writing!" << std::endl;
 	}
+
+	logger::latestEntries.insert(logger::latestEntries.begin(), output);
+
+	if (logger::latestEntries.size() > 10)
+		logger::latestEntries.pop_back();
 }
 
 namespace logger
 {
+	std::vector<std::string> latestEntries;
+
 	void DEBUG(std::string output, bool silent)
 	{
 		output = util::getTimestamp() + " DEBUG: " + output;

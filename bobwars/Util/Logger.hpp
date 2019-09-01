@@ -2,6 +2,7 @@
 #define LOGGER_HPP
 
 #include <string>
+#include <vector>
 
 //TODO: logger using format of std::cout
 
@@ -27,6 +28,8 @@ namespace logger
 
 	void setOutputDir(const std::string dir);
 	void setOutputDir(const std::string dir, const std::string filename);
+
+	extern std::vector<std::string> latestEntries;
 }
 
 namespace loggerv2

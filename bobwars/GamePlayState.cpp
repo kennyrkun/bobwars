@@ -626,6 +626,13 @@ void GamePlayState::Draw()
 			util::text::draw(*app->window, debugText, "isMoving: " + std::to_string(entMan->selectedEnts[0]->isMoving), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 192));
 		}
 
+		std::string entries;
+
+		for (auto x : logger::latestEntries)
+			entries += x + "\n";
+
+		util::text::draw(*app->window, debugText, entries, sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 204));
+
 		app->window->draw(test);
 	}
 
