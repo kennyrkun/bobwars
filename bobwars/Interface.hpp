@@ -16,7 +16,7 @@ public:
 	IInterface(sf::RenderTarget *target);
 	~IInterface();
 
-	void addInterface(Interface *_interface);
+	void addInterface(Interface* _interface);
 	void popInterface(Interface* _interface);
 
 private:
@@ -50,6 +50,7 @@ public:
 
 	sf::Texture bobIcon;
 
+	// Separate these into "interface components" in other classes so that there isn't so much mangling going on
 	sf::RectangleShape bottomBar;
 	sf::RectangleShape topBar;
 
@@ -64,7 +65,10 @@ public:
 //		SelectedCommentSection
 	};
 
-	void updateUnitInfo(State state, BaseEntity *entity);
+	// Update the interface for the selected Entity.
+	void updateUnitInfo(State state, BaseEntity *entity = nullptr);
+	// Update the interface for the selected Entities.
+	void updateUnitInfo(State state, std::vector<BaseEntity*> entities);
 
 private:
 	sf::RenderWindow *targetWindow;

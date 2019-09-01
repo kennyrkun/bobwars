@@ -111,6 +111,12 @@
     <ClInclude Include="Server.hpp">
       <Filter>BOBWARS\Server</Filter>
     </ClInclude>
+    <ClInclude Include="Util\Graphics\ProgressBar.hpp">
+      <Filter>BOBWARS\Util\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Graphics\SmallUnitIcon.hpp">
+      <Filter>BOBWARS\Util\Graphics\Interface</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseEntity.cpp">
@@ -190,6 +196,12 @@
     </ClCompile>
     <ClCompile Include="Server.cpp">
       <Filter>BOBWARS\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Graphics\ProgressBar.cpp">
+      <Filter>BOBWARS\Util\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Graphics\SmallUnitIcon.cpp">
+      <Filter>BOBWARS\Util\Graphics\Interface</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

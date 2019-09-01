@@ -11,6 +11,7 @@
 #include "Util/Graphics/Graphics.hpp"
 #include "Util/Graphics/Text.hpp"
 
+// TODO: what the fuck is this
 sf::CircleShape test;
 
 enum MENU_CALLBACKS
@@ -258,6 +259,8 @@ void GamePlayState::HandleEvents()
 							ui->deleteEnabled = true;
 //							ui->delete_ent_button.enable();
 
+							ui->updateUnitInfo(Interface::State::MultipleEntitiesSelected, entMan->selectedEnts);
+
 							logger::INFO("selected " + std::to_string(entMan->selectedEnts.size()) + " entities (of " + std::to_string(entMan->entities.size()) + ")");
 						}
 						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Equal))
@@ -378,12 +381,13 @@ void GamePlayState::HandleEvents()
 								}
 
 								if (entMan->selectedEnts.size() > 1)
-									ui->updateUnitInfo(Interface::State::MultipleEntitiesSelected, nullptr);
+									ui->updateUnitInfo(Interface::State::MultipleEntitiesSelected, entMan->selectedEnts);
 								else if (entMan->selectedEnts.size() == 1)
 									ui->updateUnitInfo(Interface::State::SingleEntitySelected, entMan->entities[i]);
 								else
 								{
-									logger::ERROR("DOES THIS HAPPEN?");
+									// FIXME: occurs when control + clicking a single entity if that entity is the only entity selected
+									logger::ERROR("That's illegal!");
 
 									abort();
 								}
@@ -399,12 +403,11 @@ void GamePlayState::HandleEvents()
 							ui->deleteEnabled = false;
 							//						ui->delete_ent_button.disable();
 
-							ui->updateUnitInfo(Interface::State::NoEntitiesSelected, nullptr);
+							ui->updateUnitInfo(Interface::State::NoEntitiesSelected);
 
 							logger::INFO("All entities deselected");
 							break;
 						}
-
 					} // left mouse button
 					else if (event.key.code == sf::Mouse::Button::Right)
 					{

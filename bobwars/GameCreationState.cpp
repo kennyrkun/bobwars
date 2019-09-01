@@ -30,6 +30,8 @@ void GameCreationState::Init(AppEngine* app_)
 	// Slider for scale
 	SFUI::CheckBox* clientReadyToStartGame = new SFUI::CheckBox();
 
+	// TODO: SFUI::OptionsBox for side
+
 	form->addRow("ClientReady:", clientReadyToStartGame, CLIENT_READY_TICK_BOX);
 
 	startGameButton = new DisabledButton("Start Game");

@@ -1,8 +1,10 @@
 #include "Interface.hpp"
 
 #include "Util/Logger.hpp"
+#include "Util/Graphics/ProgressBar.hpp"
+#include "Util/Graphics/SmallUnitIcon.hpp"
 
-#include <SFUI\Image.hpp>
+#include <SFUI/Image.hpp>
 
 enum MENU_CALLBACKS
 {
@@ -118,46 +120,105 @@ void Interface::updateUnitInfo(State state, BaseEntity *entity)
 	menu = new SFUI::Menu(*targetWindow);
 	menu->setPosition(pos);
 
-	// TODO: this does not work with comment sections
-	if (state == State::SingleEntitySelected)
+	if (state == State::NoEntitiesSelected)
 	{
-		SFUI::HorizontalBoxLayout *mainContainer = menu->addHorizontalBoxLayout();
-		SFUI::VerticalBoxLayout *iconContainer = mainContainer->addVerticalBoxLayout();
-		SFUI::VerticalBoxLayout *textContainer = mainContainer->addVerticalBoxLayout();
+		return;
+	}
+	else
+	{
+		if (entity == nullptr)
+			return;
 
-		if (entity->type == "bob")
+		if (state == State::SingleEntitySelected)
 		{
-			// TODO: cache this
-			bobIcon.loadFromFile("bobwars/resource/textures/bob.png");
-			SFUI::Image* iconImage = new SFUI::Image(bobIcon);
-			iconContainer->add(iconImage);
+			SFUI::HorizontalBoxLayout *mainContainer = menu->addHorizontalBoxLayout();
+			SFUI::VerticalBoxLayout *iconContainer = mainContainer->addVerticalBoxLayout();
+			SFUI::VerticalBoxLayout *textContainer = mainContainer->addVerticalBoxLayout();
 
-			mainContainer->addButton("create commentsection", MENU_CALLBACKS::CREATE_COMMENT_SECTION);
+			if (entity->type == "bob")
+			{
+				// TODO: cache this
+				bobIcon.loadFromFile("bobwars/resource/textures/bob.png");
+				SFUI::Image* iconImage = new SFUI::Image(bobIcon);
+				iconContainer->add(iconImage);
+
+				mainContainer->addButton("create commentsection", MENU_CALLBACKS::CREATE_COMMENT_SECTION);
+			}
+			else if (entity->type == "commentsection")
+			{
+				// TODO: cache this
+				bobIcon.loadFromFile("bobwars/resource/textures/commentsection.png");
+				SFUI::Image* iconImage = new SFUI::Image(bobIcon);
+				iconContainer->add(iconImage);
+
+				mainContainer->addButton("create bob", MENU_CALLBACKS::CREATE_BOB);
+			}
+			else
+			{
+				logger::WARNING("trying to update entity info for unknown entity");
+			}
+
+			textContainer->addLabel("health: " + std::to_string(entity->health));
+			textContainer->addLabel("hitpoints: " + std::to_string(entity->hitpoints));
+			textContainer->addLabel("team: " + std::to_string(entity->team));
 		}
-		else if (entity->type == "commentsection")
+		else if (state == State::MultipleEntitiesSelected)
 		{
-			// TODO: cache this
-			bobIcon.loadFromFile("bobwars/resource/textures/commentsection.png");
-			SFUI::Image* iconImage = new SFUI::Image(bobIcon);
-			iconContainer->add(iconImage);
+			menu->addButton("delete all", MENU_CALLBACKS::DELETE_ALL);
+		}
+	}
 
-			mainContainer->addButton("create bob", MENU_CALLBACKS::CREATE_BOB);
+	logger::DEBUG("[INTERFACE] Updated unit information.");
+}
+
+void Interface::updateUnitInfo(State state, std::vector<BaseEntity*> entities)
+{
+	logger::DEBUG("[INTERFACE] Updating unit information for " + std::to_string(entities.size()) + " entities.");
+
+	sf::Vector2f pos = menu->getPosition();
+	delete menu;
+	menu = new SFUI::Menu(*targetWindow);
+	menu->setPosition(pos);
+
+	if (state == State::NoEntitiesSelected)
+	{
+		logger::ERROR("We should not have a vector of zero entities.");
+		abort();
+	}
+	else
+	{
+		if (entities.empty())
+		{
+			logger::ERROR("We should not have a vector of zero entities.");
+			abort();
+		}
+		else if (state == State::SingleEntitySelected)
+		{
+			logger::ERROR("We should not have a vector of one entity.");
+			abort();
+		}
+		else if (state == State::MultipleEntitiesSelected)
+		{
+			SFUI::HorizontalBoxLayout* hbox = menu->addHorizontalBoxLayout();
+
+			for (size_t i = 0; i < entities.size(); i++)
+			{
+				SmallUnitIcon* unitIcon = new SmallUnitIcon(entities[i]);
+
+				// TODO: make this the amount that we can fit on screen without breaking things
+				if (i % 28 == 0)
+					hbox = menu->addHorizontalBoxLayout();
+
+				hbox->add(unitIcon);
+			}
+
+			menu->addButton("delete all", MENU_CALLBACKS::DELETE_ALL);
 		}
 		else
 		{
-			logger::WARNING("trying to update entity info for unknown entity");
+			logger::ERROR("We have... nothing?");
+			abort();
 		}
-
-		textContainer->addLabel("health: " + std::to_string(entity->health));
-		textContainer->addLabel("hitpoints: " + std::to_string(entity->hitpoints));
-		textContainer->addLabel("team: " + std::to_string(entity->team));
-	}
-	else if (state == State::MultipleEntitiesSelected)
-	{
-		menu->addButton("delete all", MENU_CALLBACKS::DELETE_ALL);
-	}
-	else if (state == State::NoEntitiesSelected)
-	{
 	}
 
 	logger::DEBUG("[INTERFACE] Updated Unit Information.");
