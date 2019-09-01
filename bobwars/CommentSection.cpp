@@ -16,7 +16,8 @@ CommentSection::CommentSection(const int entityID) : BaseEntity(entityID, true, 
 	moveDest.setOrigin(sf::Vector2f(moveDest.getLocalBounds().width / 2, moveDest.getLocalBounds().height / 2));
 
 	team = 1;
-	health = 200;
+	maxHealth = 200;
+	health = maxHealth;
 	type = "commentsection";
 }
 

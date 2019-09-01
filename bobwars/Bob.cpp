@@ -11,7 +11,8 @@ Bob::Bob(const int entityID) : BaseEntity(entityID, false, true, false, false, t
 	sprite.setOrigin(sf::Vector2f(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2));
 
 	team = 1;
-	health = 100;
+	maxHealth = 100;
+	health = maxHealth;
 	hitpoints = 1;
 	type = "bob";
 }

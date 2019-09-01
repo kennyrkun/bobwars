@@ -27,9 +27,9 @@ public:
 	const int entityID;
 
 	int team;
-	int armor;
+	int armor, maxArmor;
+	int health, maxHealth;
 	int hitpoints;
-	int health;
 	float rateOfFire;
 
 	bool isSelected;
