@@ -631,7 +631,7 @@ void GamePlayState::Draw()
 		for (auto x : logger::latestEntries)
 			entries += x + "\n";
 
-		util::text::draw(*app->window, debugText, entries, sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 204));
+		util::text::draw(*app->window, debugText, entries, sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 216));
 
 		app->window->draw(test);
 	}

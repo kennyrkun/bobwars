@@ -6,24 +6,25 @@
 
 std::string write_dir = "./bobwars/game.log";
 
+std::ofstream logstream(write_dir, std::ios::app);
+
 void writeLog(const std::string output)
 {
-	std::ofstream log((write_dir), std::ios::app);
+	if (!logstream.is_open())
+		logstream.open(write_dir, std::ios::app);
 
-	if (log.is_open())
+	if (logstream.is_open())
 	{
-		log << output << std::endl;
+		logstream << output << std::endl;
 
-		log.close();
+		logstream.close();
 
-		if (log.bad())
-		{
+		if (logstream.bad())
 			std::cerr << "failed to write to log!" << std::endl;
-		}
 	}
 	else
 	{
-		std::cerr << "/n" << "unable to open log file for writing!" << std::endl;
+		std::cerr << "\n" << "unable to open log file for writing!" << std::endl;
 	}
 
 	logger::latestEntries.insert(logger::latestEntries.begin(), output);
