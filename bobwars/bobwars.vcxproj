@@ -32,6 +32,7 @@
     <ClInclude Include="GameStartupState.hpp" />
     <ClInclude Include="MainMenuState.hpp" />
     <ClInclude Include="Menu.hpp" />
+    <ClInclude Include="Player.hpp" />
     <ClInclude Include="ResourceCounter.hpp" />
     <ClInclude Include="ResourceManager.hpp" />
     <ClInclude Include="Interface.hpp" />
