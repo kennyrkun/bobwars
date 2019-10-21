@@ -27,6 +27,8 @@ void BaseEntity::setGarrisonPoint(const sf::Vector2f& point)
 	garrisonPoint = point;
 
 	moveDest.setPosition(point);
+
+	logger::INFO("Set garrison point to " + std::to_string(point.x) + ", " + std::to_string(point.y));
 }
 
 void BaseEntity::moveTo(const sf::Vector2f &pos)
