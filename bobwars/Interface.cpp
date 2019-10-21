@@ -42,15 +42,6 @@ Interface::Interface(sf::RenderWindow *_targetWindow, sf::View *_mainView) : tar
 	menu = new SFUI::Menu(*targetWindow);
 	menu->setPosition(sf::Vector2f(leftX + 25, bottomMiddleY - 55));
 
-	//create_ent_button = new SFUI::Button("create");
-//	create_ent_button.setString("create");
-	//create_ent_button->setPosition(sf::Vector2f(leftX + 50, bottomMiddleY - 55));
-
-	//delete_ent_button = new SFUI::Button("delete");
-//	delete_ent_button.setString("delete");
-//	delete_ent_button.disable();
-	//delete_ent_button->setPosition(sf::Vector2f(leftX + 150, bottomMiddleY - 55));
-
 	logger::DEBUG("New interface created.");
 }
 
@@ -58,6 +49,7 @@ Interface::~Interface()
 {
 	delete memesCounter;
 	delete unitCounter;
+	delete menu;
 
 	logger::DEBUG("Interface destroyed.");
 }
@@ -164,7 +156,8 @@ void Interface::updateUnitInfo(State state, BaseEntity *entity)
 		}
 		else if (state == State::MultipleEntitiesSelected)
 		{
-			menu->addButton("delete all", MENU_CALLBACKS::DELETE_ALL);
+			logger::ERROR("Shouldn't have multiple entities selected with one entity provided.");
+			abort();
 		}
 	}
 
@@ -199,6 +192,8 @@ void Interface::updateUnitInfo(State state, std::vector<BaseEntity*> entities)
 		}
 		else if (state == State::MultipleEntitiesSelected)
 		{
+			logger::INFO("multipleentitiesselected");
+
 			SFUI::HorizontalBoxLayout* hbox = menu->addHorizontalBoxLayout();
 
 			for (size_t i = 0; i < entities.size(); i++)

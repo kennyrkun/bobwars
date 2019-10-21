@@ -24,6 +24,14 @@ private:
 };
 */
 
+enum InterfaceCallbacks
+{
+	CreateBob,
+	CreateCommentSection,
+	DeleteEntity,
+	DeleteAll,
+};
+
 class Interface
 {
 public:
@@ -40,22 +48,19 @@ public:
 	void Draw();
 
 	bool createEnabled = true;
-//	SFUI::Button* create_ent_button;
-
 	bool deleteEnabled = false;
-//	SFUI::Button* delete_ent_button;
-	// TODO: replace these with SFUI::Button
 
 	SFUI::Menu* menu;
 
 	sf::Texture bobIcon;
 
-	// Separate these into "interface components" in other classes so that there isn't so much mangling going on
-	sf::RectangleShape bottomBar;
+	// TODO: Separate these into "interface components" in other classes so that there isn't so much mangling going on
 	sf::RectangleShape topBar;
-
 	ResourceCounter* memesCounter;
 	ResourceCounter* unitCounter;
+
+	// TODO: Separate these into "interface components" in other classes so that there isn't so much mangling going on
+	sf::RectangleShape bottomBar;
 
 	enum class State
 	{

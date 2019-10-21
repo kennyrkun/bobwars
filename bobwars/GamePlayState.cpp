@@ -143,7 +143,9 @@ void GamePlayState::HandleEvents()
 		{
 			int id = ui->menu->onEvent(event);
 
-			if (id == MENU_CALLBACKS::CREATE_BOB)
+			switch (id)
+			{
+			case MENU_CALLBACKS::CREATE_BOB:
 			{
 				if (entMan->entities.size() >= entMan->maxEntsPerTeam)
 				{
@@ -186,16 +188,22 @@ void GamePlayState::HandleEvents()
 						ui->unitCounter->setCount(entMan->entities.size());
 					}
 				}
+				break;
 			}
-			else if (id == MENU_CALLBACKS::CREATE_COMMENT_SECTION)
+			case MENU_CALLBACKS::CREATE_COMMENT_SECTION:
 			{
 				CommentSection* commentSection = entMan->newCommentSection();
 
 				if (entMan->selectedEnts.size() == 1)
 					commentSection->setPosition(entMan->selectedEnts[0]->getPosition());
+				break;
 			}
-			else if (id == MENU_CALLBACKS::DELETE_ALL)
+			case MENU_CALLBACKS::DELETE_ALL:
 				deleteButton();
+				break;
+			default:
+				break;
+			}
 
 			if (event.type == sf::Event::EventType::Closed)
 			{
