@@ -582,32 +582,15 @@ void GamePlayState::Draw()
 	// debug info like coordinates and stuff
 	if (app->settings.debug)
 	{
-		sf::RectangleShape top;
-		sf::RectangleShape left;
-		sf::RectangleShape right;
-		sf::RectangleShape bottom;
+		float width = 20.0f;
+		sf::RectangleShape outline;
+		outline.setSize(sf::Vector2f(app->window->getSize().x - (width * 2), app->window->getSize().y - (width * 2)));
+		outline.setOutlineColor(sf::Color(255, 200, 0, 50));
+		outline.setOutlineThickness(width);
+		outline.setFillColor(sf::Color::Transparent);
+		outline.setPosition(sf::Vector2f(width, width));
 
-		float width = 20;
-
-		top.setFillColor(sf::Color(255, 200, 0, 50));
-		left.setFillColor(sf::Color(255, 200, 0, 50));
-		right.setFillColor(sf::Color(255, 200, 0, 50));
-		bottom.setFillColor(sf::Color(255, 200, 0, 50));
-
-		top.setSize(sf::Vector2f(app->window->getSize().x, width)); // -
-		left.setSize(sf::Vector2f(width, app->window->getSize().y)); // |
-		right.setSize(sf::Vector2f(width, app->window->getSize().y)); // |
-		bottom.setSize(sf::Vector2f(app->window->getSize().x, width)); // -
-
-		top.setPosition(sf::Vector2f(0, 0));
-//		left.setPosition(sf::Vector2f(0, 0));
-		right.setPosition(sf::Vector2f(app->window->getSize().x - width, 0));
-		bottom.setPosition(sf::Vector2f(0, app->window->getSize().y - width));
-
-		app->window->draw(top);
-		app->window->draw(left);
-		app->window->draw(right);
-		app->window->draw(bottom);
+		app->window->draw(outline);
 
 		// TODO: we might use a different method to render text.
 		// perhaps create a string manager type class, and use only one piece of text to render everything with line breaks
