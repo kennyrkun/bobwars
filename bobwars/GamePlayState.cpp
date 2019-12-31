@@ -471,19 +471,6 @@ void GamePlayState::HandleEvents()
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
 				mainView2->move(sf::Vector2f(baseViewSpeed * timePerFrame.asSeconds(), 0));
 
-			//TODO: this is probably really bad
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q) && sf::Keyboard::isKeyPressed(sf::Keyboard::Key::E))
-			{
-				mainView2->setRotation(0);
-			}
-			else
-			{
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q))
-					mainView2->rotate(1);
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::E))
-					mainView2->rotate(-1);
-			}
-
 			if (mainView2->getCenter().x > 400)
 				mainView2->setCenter(sf::Vector2f(400, mainView2->getCenter().y));
 			if (mainView2->getCenter().y > 300)
