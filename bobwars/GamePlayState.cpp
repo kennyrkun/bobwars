@@ -462,15 +462,33 @@ void GamePlayState::HandleEvents()
 
 		if (app->window->hasFocus())
 		{
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
+			// keyboard based camera movement
+			if (sf::Keyboard::isKeyPressed(app->keys.moveCameraUp))
 				mainView2->move(sf::Vector2f(0, -baseViewSpeed * timePerFrame.asSeconds()));
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
+			if (sf::Keyboard::isKeyPressed(app->keys.moveCameraLeft))
 				mainView2->move(sf::Vector2f(-baseViewSpeed * timePerFrame.asSeconds(), 0));
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
+			if (sf::Keyboard::isKeyPressed(app->keys.moveCameraDown))
 				mainView2->move(sf::Vector2f(0, baseViewSpeed * timePerFrame.asSeconds()));
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+			if (sf::Keyboard::isKeyPressed(app->keys.moveCameraRight))
 				mainView2->move(sf::Vector2f(baseViewSpeed * timePerFrame.asSeconds(), 0));
 
+			// mouse based camera movement
+			float width = 20.0f;
+			sf::FloatRect left(0, 0, width, app->window->getSize().y);
+			sf::FloatRect right(app->window->getSize().x - width, 0, width, app->window->getSize().y);
+			sf::FloatRect up(0, 0, app->window->getSize().x, width);
+			sf::FloatRect down(0, app->window->getSize().y - width, app->window->getSize().x, width);
+
+			if (up.contains(app->window->mapPixelToCoords(sf::Mouse::getPosition(*app->window), *ui->getViewAnchor())))
+				mainView2->move(sf::Vector2f(0, -baseViewSpeed * timePerFrame.asSeconds()));
+			if (down.contains(app->window->mapPixelToCoords(sf::Mouse::getPosition(*app->window), *ui->getViewAnchor())))
+				mainView2->move(sf::Vector2f(0, baseViewSpeed * timePerFrame.asSeconds()));
+			if (left.contains(app->window->mapPixelToCoords(sf::Mouse::getPosition(*app->window), *ui->getViewAnchor())))
+				mainView2->move(sf::Vector2f(-baseViewSpeed * timePerFrame.asSeconds(), 0));
+			if (right.contains(app->window->mapPixelToCoords(sf::Mouse::getPosition(*app->window), *ui->getViewAnchor())))
+				mainView2->move(sf::Vector2f(baseViewSpeed * timePerFrame.asSeconds(), 0));
+
+			// clamp the view 
 			if (mainView2->getCenter().x > 400)
 				mainView2->setCenter(sf::Vector2f(400, mainView2->getCenter().y));
 			if (mainView2->getCenter().y > 300)
