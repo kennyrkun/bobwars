@@ -29,10 +29,19 @@ struct AppSettings
 	} launchOptions;
 };
 
+struct Keybindings
+{
+	sf::Keyboard::Key moveCameraUp = sf::Keyboard::Key::W;
+	sf::Keyboard::Key moveCameraLeft = sf::Keyboard::Key::A;
+	sf::Keyboard::Key moveCameraDown = sf::Keyboard::Key::S;
+	sf::Keyboard::Key moveCameraRight = sf::Keyboard::Key::D;
+	sf::Keyboard::Key deleteSelected = sf::Keyboard::Key::Delete;
+};
+
 class AppEngine
 {
 public:
-	void Init(std::string title, AppSettings settings_);
+	void Init(AppSettings settings_);
 	void Cleanup();
 
 	// Note: code after these functions is still executed.
@@ -48,8 +57,6 @@ public:
 	bool isRunning() { return running; }
 	void Quit();
 
-	std::string title;
-
 	sf::RenderWindow* window;
 	AppSettings settings;
 
@@ -59,6 +66,8 @@ public:
 	ResourceManager* resMan;
 
 	DiscordRPC dRPC;
+
+	Keybindings keys;
 
 private:
 	bool running;

@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 	SFUI::Theme::PADDING = 2.f;
 
 	AppEngine app;
-	app.Init("bobwars", options);
+	app.Init(options);
 
 	app.PushState(new GameStartupState);
 

@@ -11,11 +11,10 @@ namespace fs = std::experimental::filesystem;
 // and should rely on as little external
 // resources as reasonably possible.
 
-void AppEngine::Init(std::string title_, AppSettings settings_)
+void AppEngine::Init(AppSettings settings_)
 {
 	std::cout << "AppEngine Init" << std::endl;
 
-	title = title_;
 	settings = settings_;
 
 	for (int i = 0; i < settings.launchOptions.argc; i++)
