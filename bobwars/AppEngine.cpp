@@ -1,6 +1,10 @@
 #include "AppEngine.hpp"
 #include "AppState.hpp"
 
+#include "Util/Logger.hpp"
+
+#include <SFUI/Theme.hpp>
+
 #include <iostream>
 #include <filesystem>
 
@@ -32,6 +36,21 @@ void AppEngine::Init(AppSettings settings_)
 
 	if (!fs::exists("./bobwars"))
 		fs::create_directory("./bobwars");
+
+	logger::INFO("Preparing SFUI");
+
+	SFUI::Theme::loadFont("bobwars/resource/interface/tahoma.ttf");
+	SFUI::Theme::loadTexture("bobwars/resource/interface/texture_square.png");
+	SFUI::Theme::textCharacterSize = 11;
+	SFUI::Theme::click.textColor = SFUI::Theme::hexToRgb("#191B18");
+	SFUI::Theme::click.textColorHover = SFUI::Theme::hexToRgb("#191B18");
+	SFUI::Theme::click.textColorFocus = SFUI::Theme::hexToRgb("#000000");
+	SFUI::Theme::input.textColor = SFUI::Theme::hexToRgb("#000000");
+	SFUI::Theme::input.textColorHover = SFUI::Theme::hexToRgb("#CC7A00");
+	SFUI::Theme::input.textColorFocus = SFUI::Theme::hexToRgb("#000000");
+	SFUI::Theme::windowBgColor = SFUI::Theme::hexToRgb("#dddbde");
+	SFUI::Theme::PADDING = 2.f;
+
 
 	window = new sf::RenderWindow(sf::VideoMode(settings.width, settings.height), settings.title);
 	window->setVerticalSyncEnabled(true);
