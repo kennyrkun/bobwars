@@ -120,6 +120,12 @@
     <ClInclude Include="Player.hpp">
       <Filter>BOBWARS\Util</Filter>
     </ClInclude>
+    <ClInclude Include="GooglePlus.hpp">
+      <Filter>BOBWARS\Game\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Google.hpp">
+      <Filter>BOBWARS\Game\Entities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseEntity.cpp">
@@ -205,6 +211,12 @@
     </ClCompile>
     <ClCompile Include="Util\Graphics\SmallUnitIcon.cpp">
       <Filter>BOBWARS\Util\Graphics\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="GooglePlus.cpp">
+      <Filter>BOBWARS\Game\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Google.cpp">
+      <Filter>BOBWARS\Game\Entities</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

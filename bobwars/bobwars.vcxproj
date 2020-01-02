@@ -30,6 +30,8 @@
     <ClInclude Include="GamePauseState.hpp" />
     <ClInclude Include="GamePlayState.hpp" />
     <ClInclude Include="GameStartupState.hpp" />
+    <ClInclude Include="Google.hpp" />
+    <ClInclude Include="GooglePlus.hpp" />
     <ClInclude Include="MainMenuState.hpp" />
     <ClInclude Include="Menu.hpp" />
     <ClInclude Include="Player.hpp" />
@@ -63,6 +65,8 @@
     <ClCompile Include="GamePauseState.cpp" />
     <ClCompile Include="GamePlayState.cpp" />
     <ClCompile Include="GameStartupState.cpp" />
+    <ClCompile Include="Google.cpp" />
+    <ClCompile Include="GooglePlus.cpp" />
     <ClCompile Include="Interface.cpp" />
     <ClCompile Include="MainMenuState.cpp" />
     <ClCompile Include="EntityManager.cpp">
