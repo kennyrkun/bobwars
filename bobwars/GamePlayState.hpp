@@ -66,6 +66,9 @@ private:
 
 	sf::Clock deltaClock;  // tracks how much time has past since the last frame
 	sf::Clock framesClock; // for maxfps
+	sf::Clock gameClock; // total time of the game
+
+	void updateGameCamera();
 
 	void createEntity(EntityType type, const sf::Vector2f& position);
 	void deleteEntities(const std::vector<BaseEntity*>& entities);

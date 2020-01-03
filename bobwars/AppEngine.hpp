@@ -21,6 +21,8 @@ struct AppSettings
 	int maxfps = 60;
 	int width = 1080;
 	int height = 720;
+	float mouseMoveBorderWidth = 20.0f;
+	bool mouseMoveEnabled = true;
 
 	struct CommandLineArguments
 	{
