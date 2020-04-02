@@ -53,7 +53,7 @@ void GamePlayState::Init(AppEngine* app_)
 
 	logger::INFO("Preparing user interface elements...");
 
-	test.setRadius(8);
+	test.setRadius(3);
 	test.setOrigin(test.getLocalBounds().width / 2, test.getLocalBounds().height / 2);
 
 	debugFrameCounter.setFont(SFUI::Theme::getFont());
@@ -204,6 +204,7 @@ void GamePlayState::HandleEvents()
 			if (event.type == sf::Event::EventType::Closed)
 			{
 				app->Quit();
+				return;
 			}
 			else if (event.type == sf::Event::EventType::KeyPressed)
 			{
@@ -288,12 +289,12 @@ void GamePlayState::HandleEvents()
 			}
 			else if (event.type == sf::Event::EventType::MouseButtonPressed)
 			{
+				test.setPosition(sf::Vector2f(sf::Mouse::getPosition(*app->window).x, sf::Mouse::getPosition(*app->window).y));
+
 				if (!util::logic::mouseIsOver(ui->bottomBar, *app->window) && !util::logic::mouseIsOver(ui->bottomBar, *app->window))
 				{
 					if (event.mouseButton.button == sf::Mouse::Button::Left)
 					{
-						test.setPosition(sf::Vector2f(sf::Mouse::getPosition(*app->window).x, sf::Mouse::getPosition(*app->window).y));
-
 						// if we haven't broken the loop already, it means we either clicked an entity or clicked nothing
 						bool selectedNothing(true);
 						// TODO: do this in reverse so that we select entities on top first
@@ -424,6 +425,12 @@ void GamePlayState::HandleEvents()
 			ui->HandleEvents(event);
 		} // pollevent
 
+		for (size_t i = 0; i < entMan->entities.size(); i++)
+			entMan->entities[i]->Frame(deltaTime.asSeconds());
+
+		if (entMan->entities.size() <= 0)
+			app->ChangeState(new GameEndState);
+
 		if (app->window->hasFocus())
 		{
 			updateGameCamera();
@@ -441,11 +448,7 @@ void GamePlayState::HandleEvents()
 
 void GamePlayState::Update()
 {
-	for (size_t i = 0; i < entMan->entities.size(); i++)
-		entMan->entities[i]->Update();
 
-	if (entMan->entities.size() <= 0)
-		app->ChangeState(new GameEndState);
 }
 
 void GamePlayState::Draw()

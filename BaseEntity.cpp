@@ -46,13 +46,20 @@ void BaseEntity::moveTo(const sf::Vector2f &pos)
 	}
 }
 
-void BaseEntity::HandleEvents(const sf::Event & event)
+void BaseEntity::setPosition(const sf::Vector2f& pos)
 {
+	sprite.setPosition(pos);
 }
 
-void BaseEntity::Update()
+sf::Vector2f BaseEntity::getPosition()
+{
+	return sprite.getPosition();
+}
+
+void BaseEntity::Frame(float delta)
 {
 	// TODO: stop entities from isMoving into each other
+	// TODO: replace this with tweening code from KunLauncher's AnimationManager
 
 	if (isMoving)
 	{
@@ -74,26 +81,12 @@ void BaseEntity::Update()
 		if (sX == gX && sY == gY)
 		{
 			logger::INFO("Done moving! (" + std::to_string(entityID) + ")");
-
 			isMoving = false;
-		}
-		else
-		{
-			//line.setPoints(sprite.getPosition(), moveDest.getPosition());
 		}
 	}
 }
 
-void BaseEntity::Draw()
+void BaseEntity::draw(sf::RenderTarget& window, sf::RenderStates states) const
 {
 }
 
-void BaseEntity::setPosition(const sf::Vector2f& pos)
-{
-	sprite.setPosition(pos);
-}
-
-sf::Vector2f BaseEntity::getPosition()
-{
-	return sprite.getPosition();
-}

@@ -4,7 +4,7 @@ SET(CMAKE_CXX_STANDARD 17)
 SET(CMAKE_CXX_REQUIRED_STANDARD ON)
 SET(CMAKE_DEBUG_POSTFIX "-d")
 
-SET(PROJECT_NAME "bobwars")
+SET(PROJECT_NAME "bobwarss")
 PROJECT(${PROJECT_NAME} LANGUAGES CXX)
 
 SET(HEADERS AppEngine.hpp BaseEntity.hpp Bob.hpp Camera.hpp CommentSection.hpp Util/Graphics/DisabledButton.hpp Util/DiscordRPC.hpp EntityManager.hpp GameCreationState.hpp GameEndState.hpp GamePauseState.hpp GamePlayState.hpp GameStartupState.hpp Google.hpp GooglePlus.hpp Util/Graphics/Graphics.hpp Interface.hpp Util/Graphics/Line.hpp Util/Logger.cpp MainMenuState.hpp Menu.hpp Util/Graphics/ProgressBar.hpp ResourceCounter.hpp ResourceManager.hpp Server.hpp Util/SettingsParser.hpp Util/Graphics/SmallUnitIcon.hpp Util/Graphics/Text.hpp Util/Util.hpp)

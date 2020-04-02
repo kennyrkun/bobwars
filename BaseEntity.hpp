@@ -12,13 +12,36 @@
 enum class EntityType
 {
 	BaseEntity,
+	ComponentEntity,
 	Bob,
 	CommentSection,
 	GooglePlus, 
 	Google
 };
 
-class BaseEntity
+class TransformableEntity
+{
+public:
+	virtual void setPosition(const sf::Vector2f& newPosition)
+	{
+		position = newPosition;
+	}
+
+	virtual const sf::Vector2f& getPosition()
+	{
+		return position;
+	}
+
+private:
+	sf::Vector2f position;
+};
+
+class MoveableEntity
+{
+
+};
+
+class BaseEntity : public sf::Drawable
 {
 public:
 	BaseEntity(const int entityID, const bool isBuilding, const bool isLand, const bool isSea, const bool isRanged, const bool isMovable,
@@ -61,9 +84,11 @@ public:
 	virtual void setPosition(const sf::Vector2f& pos);
 	virtual sf::Vector2f getPosition();
 
-	virtual void HandleEvents(const sf::Event& event);
-	virtual void Update(); // if moveTo is overriden this should be too
-	virtual void Draw();
+	virtual void onCollide(BaseEntity* other) {};
+
+	virtual void Frame(float delta);
+
+	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };
 
 #endif // !BASE_ENTITY_HPP
