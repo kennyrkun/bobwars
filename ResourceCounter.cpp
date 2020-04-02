@@ -13,7 +13,7 @@ ResourceCounter::ResourceCounter(std::string iconname, const sf::Vector2f& posit
 	icon.setSize(sf::Vector2f(16, 16));
 	icon.setPosition(sf::Vector2f(background.getPosition().x + padding, background.getPosition().y + padding));
 
-	arial.loadFromFile("C:\\Windows\\Fonts\\Arial.ttf");
+	arial.loadFromFile("./bobwars/resource/interface/tahoma.ttf");
 
 	text.setFont(arial);
 	text.setCharacterSize(22);

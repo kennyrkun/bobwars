@@ -38,7 +38,7 @@ void DisabledButton::draw(sf::RenderTarget& target, sf::RenderStates states) con
 	if (disabled)
 	{
 		sf::RectangleShape s(m_box.getSize());
-		s.setFillColor(sf::Color(200, 200, 200, 150));
+		s.setFillColor(sf::Color(80, 80, 80, 150));
 		target.draw(s, states);
 	}
 }

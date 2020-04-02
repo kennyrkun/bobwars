@@ -18,12 +18,12 @@
 // 3. This notice may not be removed or altered from any source distribution.
 ////////////////////////////////////////////////////////////
 
-// TODO: get a revision.
-// see if we can update to the latest revision.
+// Revision: 1
 
 #ifndef SETTINGS_PARSER_HPP
 #define SETTINGS_PARSER_HPP
 
+#include <iostream>
 #include <string>
 #include <map>
 #include <vector>

@@ -14,9 +14,10 @@ void MainMenuState::Init(AppEngine* app_)
 
 	app = app_;
 
-	font.loadFromFile("C:/Windows/Fonts/Arial.ttf");
+	font.loadFromFile("./bobwars/resource/interface/tahoma.ttf");
 
 	bobwars.setFont(font);
+	// TODO: 1/100000 chance the title screen will say bobo instead
 	bobwars.setString("bobwars");
 	bobwars.setCharacterSize(56);
 

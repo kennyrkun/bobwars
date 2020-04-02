@@ -1,5 +1,5 @@
 #include "GameStartupState.hpp"
-#include "MainmenuState.hpp"
+#include "MainMenuState.hpp"
 
 #include "Util/Logger.hpp"
 #include "Util/Graphics/Text.hpp"

@@ -6,7 +6,7 @@
 #include <SFUI/Theme.hpp>
 
 #include <iostream>
-#include <filesystem>
+#include <experimental/filesystem>
 
 namespace fs = std::experimental::filesystem;
 
@@ -23,13 +23,18 @@ void AppEngine::Init(AppSettings settings_)
 
 	for (int i = 0; i < settings.launchOptions.argc; i++)
 	{
-		if (std::string(settings.launchOptions.argv[i]) == "-fullscreen")
+		std::string currentOption = settings.launchOptions.argv[i];
+
+		if (currentOption == "-debug")
+			settings.debug = true;
+
+		if (currentOption == "-fullscreen")
 			settings.fullscreen = true;
 
-		if (std::string(settings.launchOptions.argv[i]) == "-vsync")
+		if (currentOption == "-vsync")
 			settings.vsync = true;
 
-		if (std::string(settings.launchOptions.argv[i]) == "-maxfps")
+		if (currentOption == "-maxfps")
 			// next arg should be an int (the maxfps)
 			settings.maxfps = std::stoi(settings.launchOptions.argv[i += 1]);
 	}
@@ -39,18 +44,17 @@ void AppEngine::Init(AppSettings settings_)
 
 	logger::INFO("Preparing SFUI");
 
-	SFUI::Theme::loadFont("bobwars/resource/interface/tahoma.ttf");
-	SFUI::Theme::loadTexture("bobwars/resource/interface/texture_square.png");
-	SFUI::Theme::textCharacterSize = 11;
-	SFUI::Theme::click.textColor = SFUI::Theme::hexToRgb("#191B18");
-	SFUI::Theme::click.textColorHover = SFUI::Theme::hexToRgb("#191B18");
-	SFUI::Theme::click.textColorFocus = SFUI::Theme::hexToRgb("#000000");
+	SFUI::Theme::loadFont("./bobwars/resource/interface/tahoma.ttf");
+	SFUI::Theme::loadTexture("./bobwars/resource/interface/texture_square.png");
+	SFUI::Theme::textCharacterSize = 12;
+	SFUI::Theme::click.textColor = SFUI::Theme::hexToRgb("#ffffff");
+	SFUI::Theme::click.textColorHover = SFUI::Theme::hexToRgb("#ffffff");
+	SFUI::Theme::click.textColorFocus = SFUI::Theme::hexToRgb("#ffffff");
 	SFUI::Theme::input.textColor = SFUI::Theme::hexToRgb("#000000");
 	SFUI::Theme::input.textColorHover = SFUI::Theme::hexToRgb("#CC7A00");
 	SFUI::Theme::input.textColorFocus = SFUI::Theme::hexToRgb("#000000");
 	SFUI::Theme::windowBgColor = SFUI::Theme::hexToRgb("#dddbde");
 	SFUI::Theme::PADDING = 2.f;
-
 
 	window = new sf::RenderWindow(sf::VideoMode(settings.width, settings.height), settings.title);
 	window->setVerticalSyncEnabled(true);
@@ -163,7 +167,10 @@ void AppEngine::Update()
 	// let the state update the game
 	if (running)
 	{
+#ifdef WIN32
 		dRPC.update();
+#endif
+
 		states.back()->Update();
 	}
 }
@@ -188,3 +195,4 @@ void AppEngine::Quit()
 
 	running = false;
 }
+

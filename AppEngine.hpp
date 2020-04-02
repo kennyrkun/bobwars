@@ -2,9 +2,10 @@
 #define APP_ENGINE_HPP
 
 #include "ResourceManager.hpp"
-#include "Util\DiscordRPC.hpp"
+#include "Util/DiscordRPC.hpp"
 
 #include <SFML/Graphics.hpp>
+
 #include <vector>
 #include <string>
 
@@ -16,7 +17,7 @@ struct AppSettings
 	std::string title = "bobwars " + version;
 	bool fullscreen = false;
 	bool vsync = true;
-	bool debug = true;
+	bool debug = false;
 	bool console = false;
 	int maxfps = 60;
 	int width = 1080;
@@ -38,6 +39,8 @@ struct Keybindings
 	sf::Keyboard::Key moveCameraDown = sf::Keyboard::Key::S;
 	sf::Keyboard::Key moveCameraRight = sf::Keyboard::Key::D;
 	sf::Keyboard::Key deleteSelected = sf::Keyboard::Key::Delete;
+
+	sf::Keyboard::Key groupSelect = sf::Keyboard::Key::LControl;
 };
 
 class AppEngine

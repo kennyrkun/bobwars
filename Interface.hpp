@@ -62,18 +62,7 @@ public:
 	// TODO: Separate these into "interface components" in other classes so that there isn't so much mangling going on
 	sf::RectangleShape bottomBar;
 
-	enum class State
-	{
-		NoEntitiesSelected,
-		SingleEntitySelected,
-		MultipleEntitiesSelected
-//		SelectedCommentSection
-	};
-
-	// Update the interface for the selected Entity.
-	void updateUnitInfo(State state, BaseEntity *entity = nullptr);
-	// Update the interface for the selected Entities.
-	void updateUnitInfo(State state, std::vector<BaseEntity*> entities);
+	void updateSelectionInfo(const std::vector<BaseEntity*>& entities);
 
 private:
 	sf::RenderWindow *targetWindow;
@@ -84,4 +73,5 @@ private:
 	// TODO: replace these counters with ResourceCounter class
 };
 
-#endif /* INTERFACE_HPP */
+#endif // !INTERFACE_HPP
+

@@ -1,7 +1,7 @@
 #include "EntityManager.hpp"
 
-#include "Util\Util.hpp"
-#include "Util\Logger.hpp"
+#include "Util/Util.hpp"
+#include "Util/Logger.hpp"
 
 #include "BaseEntity.hpp"
 

@@ -1,12 +1,12 @@
-#ifndef GAME_END_STATE_HPP
-#define GAME_END_STATE_HPP
+#ifndef GAME_CREATION_STATE
+#define GAME_CREATION_STATE
 
 #include "AppState.hpp"
-#include "util/Graphics/DisabledButton.hpp"
+#include "Util/Graphics/DisabledButton.hpp"
 
 #include <SFUI/SFUI.hpp>
 
-class GameEndState : public AppState
+class GameCreationState : public AppState
 {
 public:
 	void Init(AppEngine* app_);
@@ -23,6 +23,10 @@ public:
 
 private:
 	AppEngine* app;
+
+	bool isClientReady = false;
+
+	DisabledButton* startGameButton;
 };
 
-#endif // !GAME_END_STATE_HPP
+#endif // !GAME_CREATION_STATE

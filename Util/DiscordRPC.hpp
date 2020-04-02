@@ -3,8 +3,19 @@
 
 #include <string>
 
-// TODO: find a way to not include this everywhere.
-#include <DISCORD\discord_rpc.h>
+#ifndef _WIN32
+class DiscordRichPresence
+{
+
+};
+
+class DiscordUser
+{
+
+};
+#else
+	#include <DISCORD/discord_rpc.h>
+#endif // !_WIN32
 
 // TODO: test std::string for null terminator
 

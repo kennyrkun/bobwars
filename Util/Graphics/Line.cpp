@@ -1,5 +1,7 @@
 #include "Line.hpp"
 
+#include <cmath>
+
 Line::Line()
 {
 

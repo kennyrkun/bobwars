@@ -25,22 +25,22 @@ public:
 				EntityType type);
 	~BaseEntity();
 
-	const int entityID;
+	const int entityID = -1;
 
-	int team;
-	int armor, maxArmor;
-	int health, maxHealth;
-	int hitpoints;
-	float rateOfFire;
+	int team = -1;
+	int armor = -1, maxArmor = -1;
+	int health = -1, maxHealth = -1;
+	int hitpoints = -1;
+	float rateOfFire = -1;
 
-	bool isSelected;
+	bool isSelected = false;
 
 	const bool isBuilding = false;
 	const bool isLand = false;
 	const bool isSea = false;
 	const bool isRanged = false;
 	const bool isMovable = false;
-	bool isMoving;
+	bool isMoving = false;
 
 	void setGarrisonPoint(const sf::Vector2f& point);
 

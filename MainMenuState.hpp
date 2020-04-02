@@ -4,7 +4,7 @@
 #include "AppEngine.hpp"
 #include "AppState.hpp"
 
-#include <SFUI\SFUI.hpp>
+#include <SFUI/SFUI.hpp>
 
 class MainMenuState : public AppState
 {

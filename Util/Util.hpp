@@ -26,6 +26,4 @@ namespace util
 	std::string getTimestamp();
 }
 
-#include "logger.hpp"
-
 #endif // ENGINE_MAIN_HPP

@@ -56,7 +56,11 @@ namespace text
 	{
 		sf::Text text;
 		sf::Font font;
+#ifdef WIN32
 		font.loadFromFile("C:/Windows/Fonts/Arial.ttf");
+#else
+		font.loadFromFile("/usr/share/fonts/truetype/ubuntu/UbuntuMono-B.ttf");
+#endif // WIN32
 		text.setFont(font);
 		text.setCharacterSize(12);
 		text.setPosition(pos);

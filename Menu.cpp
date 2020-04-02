@@ -3,6 +3,8 @@
 #include "Util/Logger.hpp"
 #include "Util/Util.hpp"
 
+#include <iostream>
+
 // HACK: this is only here because the EXACT SAME THING in the util won't work. /shrug
 bool mouseIsOver(sf::Shape &object, sf::RenderWindow &window)
 {
@@ -58,6 +60,7 @@ void Menu::HandleEvents(sf::Event event)
 			}
 			else
 			{
+				// TODO: use Logger::DEBUG
 				// FIXME: this is what causes crashes related to issue #14
 				std::cout << "option: " << options[id].first << " (" << id << ")" << std::endl;
 				done = true;

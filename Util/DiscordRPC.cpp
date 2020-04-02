@@ -1,6 +1,7 @@
 #include "DiscordRPC.hpp"
 #include "Logger.hpp"
 
+#ifdef WIN32
 #include <DISCORD/discord_rpc.h> // discord rpc functions
 
 void DiscordRPC::Init()
@@ -157,3 +158,107 @@ void DiscordRPC::handleDiscordDisconnected(int errorCode, const char* message)
 {
 	logger::ERROR("[DISCORD] " + std::string(message) + " (" + std::to_string(errorCode) + ")");
 }
+
+#else
+
+void DiscordRPC::Init()
+{
+	logger::WARNING("[DISCORD] DiscordRPC is unavailable on this platform. (Init)");
+}
+
+void DiscordRPC::Shutdown()
+{
+	logger::WARNING("[DISCORD] DiscordRPC is unavailable on this platform. (Shutdown)");
+}
+
+void DiscordRPC::update()
+{
+	logger::WARNING("[DISCORD] DiscordRPC is unavailable on this platform.  (update)");
+}
+
+void DiscordRPC::setState(const char* state)
+{
+	logger::WARNING("[DISCORD] DiscordRPC is unavailable on this platform.  (setState)");
+}
+
+void DiscordRPC::setDetails(const char* details)
+{
+	logger::WARNING("[DISCORD] DiscordRPC is unavailable on this platform.  (setDetails)");
+}
+
+void DiscordRPC::setStartTime(int64_t startTime)
+{
+	logger::WARNING("[DISCORD] DiscordRPC is unavailable on this platform.  (setStartTime)");
+}
+
+void DiscordRPC::setEndTime(int64_t endTime)
+{
+	logger::WARNING("[DISCORD] DiscordRPC is unavailable on this platform. (setEndTime)");
+}
+
+void DiscordRPC::setLargeImage(const char* imageKey, const char* imageText)
+{
+	logger::WARNING("[DISCORD] DiscordRPC is unavailable on this platform.  (setLargeImage)");
+}
+
+void DiscordRPC::setSmallImage(const char* imageKey, const char* imageText)
+{
+	logger::WARNING("[DISCORD] DiscordRPC is unavailable on this platform.  (setSmallImage)");
+}
+
+void DiscordRPC::setPartyID(const char* partyID)
+{
+	logger::WARNING("[DISCORD] DiscordRPC is unavailable on this platform.  (setPartyID)");
+}
+
+void DiscordRPC::setPartySize(int partySize)
+{
+	logger::WARNING("[DISCORD] DiscordRPC is unavailable on this platform.  (setPartySize)");
+}
+
+void DiscordRPC::setPartyMaxPlayers(int maxPlayers)
+{
+	logger::WARNING("[DISCORD] DiscordRPC is unavailable on this platform.  (setPartyMaxPlayers)");
+}
+
+void DiscordRPC::setMatchSecret(const char*  matchSecret)
+{
+	logger::WARNING("[DISCORD] DiscordRPC is unavailable on this platform.  (setMatchSecret)");
+}
+
+void DiscordRPC::setJoinSecrete(const char*  joinSecret)
+{
+	logger::WARNING("[DISCORD] DiscordRPC is unavailable on this platform.  (setJoinSecrete)");
+}
+
+void DiscordRPC::setSpectateSecrete(const char*  spectateSecret)
+{
+	logger::WARNING("[DISCORD] DiscordRPC is unavailable on this platform.  (setSpectateSecrete)");
+}
+
+void DiscordRPC::updatePresence()
+{
+	logger::WARNING("[DISCORD] DiscordRPC is unavailable on this platform.  (updatePresence)");
+}
+
+void DiscordRPC::clearPresence()
+{
+	logger::WARNING("[DISCORD] DiscordRPC is unavailable on this platform.  (clearPresence)");
+}
+
+void DiscordRPC::handleDiscordReady(const DiscordUser* connectedUser)
+{
+	logger::WARNING("[DISCORD] DiscordRPC is unavailable on this platform.  (handleDiscordReady)");
+}
+
+void DiscordRPC::handleDiscordError(int errorCode, const char* message)
+{
+	logger::WARNING("[DISCORD] DiscordRPC is unavailable on this platform. (handleDiscordError)");
+}
+
+void DiscordRPC::handleDiscordDisconnected(int errorCode, const char* message)
+{
+	logger::WARNING("[DISCORD] DiscordRPC is unavailable on this platform.  (handleDiscordDisconnected)");
+}
+#endif // _WIN32
+
