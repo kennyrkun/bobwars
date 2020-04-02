@@ -28,7 +28,7 @@ public:
 	const int entityID = -1;
 
 	int team = -1;
-	int armor = -1, maxArmor = -1;
+	int armor = -1;
 	int health = -1, maxHealth = -1;
 	int hitpoints = -1;
 	float rateOfFire = -1;

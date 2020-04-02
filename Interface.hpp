@@ -50,9 +50,9 @@ public:
 	bool createEnabled = true;
 	bool deleteEnabled = false;
 
-	SFUI::Menu* menu;
-
-	sf::Texture bobIcon;
+	SFUI::Menu* unitActionMenu;
+	SFUI::Menu* unitInformationMenu;
+	SFUI::Menu* gameInformationMenu;
 
 	// TODO: Separate these into "interface components" in other classes so that there isn't so much mangling going on
 	sf::RectangleShape topBar;

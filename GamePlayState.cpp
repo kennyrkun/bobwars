@@ -20,8 +20,7 @@ enum MENU_CALLBACKS
 {
 	CREATE_BOB,
 	CREATE_COMMENT_SECTION,
-	DELETE_ENTITY,
-	DELETE_ALL
+	DELETE_SELECTION,
 };
 
 void GamePlayState::Init(AppEngine* app_)
@@ -138,9 +137,9 @@ void GamePlayState::HandleEvents()
 		sf::Event event;
 		while (app->window->pollEvent(event))
 		{
-			int id = ui->menu->onEvent(event);
+			int actionID = ui->unitActionMenu->onEvent(event);
 
-			switch (id)
+			switch (actionID)
 			{
 			case MENU_CALLBACKS::CREATE_BOB:
 			{
@@ -195,7 +194,7 @@ void GamePlayState::HandleEvents()
 					commentSection->setPosition(entMan->selectedEnts[0]->getPosition());
 				break;
 			}
-			case MENU_CALLBACKS::DELETE_ALL:
+			case MENU_CALLBACKS::DELETE_SELECTION:
 				deleteButton();
 				break;
 			default:
@@ -654,16 +653,16 @@ void GamePlayState::deleteButton()
 		}
 
 		ui->deleteEnabled = false;
-		//ui->delete_ent_button.disable();
 
 		if (entMan->entities.size() < entMan->maxEnts)
 			ui->createEnabled = true;
-			//ui->create_ent_button.enable();
 	}
 	else
 	{
 		logger::INFO("nothing to delete");
 	}
+
+	ui->updateSelectionInfo(entMan->selectedEnts);
 }
 
 void GamePlayState::showObjectCoords(sf::Sprite &object)

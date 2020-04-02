@@ -5,14 +5,14 @@
 #include "Util/Graphics/SmallUnitIcon.hpp"
 
 #include <SFUI/Image.hpp>
+#include <SFUI/SpriteButton.hpp>
 #include <SFUI/Theme.hpp>
 
 enum MENU_CALLBACKS
 {
 	CREATE_BOB,
 	CREATE_COMMENT_SECTION,
-	DELETE_ENTITY,
-	DELETE_ALL,
+	DELETE_SELECTION,
 };
 
 Interface::Interface(sf::RenderWindow *_targetWindow, sf::View *_mainView) : targetWindow(_targetWindow), mainView(_mainView)
@@ -20,7 +20,7 @@ Interface::Interface(sf::RenderWindow *_targetWindow, sf::View *_mainView) : tar
 	viewAnchor = new sf::View(mainView->getCenter(), sf::Vector2f(targetWindow->getSize().x, targetWindow->getSize().y));
 
 	topBar.setSize(sf::Vector2f(targetWindow->getSize().x, 40));
-	bottomBar.setSize(sf::Vector2f(targetWindow->getSize().x, 150));
+	bottomBar.setSize(sf::Vector2f(targetWindow->getSize().x, 170));
 
 	float leftX = viewAnchor->getCenter().x - targetWindow->getSize().x / 2;
 	float rightX = 0;
@@ -30,18 +30,28 @@ Interface::Interface(sf::RenderWindow *_targetWindow, sf::View *_mainView) : tar
 	arial = SFUI::Theme::getFont();
 
 	topBar.setFillColor(sf::Color(100, 100, 100));
-	topBar.setOrigin(topBar.getLocalBounds().width / 2, topBar.getLocalBounds().height / 2);
-	topBar.setPosition(sf::Vector2f(viewAnchor->getCenter().x, topMiddleY));
+	topBar.setPosition(sf::Vector2f(0, 0));
 
 	bottomBar.setFillColor(sf::Color(100, 100, 100));
-	bottomBar.setOrigin(bottomBar.getLocalBounds().width / 2, bottomBar.getLocalBounds().height / 2);
-	bottomBar.setPosition(sf::Vector2f(viewAnchor->getCenter().x, bottomMiddleY));
+	bottomBar.setPosition(sf::Vector2f(0, viewAnchor->getSize().y - bottomBar.getSize().y));
 
 	memesCounter = new ResourceCounter("heart.png", { leftX + 8, 8}, 100);
 	unitCounter = new ResourceCounter("user.png", { leftX + memesCounter->getGlobalBounds().width + 16, 8}, 100);
 
-	menu = new SFUI::Menu(*targetWindow);
-	menu->setPosition(sf::Vector2f(leftX + 25, bottomMiddleY - 55));
+	// TODO: use this stuff uwu
+	float totalWidth = targetWindow->getSize().x;
+	float leftWidth = totalWidth * 20 / 100;
+	float middleWidth = totalWidth * 60 / 100;
+	float rightWidth = totalWidth * 20 / 100;
+
+	unitActionMenu = new SFUI::Menu(*targetWindow);
+	unitActionMenu->setPosition(sf::Vector2f(bottomBar.getPosition().x + SFUI::Theme::MARGIN, bottomBar.getPosition().y + SFUI::Theme::MARGIN));
+
+	unitInformationMenu = new SFUI::Menu(*targetWindow);
+	unitInformationMenu->setPosition(sf::Vector2f(bottomBar.getPosition().x + SFUI::Theme::MARGIN, bottomBar.getPosition().y + SFUI::Theme::MARGIN));
+
+	gameInformationMenu = new SFUI::Menu(*targetWindow);
+	gameInformationMenu->setPosition(sf::Vector2f(bottomBar.getPosition().x + SFUI::Theme::MARGIN, bottomBar.getPosition().y + SFUI::Theme::MARGIN));
 
 	logger::DEBUG("New interface created.");
 }
@@ -50,7 +60,10 @@ Interface::~Interface()
 {
 	delete memesCounter;
 	delete unitCounter;
-	delete menu;
+
+	delete unitActionMenu;
+	delete unitInformationMenu;
+	delete gameInformationMenu;
 
 	logger::DEBUG("Interface destroyed.");
 }
@@ -100,7 +113,9 @@ void Interface::Draw()
 
 	targetWindow->draw(bottomBar);
 
-	targetWindow->draw(*menu);
+	targetWindow->draw(*unitActionMenu);
+	targetWindow->draw(*unitInformationMenu);
+	targetWindow->draw(*gameInformationMenu);
 
 //	targetWindow->draw(*create_ent_button);
 //	targetWindow->draw(*delete_ent_button);
@@ -110,49 +125,108 @@ void Interface::updateSelectionInfo(const std::vector<BaseEntity*>& entities)
 {
 	logger::DEBUG("[INTERFACE] Updating unit information for " + std::to_string(entities.size()) + " entities.");
 
-	sf::Vector2f pos = menu->getPosition();
-	delete menu;
-	menu = new SFUI::Menu(*targetWindow);
-	menu->setPosition(pos);
+	sf::Vector2f pos = unitActionMenu->getPosition();
+	delete unitActionMenu;
+	unitActionMenu = new SFUI::Menu(*targetWindow);
+	unitActionMenu->setPosition(pos);
+
+	pos = unitInformationMenu->getPosition();
+	delete unitInformationMenu;
+	unitInformationMenu = new SFUI::Menu(*targetWindow);
+	unitInformationMenu->setPosition(pos);
 
 	if (entities.empty() || entities.size() <= 0)
 		return;
+
+	SFUI::VerticalBoxLayout* actionContainer = unitActionMenu->addVerticalBoxLayout();
+	SFUI::HorizontalBoxLayout* topRow = actionContainer->addHorizontalBoxLayout();
+	SFUI::HorizontalBoxLayout* middleRow = actionContainer->addHorizontalBoxLayout();
+	SFUI::HorizontalBoxLayout* bottomRow = actionContainer->addHorizontalBoxLayout();
 
 	if (entities.size() == 1)
 	{
 		BaseEntity* entity = entities[0];
 
-		SFUI::HorizontalBoxLayout *mainContainer = menu->addHorizontalBoxLayout();
-		SFUI::VerticalBoxLayout *iconContainer = mainContainer->addVerticalBoxLayout();
-		SFUI::VerticalBoxLayout *textContainer = mainContainer->addVerticalBoxLayout();
+		SFUI::HorizontalBoxLayout* mainContainer = unitInformationMenu->addHorizontalBoxLayout();
+		SFUI::VerticalBoxLayout* iconContainer = mainContainer->addVerticalBoxLayout();
+		SFUI::VerticalBoxLayout* informationContainer = mainContainer->addVerticalBoxLayout();
+		SFUI::HorizontalBoxLayout* healthContainer = informationContainer->addHorizontalBoxLayout();
+		SFUI::HorizontalBoxLayout* wandContainer = informationContainer->addHorizontalBoxLayout();
+		SFUI::HorizontalBoxLayout* shieldContainer = informationContainer->addHorizontalBoxLayout();
 
-		// TODO: make this entity-agnostic, so we don't have to write so much identical code
+		sf::Texture* iconTexture = new sf::Texture;
+		iconTexture->loadFromFile("./bobwars/resource/textures/" + entity->type + ".png");
+		SFUI::Image* iconImage = new SFUI::Image(*iconTexture);
+		iconContainer->add(iconImage);
+
+		sf::Texture* heartTexture = new sf::Texture;
+		heartTexture->loadFromFile("./bobwars/resource/textures/silk/heart.png");
+		SFUI::Image* heartImage = new SFUI::Image(*heartTexture);
+		healthContainer->add(heartImage);
+		healthContainer->addLabel(std::to_string(entity->health) + "/" + std::to_string(entity->maxHealth));
+
+		sf::Texture* wandTexture = new sf::Texture;
+		wandTexture->loadFromFile("./bobwars/resource/textures/silk/wand.png");
+		SFUI::Image* wandImage = new SFUI::Image(*wandTexture);
+		wandContainer->add(wandImage);
+		wandContainer->addLabel(std::to_string(entity->hitpoints));
+
+		sf::Texture* shieldTexture = new sf::Texture;
+		shieldTexture->loadFromFile("./bobwars/resource/textures/silk/shield.png");
+		SFUI::Image* shieldImage = new SFUI::Image(*shieldTexture);
+		shieldContainer->add(shieldImage);
+		shieldContainer->addLabel(std::to_string(entity->armor));
+
 		if (entity->type == "bob")
 		{
-			// TODO: get this from the resource mananger
-			bobIcon.loadFromFile("./bobwars/resource/textures/bob.png");
-			SFUI::Image* iconImage = new SFUI::Image(bobIcon);
-			iconContainer->add(iconImage);
+			sf::Texture* buttonTexture = new sf::Texture;
+			buttonTexture->loadFromFile("./bobwars/resource/textures/spritebuttons/createcommentsection.png");
 
-			mainContainer->addButton("create commentsection", MENU_CALLBACKS::CREATE_COMMENT_SECTION);
+			SFUI::SpriteButton* createCommentSectionButton = new SFUI::SpriteButton(*buttonTexture);
+			topRow->add(createCommentSectionButton, MENU_CALLBACKS::CREATE_COMMENT_SECTION);
 		}
 		else if (entity->type == "commentsection")
 		{
-			// TODO: get this from the resource manager
-			bobIcon.loadFromFile("./bobwars/resource/textures/commentsection.png");
-			SFUI::Image* iconImage = new SFUI::Image(bobIcon);
-			iconContainer->add(iconImage);
+			sf::Texture* buttonTexture = new sf::Texture;
+			buttonTexture->loadFromFile("./bobwars/resource/textures/spritebuttons/createbob.png");
 
-			mainContainer->addButton("create bob", MENU_CALLBACKS::CREATE_BOB);
+			SFUI::SpriteButton* createCommentSectionButton = new SFUI::SpriteButton(*buttonTexture);
+			topRow->add(createCommentSectionButton, MENU_CALLBACKS::CREATE_BOB);
 		}
 		else
-		{
 			logger::WARNING("trying to update entity info for unknown entity");
+
+		sf::Texture* emptyTexture = new sf::Texture;
+		emptyTexture->loadFromFile("./bobwars/resource/textures/spritebuttons/empty.png");
+
+		for (int i = 0; i < 2; i++)
+		{
+			SFUI::SpriteButton* emptyButton = new SFUI::SpriteButton(*emptyTexture);
+			topRow->add(emptyButton);
 		}
 
-		textContainer->addLabel("health: " + std::to_string(entity->health));
-		textContainer->addLabel("hitpoints: " + std::to_string(entity->hitpoints));
-		textContainer->addLabel("team: " + std::to_string(entity->team));
+		sf::Texture* skullTexture = new sf::Texture;
+		skullTexture->loadFromFile("./bobwars/resource/textures/spritebuttons/skull.png");
+
+		SFUI::SpriteButton* deleteSelectionButton = new SFUI::SpriteButton(*skullTexture);
+		topRow->add(deleteSelectionButton, MENU_CALLBACKS::DELETE_SELECTION);
+
+		for (int i = 0; i < 4; i++)
+		{
+			SFUI::SpriteButton* emptyButton = new SFUI::SpriteButton(*emptyTexture);
+			middleRow->add(emptyButton);
+		}
+
+		for (int i = 0; i < 4; i++)
+		{
+			SFUI::SpriteButton* emptyButton = new SFUI::SpriteButton(*emptyTexture);
+			bottomRow->add(emptyButton);
+		}
+
+		sf::Vector2f newPosition;
+		newPosition.x = unitActionMenu->getPosition().x + unitActionMenu->getSize().x + SFUI::Theme::MARGIN;
+		newPosition.y = unitActionMenu->getPosition().y;
+		unitInformationMenu->setPosition(newPosition);
 	}
 	else // multiple entities
 	{
@@ -161,7 +235,7 @@ void Interface::updateSelectionInfo(const std::vector<BaseEntity*>& entities)
 		// Middle: show information about the entity
 		// Right: game information, not related the entities
 
-		SFUI::HorizontalBoxLayout* hbox = menu->addHorizontalBoxLayout();
+		SFUI::HorizontalBoxLayout* hbox = unitInformationMenu->addHorizontalBoxLayout();
 
 		for (size_t i = 0; i < entities.size(); i++)
 		{
@@ -169,13 +243,33 @@ void Interface::updateSelectionInfo(const std::vector<BaseEntity*>& entities)
 
 			// TODO: make this the amount that we can fit on screen without breaking things
 			if (i % 28 == 0)
-				hbox = menu->addHorizontalBoxLayout();
+				hbox = unitInformationMenu->addHorizontalBoxLayout();
 
 			hbox->add(unitIcon);
 		}
 
-		// TODO: make this an icon button
-		menu->addButton("Delete All", MENU_CALLBACKS::DELETE_ALL);
+		sf::Texture* emptyTexture = new sf::Texture;
+		emptyTexture->loadFromFile("./bobwars/resource/textures/spritebuttons/empty.png");
+
+		for (int i = 0; i < 3; i++)
+			topRow->add(new SFUI::SpriteButton(*emptyTexture));
+
+		sf::Texture* skullTexture = new sf::Texture;
+		skullTexture->loadFromFile("./bobwars/resource/textures/spritebuttons/skull.png");
+
+		SFUI::SpriteButton* deleteSelectionButton = new SFUI::SpriteButton(*skullTexture);
+		topRow->add(deleteSelectionButton, MENU_CALLBACKS::DELETE_SELECTION);
+
+		for (int i = 0; i < 4; i++)
+			middleRow->add(new SFUI::SpriteButton(*emptyTexture));
+
+		for (int i = 0; i < 4; i++)
+			bottomRow->add(new SFUI::SpriteButton(*emptyTexture));
+
+		sf::Vector2f newPosition;
+		newPosition.x = unitActionMenu->getPosition().x + unitActionMenu->getSize().x + SFUI::Theme::MARGIN;
+		newPosition.y = unitActionMenu->getPosition().y;
+		unitInformationMenu->setPosition(newPosition);
 	}
 
 	logger::DEBUG("[INTERFACE] Updated Unit Information.");
