@@ -9,6 +9,16 @@ If you want to build the game without dynamic runtime library linking then you'l
 
 You'll also need [SFUI2](https://github.com/kennyrkun/SFUI/tree/SFUI2) and [DiscordRPC](https://github.com/discordapp/discord-rpc).
 
+### Linux
+If all prerequisites are satisfied, you should be able to build the project very easily:
+```
+git clone https://github.com/kennyrkun/bobwars/
+cd bobwars
+mkdir build && cd build
+ln -s ../bobwars
+cmake .. && make
+```
+
 ## Playing
 While in the game, the WASD are used to control the main view, and the arrow keys are used to move selected units. Units can be created with the create button, and delete with the delete button or the DEL key. To select a unit, simply left click the desired unit. To deselect that unit, either click another unit or click something that is not a unit. 
 
