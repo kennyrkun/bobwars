@@ -3,7 +3,25 @@
 
 #include "BaseEntity.hpp"
 
-class Bob : public BaseEntity
+class GroundMoveComponent : public EntityComponent
+{
+public:
+	GroundMoveComponent()
+	{
+		name = "GroundMove";
+	}
+
+	void setDestination(const sf::Vector2f destination);
+	void cancelMovement();
+
+	void Frame(float delta) override;
+
+private:
+	sf::Vector2f destination;
+	bool moveInProgress = false;
+};
+
+class Bob : public ComponentEntity
 {
 public:
 	Bob(const int entityID);

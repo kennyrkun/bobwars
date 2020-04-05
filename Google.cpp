@@ -2,7 +2,7 @@
 
 #include "Util/Logger.hpp"
 
-Google::Google(const int entityID) : BaseEntity(entityID, false, true, false, false, true, EntityType::Google)
+Google::Google(const int entityID) : BaseEntity(entityID, false, true, false, false, false, EntityType::Google)
 {
 	logger::INFO("Google entity created.");
 

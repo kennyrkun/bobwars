@@ -3,15 +3,10 @@
 #include "Util/Graphics/Line.hpp"
 #include "Util/Util.hpp"
 
-BaseEntity::BaseEntity(const int entityID, const bool isBuilding, const bool isLand, const bool isSea, const bool isRanged, const bool isMovable, EntityType type) :
-						entityID(entityID), isBuilding(isBuilding), isLand(isLand), isSea(isSea), isRanged(isRanged), isMovable(isMovable), typeEnum(type)
+BaseEntity::BaseEntity(const int entityID, const bool isBuilding, const bool isLand, const bool isSea, const bool isRanged, const bool isComponentEntity, EntityType type, AppEngine* app) :
+						entityID(entityID), isBuilding(isBuilding), isLand(isLand), isSea(isSea), isRanged(isRanged), isComponentEntity(isComponentEntity), typeEnum(type), app(app)
 {
 	logger::INFO("Entity base class constructed.");
-
-	moveDest.setRadius(5);
-	moveDest.setPointCount(8);
-	moveDest.setFillColor(sf::Color::Red);
-	moveDest.setOrigin(sf::Vector2f(moveDest.getLocalBounds().width / 2, moveDest.getLocalBounds().height / 2));
 
 	this->type = "baseentity";
 }
@@ -21,72 +16,74 @@ BaseEntity::~BaseEntity()
 	logger::DEBUG("Entity base class deconstructed.", true);
 }
 
-void BaseEntity::setGarrisonPoint(const sf::Vector2f& point)
-{
-	hasGarrisonPoint = true;
-	garrisonPoint = point;
-
-	moveDest.setPosition(point);
-
-	logger::INFO("Set garrison point to " + std::to_string(point.x) + ", " + std::to_string(point.y));
-}
-
-void BaseEntity::moveTo(const sf::Vector2f &pos)
-{
-	if (isMovable)
-	{
-		logger::INFO("Moving to X: " + std::to_string(pos.x) + ", Y: " + std::to_string(pos.y) + ". (" + std::to_string(entityID) + ")");
-		movePos = pos;
-		moveDest.setPosition(pos);
-		isMoving = true;
-	}
-	else
-	{
-		logger::INFO("This entity is not moveable! (" + type + ")");
-	}
-}
-
 void BaseEntity::setPosition(const sf::Vector2f& pos)
 {
 	sprite.setPosition(pos);
 }
 
-sf::Vector2f BaseEntity::getPosition()
+sf::Vector2f BaseEntity::getPosition() const
 {
 	return sprite.getPosition();
 }
 
 void BaseEntity::Frame(float delta)
 {
-	// TODO: stop entities from isMoving into each other
-	// TODO: replace this with tweening code from KunLauncher's AnimationManager
-
-	if (isMoving)
-	{
-		int sX = static_cast<int>(sprite.getPosition().x);
-		int sY = static_cast<int>(sprite.getPosition().y);
-		int gX = static_cast<int>(movePos.x);
-		int gY = static_cast<int>(movePos.y);
-
-		if (sX > gX)
-			sprite.move(-1.f, 0);
-		else if (sX < gX)
-			sprite.move(1.f, 0);
-
-		if (sY > gY)
-			sprite.move(0, -1.f);
-		else if (sY < gY)
-			sprite.move(0, 1.f);
-
-		if (sX == gX && sY == gY)
-		{
-			logger::INFO("Done moving! (" + std::to_string(entityID) + ")");
-			isMoving = false;
-		}
-	}
 }
 
 void BaseEntity::draw(sf::RenderTarget& window, sf::RenderStates states) const
 {
+}
+
+void BuildingEntity::setGarrisonPoint(const sf::Vector2f& point)
+{
+	hasGarrisonPoint = true;
+	garrisonPoint = point;
+
+	logger::INFO("Set garrison point to " + std::to_string(point.x) + ", " + std::to_string(point.y));
+}
+
+EntityComponent* ComponentEntity::addComponent(EntityComponent* component)
+{
+	component->owner = this;
+	components.emplace(component->name, component);
+}
+
+EntityComponent* ComponentEntity::removeComponent(EntityComponent* component)
+{
+	component->owner = nullptr;
+	components.erase(component->name);
+	return component;
+}
+
+void ComponentEntity::destroyComponent(EntityComponent* component)
+{
+	component->owner = nullptr;
+	components.erase(component->name);
+	delete component;
+}
+
+EntityComponent* ComponentEntity::hasComponent(const std::string& componentName)
+{
+	if (components.find(componentName) != components.end())
+		return components.at(componentName);
+	else
+		return nullptr;
+}
+
+EntityComponent* ComponentEntity::getComponent(const std::string& componentName)
+{
+	return hasComponent(componentName);
+}
+
+void ComponentEntity::Frame(float delta)
+{
+	for (auto& [name, component] : components)
+		component->Frame(delta);
+}
+
+void ComponentEntity::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{
+	for (auto& [name, component] : components)
+		target.draw(*component);
 }
 

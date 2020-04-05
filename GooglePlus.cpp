@@ -2,7 +2,7 @@
 
 #include "Util/Logger.hpp"
 
-GooglePlus::GooglePlus(const int entityID) : BaseEntity(entityID, false, true, false, false, true, EntityType::GooglePlus)
+GooglePlus::GooglePlus(const int entityID) : BaseEntity(entityID, false, true, false, false, false, EntityType::GooglePlus)
 {
 	logger::INFO("GooglePlus entity created.");
 

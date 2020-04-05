@@ -164,7 +164,11 @@ void GamePlayState::HandleEvents()
 								if (comment != nullptr)
 								{
 									if (comment->hasGarrisonPoint)
-										bob->moveTo(comment->garrisonPoint);
+									{
+										GroundMoveComponent* move = dynamic_cast<GroundMoveComponent*>(bob->getComponent("GroundMove"));
+										move->setDestination(comment->garrisonPoint);
+										//bob->getComponent<GroundMoveComponent>("GroundMove")->setDestination(comment->garrisonPoint);
+									}
 								}
 								else
 								{
@@ -392,9 +396,18 @@ void GamePlayState::HandleEvents()
 							else
 								for (size_t i = 0; i < entMan->selectedEnts.size(); i++)
 									if (entMan->selectedEnts[i]->isBuilding)
-										entMan->selectedEnts[i]->setGarrisonPoint(movePos);
-									else if (entMan->selectedEnts[i]->isMovable)
-										entMan->selectedEnts[i]->moveTo(movePos);
+									{
+										BuildingEntity* ent = dynamic_cast<BuildingEntity*>(entMan->selectedEnts[i]);
+										ent->setGarrisonPoint(movePos);
+									}
+									else if (entMan->selectedEnts[i]->isComponentEntity)
+									{
+										ComponentEntity* entity = dynamic_cast<ComponentEntity*>(entMan->selectedEnts[i]);
+										GroundMoveComponent* move = dynamic_cast<GroundMoveComponent*>(entity->hasComponent("GroundMove"));
+										
+										if (move != nullptr)
+											move->setDestination(movePos);
+									}
 						}
 					}
 				}
@@ -478,6 +491,7 @@ void GamePlayState::Draw()
 				util::text::draw(*app->window, debugText, std::to_string(entMan->entities[i]->entityID) + "/" + std::to_string(entMan->entities.size()), sf::Vector2f(entMan->entities[i]->sprite.getPosition().x, entMan->entities[i]->sprite.getPosition().y - entMan->entities[i]->sprite.getLocalBounds().height / 2), sf::Vector2f(.2f, .2f));
 				util::text::draw(*app->window, debugText, entMan->entities[i]->type, sf::Vector2f(entMan->entities[i]->sprite.getPosition().x, entMan->entities[i]->sprite.getPosition().y), sf::Vector2f(.2f, .2f));
 
+				/*
 				if (entMan->entities[i]->isMoving)
 				{
 					Line line;
@@ -500,7 +514,8 @@ void GamePlayState::Draw()
 				}
 				else if (entMan->entities[i]->isBuilding)
 					if (entMan->entities[i]->isSelected)
-						app->window->draw(entMan->entities[i]->moveDest);
+						app->window->draw(entMan->entities[i]->grarrisonPoint);
+				*/
 			}
 		}
 	}
@@ -510,8 +525,10 @@ void GamePlayState::Draw()
 			{
 				util::graphics::outline(*app->window, entMan->selectedEnts[i]->sprite, 2, sf::Color::Yellow);
 
+				/*
 				if (entMan->selectedEnts[i]->isMoving || entMan->selectedEnts[i]->hasGarrisonPoint)
 					app->window->draw(entMan->selectedEnts[i]->moveDest);
+				*/
 			}
 
 	// ------------- ANCHOR
@@ -556,14 +573,14 @@ void GamePlayState::Draw()
 			util::text::draw(*app->window, debugText, "health: " + std::to_string(entMan->selectedEnts[0]->health), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 144));
 			util::text::draw(*app->window, debugText, "hitpoints: " + std::to_string(entMan->selectedEnts[0]->hitpoints), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 156));
 			util::text::draw(*app->window, debugText, "armor: " + std::to_string(entMan->selectedEnts[0]->armor), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 168));
-			util::text::draw(*app->window, debugText, "isMovable: " + std::to_string(entMan->selectedEnts[0]->isMovable), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 180));
-			util::text::draw(*app->window, debugText, "isMoving: " + std::to_string(entMan->selectedEnts[0]->isMoving), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 192));
+//			util::text::draw(*app->window, debugText, "isMovable: " + std::to_string(entMan->selectedEnts[0]->isMovable), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 180));
+//			util::text::draw(*app->window, debugText, "isMoving: " + std::to_string(entMan->selectedEnts[0]->isMoving), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 192));
 		}
 
 		std::string entries;
 
-		for (auto x : logger::latestEntries)
-			entries += x + "\n";
+		for	(int i = logger::latestEntries.size() - 1; i >= 0; --i)
+			entries += logger::latestEntries[i] + "\n";
 
 		util::text::draw(*app->window, debugText, entries, sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 216));
 

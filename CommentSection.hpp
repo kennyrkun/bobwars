@@ -3,7 +3,7 @@
 
 #include "BaseEntity.hpp"
 
-class CommentSection : public BaseEntity
+class CommentSection : public BuildingEntity
 {
 public:
 	CommentSection(const int entityID);
