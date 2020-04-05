@@ -165,17 +165,23 @@ void Interface::updateSelectionInfo(const std::vector<BaseEntity*>& entities)
 		healthContainer->add(heartImage);
 		healthContainer->addLabel(std::to_string(entity->health) + "/" + std::to_string(entity->maxHealth));
 
-		sf::Texture* wandTexture = new sf::Texture;
-		wandTexture->loadFromFile("./bobwars/resource/textures/silk/wand.png");
-		SFUI::Image* wandImage = new SFUI::Image(*wandTexture);
-		wandContainer->add(wandImage);
-		wandContainer->addLabel(std::to_string(entity->hitpoints));
+		if (entity->hitpoints > 0)
+		{
+			sf::Texture* wandTexture = new sf::Texture;
+			wandTexture->loadFromFile("./bobwars/resource/textures/silk/wand.png");
+			SFUI::Image* wandImage = new SFUI::Image(*wandTexture);
+			wandContainer->add(wandImage);
+			wandContainer->addLabel(std::to_string(entity->hitpoints));
+		}
 
-		sf::Texture* shieldTexture = new sf::Texture;
-		shieldTexture->loadFromFile("./bobwars/resource/textures/silk/shield.png");
-		SFUI::Image* shieldImage = new SFUI::Image(*shieldTexture);
-		shieldContainer->add(shieldImage);
-		shieldContainer->addLabel(std::to_string(entity->armor));
+		if (entity->armor > 0)
+		{
+			sf::Texture* shieldTexture = new sf::Texture;
+			shieldTexture->loadFromFile("./bobwars/resource/textures/silk/shield.png");
+			SFUI::Image* shieldImage = new SFUI::Image(*shieldTexture);
+			shieldContainer->add(shieldImage);
+			shieldContainer->addLabel(std::to_string(entity->armor));
+		}
 
 		if (entity->type == "bob")
 		{
