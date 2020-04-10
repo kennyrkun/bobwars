@@ -1,4 +1,5 @@
 #include "GamePauseState.hpp"
+#include "GamePlayState.hpp"
 #include "MainMenuState.hpp"
 
 #include "AppEngine.hpp"
@@ -6,8 +7,15 @@
 
 #include "Util/Logger.hpp"
 #include "Util/Graphics/Text.hpp"
+#include "Util/Graphics/DisabledButton.hpp"
 #include "Util/Util.hpp"
-#include "GamePlayState.hpp"
+
+enum Callbacks
+{
+	Continue,
+	Settings,
+	ExitToMainMenu,
+};
 
 void GamePauseState::Init(AppEngine* app_)
 {
@@ -19,18 +27,25 @@ void GamePauseState::Init(AppEngine* app_)
 
 	sf::Vector2u windowSize = app->window->getSize();
 	backgroundTexture->create(windowSize.x, windowSize.y);
-	backgroundTexture->update(*app->window); // give texture window
+	backgroundTexture->update(*app->window); // screenshot, basically
 
 	background.setSize(sf::Vector2f(windowSize.x, windowSize.y));
 	background.setTexture(*&backgroundTexture);
 	background.setFillColor(sf::Color(255, 255, 255, 155));
 
-	std::vector<std::pair<std::string, int>> options = { {"Continue", 0},
-//															{"Save Game", 1},
-//															{"Options", 2},
-															{"Exit to Menu", 3} };
+	menu = new SFUI::Menu(*app->window);
 
-	pauseMenu = new Menu(app->window, "Pause", options);
+	menu->addButton("Continue", Callbacks::Continue);
+	menu->add(new DisabledButton("Settings"));
+	menu->addButton("Exit to Menu", Callbacks::ExitToMainMenu);
+
+	menuShape.setSize(sf::Vector2f(menu->getSize().x + 10, menu->getSize().y + 10));
+	menuShape.setPosition(sf::Vector2f((app->window->getSize().x / 2) - (menuShape.getSize().x / 2), (app->window->getSize().y / 2) - (menuShape.getSize().x / 2)));
+	menuShape.setFillColor(sf::Color(50, 50, 50));
+	menuShape.setOutlineColor(sf::Color(70, 70, 70));
+	menuShape.setOutlineThickness(4);
+
+	menu->setPosition(sf::Vector2f(menuShape.getPosition().x + 5, menuShape.getPosition().y + 5));
 
 	logger::INFO("GamePauseState ready.");
 }
@@ -39,7 +54,6 @@ void GamePauseState::Cleanup()
 {
 	logger::INFO("Cleaning up GamePauseState.");
 
-	delete pauseMenu;
 	delete backgroundTexture;
 
 	logger::INFO("Cleaned up GamePauseState.");
@@ -73,49 +87,25 @@ void GamePauseState::HandleEvents()
 			}
 		}
 
-		pauseMenu->HandleEvents(event);
+		int id = menu->onEvent(event);
+
+		switch (id)
+		{
+			case Callbacks::Continue:
+				app->PopState();
+				return;
+			case Callbacks::Settings:
+				break;
+			case Callbacks::ExitToMainMenu:
+				app->PopState();
+				app->ChangeState(new MainMenuState);
+				return;
+		}
 	}
 }
 
 void GamePauseState::Update()
 {
-	if (pauseMenu->done)
-	{
-		// continue
-		// save
-		// options
-		// exit
-
-		if (pauseMenu->selectedOption == 0)
-		{
-			// FIXME: should we return after this to avoid access violations?
-			app->PopState();
-			return;
-		}
-		else if (pauseMenu->selectedOption == 1)
-		{
-			// nothing
-
-			pauseMenu->done = false; // not done, because this option is not real.
-		}
-		else if (pauseMenu->selectedOption == 2)
-		{
-			// nothing 
-
-			pauseMenu->done = false; // not done, because this option is not real.
-		}
-		else if (pauseMenu->selectedOption == 3)
-		{
-			// FIXME: should we return after this to avoid access violations?
-			app->PopState();
-			app->ChangeState(new MainMenuState);
-			return;
-		}
-		else
-		{
-			logger::ERROR("Wrong option ID was returned (" + std::to_string(pauseMenu->selectedOption) + ")");
-		}
-	}
 }
 
 void GamePauseState::Draw()
@@ -124,7 +114,8 @@ void GamePauseState::Draw()
 
 	app->window->draw(background);
 
-	app->window->draw(*pauseMenu);
+	app->window->draw(menuShape);
+	app->window->draw(*menu);
 
 	app->window->display();
 }

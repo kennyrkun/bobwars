@@ -25,7 +25,9 @@ private:
 	sf::RectangleShape background;
 	sf::Texture* backgroundTexture; //HACK: don't crash on startup while in debug
 
-	Menu* pauseMenu;
+	sf::RectangleShape menuShape;
+
+	SFUI::Menu* menu;
 };
 
 #endif // !GAME_PAUSE_STATE

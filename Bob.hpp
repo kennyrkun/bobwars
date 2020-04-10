@@ -2,6 +2,9 @@
 #define BOB_HPP
 
 #include "BaseEntity.hpp"
+#include "Util/Graphics/Line.hpp"
+
+class EntityManager;
 
 class GroundMoveComponent : public EntityComponent
 {
@@ -19,6 +22,22 @@ public:
 private:
 	sf::Vector2f destination;
 	bool moveInProgress = false;
+};
+
+class DrawConnectionsComponent : public EntityComponent
+{
+public:
+	DrawConnectionsComponent(EntityManager* entman) : entMan(entman)
+	{
+		name = "DrawConnections";
+	}
+
+	void Frame(float delta) override;
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
+private:
+	EntityManager* entMan;
+	std::vector<Line> lines;
 };
 
 class Bob : public ComponentEntity

@@ -39,6 +39,9 @@ Bob* EntityManager::newBob()
 
 	Bob *newBobEntity = new Bob(entities.size() + 1);
 
+	DrawConnectionsComponent* comp = new DrawConnectionsComponent(this);
+	newBobEntity->addComponent(comp);
+
 	entities.push_back(newBobEntity); // add it to the stack
 
 	logger::DEBUG("creating new bob entity (" + std::to_string(newBobEntity->entityID) + ")");
@@ -50,12 +53,12 @@ CommentSection* EntityManager::newCommentSection()
 	//TODO: optimise entity creation
 	//TODO: comment sections might not want to be selected on creation
 
-	CommentSection *newBobEntity = new CommentSection(entities.size() + 1);
+	CommentSection *newCommentSection = new CommentSection(entities.size() + 1);
 
-	entities.push_back(newBobEntity);
+	entities.push_back(newCommentSection);
 				
-	logger::DEBUG("created comment section entity (" + std::to_string(newBobEntity->entityID) + ")");
-	return newBobEntity;
+	logger::DEBUG("created comment section entity (" + std::to_string(newCommentSection->entityID) + ")");
+	return newCommentSection;
 }
 
 void EntityManager::deselectAllEnts()
@@ -136,4 +139,28 @@ void EntityManager::deselectEnt(BaseEntity *ent)
 	selectedEnts.erase(std::remove(selectedEnts.begin(), selectedEnts.end(), ent), selectedEnts.end());
 
 	logger::DEBUG("deselected entity" + std::to_string(ent->entityID));
+}
+
+std::vector<BaseEntity*> EntityManager::getNearbyEntities(BaseEntity* entity, float x, float y, BaseEntity* filter)
+{
+	std::vector<BaseEntity*> list;
+	list.reserve(entities.size());
+
+	//sf::FloatRect area = {entity.getPosition().x, entity.getPosition().y, x * 2, y * 2};
+	sf::RectangleShape area;
+	area.setSize(sf::Vector2f(x * 2, y * 2));
+	area.setOrigin(sf::Vector2f(area.getSize().x / 2, area.getSize().y / 2));
+	area.setPosition(entity->getPosition());
+
+	for (BaseEntity* e : entities)
+	{
+		if (e == entity)
+			continue;
+
+		if (area.getGlobalBounds().contains(e->getPosition()))
+			list.push_back(e);
+	}
+
+	list.shrink_to_fit();
+	return list;
 }

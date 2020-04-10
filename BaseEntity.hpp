@@ -77,8 +77,7 @@ public:
 	virtual bool onInteract(BaseEntity* entity) {}
 
 	virtual void Frame(float delta);
-
-	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };
 
 class BuildingEntity : public BaseEntity
@@ -141,7 +140,7 @@ public:
 	EntityComponent* getComponent(const std::string& componentName);
 
 	void Frame(float delta) override;
-	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 private:
 	std::map<const std::string, EntityComponent*> components;

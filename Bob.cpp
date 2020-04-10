@@ -1,6 +1,7 @@
 #include "Bob.hpp"
 
 #include "Util/Logger.hpp"
+#include "EntityManager.hpp"
 
 void GroundMoveComponent::setDestination(const sf::Vector2f destination)
 {
@@ -11,6 +12,25 @@ void GroundMoveComponent::setDestination(const sf::Vector2f destination)
 void GroundMoveComponent::cancelMovement()
 {
 	moveInProgress = false;
+}
+
+void DrawConnectionsComponent::Frame(float delta)
+{
+	lines.clear();
+
+	for (BaseEntity* entity : entMan->getNearbyEntities(owner, 100, 100, nullptr))
+	{
+		Line line;
+		line.setColor(sf::Color::Green);
+		line.setPoints(owner->getPosition(), entity->getPosition());
+		lines.push_back(line);
+	}
+}
+
+void DrawConnectionsComponent::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{
+	for (int i = 0; i < lines.size(); i++)
+		target.draw(lines[i].vertices, 4, sf::Quads);
 }
 
 void GroundMoveComponent::Frame(float delta)

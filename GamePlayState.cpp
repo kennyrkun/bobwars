@@ -474,7 +474,7 @@ void GamePlayState::Draw()
 	app->window->draw(world);
 
 	for (size_t i = 0; i < entMan->entities.size(); i++)
-		app->window->draw(entMan->entities[i]->sprite);
+		app->window->draw(*entMan->entities[i]);
 
 	if (app->settings.debug)
 	{

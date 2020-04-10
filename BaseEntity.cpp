@@ -30,8 +30,9 @@ void BaseEntity::Frame(float delta)
 {
 }
 
-void BaseEntity::draw(sf::RenderTarget& window, sf::RenderStates states) const
+void BaseEntity::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
+	target.draw(sprite, states);
 }
 
 void BuildingEntity::setGarrisonPoint(const sf::Vector2f& point)
@@ -85,5 +86,7 @@ void ComponentEntity::draw(sf::RenderTarget& target, sf::RenderStates states) co
 {
 	for (auto& [name, component] : components)
 		target.draw(*component);
+
+	BaseEntity::draw(target, states);
 }
 
