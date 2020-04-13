@@ -11,6 +11,13 @@
 
 // this is bad somebody fix
 
+enum class Team
+{
+	BadGuys,
+	GoodGuys,
+	Neutral,
+};
+
 enum class EntityType
 {
 	BaseEntity,
@@ -47,7 +54,8 @@ public:
 
 	float maxInteractDistance = 25.0f;
 
-	int team = -1;
+	Team team = Team::Neutral;
+
 	int armor = -1;
 	int health = -1, maxHealth = -1;
 	int hitpoints = -1;
@@ -75,6 +83,18 @@ public:
 	// returns: false if the interaction failed
 	//			true if the interaction succeeded
 	virtual bool onInteract(BaseEntity* entity) {}
+
+	enum class DamageCause
+	{
+		EnemyAttack,
+		FriendlyAttack,
+		NeutralAttack,
+		WorldDamage,
+		Complications,
+		Unknown
+	};
+
+	virtual void onDamage(float amount, BaseEntity* entity, DamageCause cause = DamageCause::Unknown);
 
 	virtual void Frame(float delta);
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;

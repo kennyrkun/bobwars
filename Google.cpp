@@ -10,7 +10,7 @@ Google::Google(const int entityID) : BaseEntity(entityID, false, true, false, fa
 	sprite.setTexture(texture, true);
 	sprite.setOrigin(sf::Vector2f(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2));
 
-	team = 1;
+	team = Team::BadGuys;
 	maxHealth = 200;
 	health = maxHealth;
 	hitpoints = 1;

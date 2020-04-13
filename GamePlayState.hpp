@@ -50,6 +50,8 @@ private:
 	sf::Time timePerFrame; // 60 frames per second
 	sf::Time timeSinceLastUpdate;
 
+	sf::Clock googleTimer;
+
 	EntityManager *entMan;
 	Interface *ui;
 

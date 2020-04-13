@@ -10,7 +10,7 @@ CommentSection::CommentSection(const int entityID) : BuildingEntity(entityID)
 	sprite.setTexture(texture, true);
 	sprite.setOrigin(sf::Vector2f(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2));
 
-	team = 1;
+	team = Team::GoodGuys;
 	maxHealth = 200;
 	health = maxHealth;
 	type = "commentsection";

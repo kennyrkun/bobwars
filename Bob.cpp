@@ -21,9 +21,21 @@ void DrawConnectionsComponent::Frame(float delta)
 	for (BaseEntity* entity : entMan->getNearbyEntities(owner, 100, 100, nullptr))
 	{
 		Line line;
-		line.setColor(sf::Color::Green);
+
+		if (entity->team == Team::GoodGuys)
+			line.setColor(sf::Color::Green);
+		else if (entity->team == Team::BadGuys)
+			line.setColor(sf::Color::Red);
+		else if (entity->team == Team::Neutral)
+			line.setColor(sf::Color::Red);
+		else
+			line.setColor(sf::Color::Black);
+
 		line.setPoints(owner->getPosition(), entity->getPosition());
 		lines.push_back(line);
+
+		if (entity->team != owner->team)
+			entity->onDamage(1.0f, owner);
 	}
 }
 
@@ -35,6 +47,8 @@ void DrawConnectionsComponent::draw(sf::RenderTarget& target, sf::RenderStates s
 
 void GroundMoveComponent::Frame(float delta)
 {
+//	linear interpolation: c * t / d + b
+
 	if (moveInProgress)
 	{
 		int sX = static_cast<int>(owner->sprite.getPosition().x);
@@ -68,7 +82,7 @@ Bob::Bob(const int entityID) : ComponentEntity(entityID)
 	sprite.setTexture(texture, true);
 	sprite.setOrigin(sf::Vector2f(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2));
 
-	team = 1;
+	team = Team::GoodGuys;
 	maxHealth = 100;
 	health = maxHealth;
 	hitpoints = 1;
@@ -83,6 +97,8 @@ Bob::Bob(const int entityID) : ComponentEntity(entityID)
 	actions.push_back(createCommentSectionAction);
 
 	addComponent(new GroundMoveComponent);
+	// TODO: this component can only be added with an instance of EntityManager
+//	addComponent(new DrawConnectionsComponent);
 }
 
 Bob::~Bob()

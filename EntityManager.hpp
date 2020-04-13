@@ -17,13 +17,20 @@ public:
 	std::vector<BaseEntity*> selectedEnts;
 
 	Bob* newBob();
-
 	CommentSection* newCommentSection();
 
-	/*
+//	GooglePlus* newGooglePlus();
+
 	template <typename T>
-	T* create();
-	*/
+	inline T* create()
+	{
+		T* newEntity = new T(entities.size() + 1);
+
+		entities.push_back(newEntity);
+				
+//		logger::DEBUG("created " + newEntity->type + " entity (" + std::to_string(newEntity->entityID) + ")");
+		return newEntity;
+	}
 
 	void addEnt(BaseEntity *ent);
 	void deleteEnt(BaseEntity *ent);

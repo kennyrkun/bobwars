@@ -26,6 +26,14 @@ sf::Vector2f BaseEntity::getPosition() const
 	return sprite.getPosition();
 }
 
+void BaseEntity::onDamage(float amount, BaseEntity* entity, DamageCause cause)
+{
+	health -= amount;
+
+	if (health <= 0)
+		logger::INFO("this entity is now FUCKING DEAD");
+}
+
 void BaseEntity::Frame(float delta)
 {
 }

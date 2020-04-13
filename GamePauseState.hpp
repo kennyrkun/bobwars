@@ -3,8 +3,7 @@
 
 #include "AppState.hpp"
 
-#include "Menu.hpp"
-#include <SFUI/Button.hpp>
+#include <SFUI/Layouts/Menu.hpp>
 
 class GamePauseState : public AppState
 {

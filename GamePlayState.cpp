@@ -4,6 +4,7 @@
 
 #include "Interface.hpp"
 #include "EntityManager.hpp"
+#include "GooglePlus.hpp"
 
 #include "Util/Util.hpp"
 #include "Util/Logger.hpp"
@@ -80,7 +81,11 @@ void GamePlayState::Init(AppEngine* app_)
 	baseViewSpeed = 500;
 
 	entMan->newCommentSection();
-	entMan->selectEnt(entMan->newBob());
+
+	entMan->newBob()->setPosition(sf::Vector2f(0, 51));
+	entMan->newBob()->setPosition(sf::Vector2f(0, -51));
+	entMan->newBob()->setPosition(sf::Vector2f(51, 0));
+	entMan->newBob()->setPosition(sf::Vector2f(-51, 0));
 
 	ui->unitCounter->setCount(2);
 
@@ -439,10 +444,18 @@ void GamePlayState::HandleEvents()
 		} // pollevent
 
 		for (size_t i = 0; i < entMan->entities.size(); i++)
+		{
 			entMan->entities[i]->Frame(deltaTime.asSeconds());
 
+			if (entMan->entities[i]->health <= 0)
+				entMan->deleteEnt(entMan->entities[i]);
+		}
+
 		if (entMan->entities.size() <= 0)
+		{
 			app->ChangeState(new GameEndState);
+			return;
+		}
 
 		if (app->window->hasFocus())
 		{
@@ -461,7 +474,11 @@ void GamePlayState::HandleEvents()
 
 void GamePlayState::Update()
 {
-
+	if (googleTimer.getElapsedTime().asSeconds() > 10)
+	{
+		entMan->create<GooglePlus>();
+		googleTimer.restart();
+	}
 }
 
 void GamePlayState::Draw()
@@ -568,7 +585,7 @@ void GamePlayState::Draw()
 		if (!entMan->selectedEnts.empty() && entMan->selectedEnts.size() == 1)
 		{
 			util::text::draw(*app->window, debugText, "entityID: " + std::to_string(entMan->selectedEnts[0]->entityID), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 108));
-			util::text::draw(*app->window, debugText, "team: " + std::to_string(entMan->selectedEnts[0]->team), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 120));
+//			util::text::draw(*app->window, debugText, "team: " + std::to_string(entMan->selectedEnts[0]->team), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 120));
 			util::text::draw(*app->window, debugText, "type: " + entMan->selectedEnts[0]->type, sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 132));
 			util::text::draw(*app->window, debugText, "health: " + std::to_string(entMan->selectedEnts[0]->health), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 144));
 			util::text::draw(*app->window, debugText, "hitpoints: " + std::to_string(entMan->selectedEnts[0]->hitpoints), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 156));
