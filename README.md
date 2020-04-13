@@ -1,13 +1,11 @@
 # bobwars
-bobwars is a game like age of empires (2), except instead of being all medieval and stuff it's just the bob copy pasta and google plus
+bobwars ia real-time strategy game focusing on the intense struggle between Bob and Google+ which took place in late 2013.
 
 ## Setting up
 Clone the project to the desired location on your machine.
-Make sure you have [SFML 2.4](http://www.sfml-dev.org/download/sfml/2.4.2/) in the project's root directory.
+Make sure you have [SFML 2.5.1](http://www.sfml-dev.org/download/sfml/2.5.1/) in the project's root directory.
 
-If you want to build the game without dynamic runtime library linking then you'll have to [build SFML yourself](http://en.sfml-dev.org/forums/index.php?topic=8158.msg54553#msg54553).
-
-You'll also need [SFUI2](https://github.com/kennyrkun/SFUI/tree/SFUI2) and [DiscordRPC](https://github.com/discordapp/discord-rpc).
+You'll also need [SFUI2](https://github.com/kennyrkun/SFUI/) (latest) and [DiscordRPC](https://github.com/discordapp/discord-rpc) (Windows only).
 
 ### Linux
 If all prerequisites are satisfied, you should be able to build the project very easily:
@@ -18,9 +16,11 @@ mkdir build && cd build
 ln -s ../bobwars
 cmake .. && make
 ```
+### Windows
+I don't know.
 
 ## Playing
-While in the game, the WASD are used to control the main view, and the arrow keys are used to move selected units. Units can be created with the create button, and delete with the delete button or the DEL key. To select a unit, simply left click the desired unit. To deselect that unit, either click another unit or click something that is not a unit. 
+While in the game, the WASD are used to control the main view. Units can be created with the create button, and delete with the delete button or the DEL key. To select a unit, simply left click the desired unit. To deselect that unit, either click another unit or click something that is not a unit. 
 
 #### Controls
 
@@ -32,12 +32,12 @@ While in the game, the WASD are used to control the main view, and the arrow key
 <kbd>Control</kbd> + <kbd>+</kbd> - Zoom in<br>
 <kbd>Control</kbd> + <kbd>-</kbd> - Zoom out<br>
 
-##### Units
+##### Unit Controls
 <kbd>LMB</kbd> - Selects unit<br>
 <kbd>Ctrl</kbd> + <kbd>LMB</kbd> - Adds unit to group of already selected units.<br>
 <kbd>RMB</kbd> (Unit) - Set unit movement destination.<br>
 <kbd>RMB</kbd> (Building) - Set unit rally point.<br>
-<kbd>Del</kbd> or <kbd>End</kbd> - Deletes selected unit(s).<br>
+<kbd>Del</kbd> - Deletes selected unit(s).<br>
 
 ##### Debug
 <kbd>~</kbd> or <kbd>`</kbd> - Toggle debug mode<br>
