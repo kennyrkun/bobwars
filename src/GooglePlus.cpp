@@ -1,8 +1,9 @@
 #include "GooglePlus.hpp"
 
+#include "GroundMoveComponent.hpp"
 #include "Util/Logger.hpp"
 
-GooglePlus::GooglePlus(const int entityID) : BaseEntity(entityID, false, true, false, false, false, EntityType::GooglePlus)
+GooglePlus::GooglePlus(const int entityID) : ComponentEntity(entityID)
 {
 	logger::INFO("GooglePlus entity created.");
 
@@ -15,6 +16,8 @@ GooglePlus::GooglePlus(const int entityID) : BaseEntity(entityID, false, true, f
 	health = maxHealth;
 	hitpoints = 1;
 	type = "GooglePlus";
+
+	addComponent(new GroundMoveComponent);
 }
 
 GooglePlus::~GooglePlus()

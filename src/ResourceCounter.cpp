@@ -1,6 +1,8 @@
-#include "ResourceCounter.hpp"
+ #include "ResourceCounter.hpp"
 
-ResourceCounter::ResourceCounter(std::string iconname, const sf::Vector2f& position, size_t count, size_t max)
+#include "Util/Logger.hpp"
+
+ResourceCounter::ResourceCounter(std::string iconname, const sf::Vector2f& position, resourceAmount_t count, resourceAmount_t max) : currentCount(count), maxCount(max)
 {
 	background.setFillColor(sf::Color(70, 70, 70));
 	background.setSize(sf::Vector2f(46 - padding, 26 - padding));
@@ -28,19 +30,40 @@ ResourceCounter::ResourceCounter(std::string iconname, const sf::Vector2f& posit
 	background.setSize(sf::Vector2f(text.getGlobalBounds().width + icon.getGlobalBounds().width + (padding * 4), background.getSize().y));
 }
 
-void ResourceCounter::setCount(size_t count)
+void ResourceCounter::setCount(resourceAmount_t count)
 {
 	currentCount = count;
 
 	if (maxCount == -1)
 		text.setString(std::to_string(currentCount));
 	else
+	{
+		if (count >= maxCount)
+			text.setFillColor(sf::Color::Red);
+		else
+			text.setFillColor(sf::Color::White);
+
 		text.setString(std::to_string(currentCount) + "/" + std::to_string(maxCount));
+	}
 
 	background.setSize(sf::Vector2f(text.getGlobalBounds().width + icon.getGlobalBounds().width + (padding * 4), background.getSize().y));
 }
 
-void ResourceCounter::setMax(size_t max)
+void ResourceCounter::add(resourceAmount_t amount)
+{
+	logger::INFO("Current: " + std::to_string(currentCount));
+	logger::INFO("Add: " + std::to_string(amount));
+	logger::INFO("New count: " + std::to_string(currentCount + amount));
+	resourceAmount_t newAmount = currentCount + amount;
+	setCount(newAmount);
+}
+
+void ResourceCounter::take(resourceAmount_t amount)
+{
+	setCount(currentCount - amount);
+}
+
+void ResourceCounter::setMax(resourceAmount_t max)
 {
 	maxCount = max;
 	text.setString(std::to_string(currentCount) + "/" + std::to_string(max));

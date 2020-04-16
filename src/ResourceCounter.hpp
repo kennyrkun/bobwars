@@ -3,20 +3,24 @@
 
 #include <SFML/Graphics.hpp>
 
+typedef signed long long int resourceAmount_t;
+
 class ResourceCounter : public sf::Drawable
 {
 public:
-	ResourceCounter(std::string icon, const sf::Vector2f& position, size_t count, size_t max = -1);
+	ResourceCounter(std::string icon, const sf::Vector2f& position, resourceAmount_t count = 0, resourceAmount_t max = -1);
 
-	void setCount(size_t count);
-	void setMax(size_t max);
+	void setCount(resourceAmount_t count);
+	void add(resourceAmount_t amount);
+	void take(resourceAmount_t amount);
+	void setMax(resourceAmount_t max);
 
 	sf::FloatRect getGlobalBounds() { return background.getGlobalBounds(); }
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
-	size_t currentCount;
-	size_t maxCount; // -1 means no max
+	resourceAmount_t currentCount;
+	resourceAmount_t maxCount; // -1 means no max
 
 	// TODO: get this from resource manager
 	sf::Font arial;

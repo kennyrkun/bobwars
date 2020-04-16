@@ -7,14 +7,82 @@ SET(CMAKE_DEBUG_POSTFIX "-d")
 SET(PROJECT_NAME "bobwarss")
 PROJECT(${PROJECT_NAME} LANGUAGES CXX)
 
-SET(HEADERS AppEngine.hpp BaseEntity.hpp Bob.hpp Camera.hpp CommentSection.hpp Util/Graphics/DisabledButton.hpp Util/DiscordRPC.hpp EntityManager.hpp GameCreationState.hpp GameEndState.hpp GamePauseState.hpp GamePlayState.hpp GameStartupState.hpp Google.hpp GooglePlus.hpp Util/Graphics/Graphics.hpp Interface.hpp Util/Graphics/Line.hpp Util/Logger.cpp MainMenuState.hpp Util/Graphics/ProgressBar.hpp ResourceCounter.hpp ResourceManager.hpp Util/SettingsParser.hpp Util/Graphics/SmallUnitIcon.hpp Util/Graphics/Text.hpp Util/Util.hpp)
-SET(SOURCES AppEngine.cpp BaseEntity.cpp Bob.cpp Camera.cpp CommentSection.cpp Util/Graphics/DisabledButton.cpp Util/DiscordRPC.cpp EntityManager.cpp GameCreationState.cpp GameEndState.cpp GamePauseState.cpp GamePlayState.cpp GameStartupState.cpp Google.cpp GooglePlus.cpp Util/Graphics/Graphics.cpp Interface.cpp Util/Graphics/Line.cpp Util/Logger.cpp main.cpp MainMenuState.cpp Util/Graphics/ProgressBar.cpp ResourceCounter.cpp ResourceManager.cpp Util/SettingsParser.cpp Util/Graphics/SmallUnitIcon.cpp Util/Graphics/Text.cpp Util/Util.cpp)
+SET(HEADERS AppEngine.hpp 
+			BaseEntity.hpp 
+			BuildingEntity.hpp
+			Bob.hpp 
+			Camera.hpp 
+			CommentSection.hpp
+			ComponentEntity.hpp
+			EntityComponent.hpp
+			EntityManager.hpp
+			GroundMoveComponent.hpp
+			GameCreationState.hpp
+			GameEndState.hpp
+			GamePauseState.hpp
+			GamePlayState.hpp
+			GameStartupState.hpp
+			Google.hpp
+			GooglePlus.hpp
+			Interface.hpp
+			MainMenuState.hpp
+			ResourceCounter.hpp
+			ResourceManager.hpp
+			Util/Graphics/ProgressBar.hpp
+			Util/SettingsParser.hpp
+			Util/Graphics/SmallUnitIcon.hpp
+			Util/Graphics/Text.hpp
+			Util/Util.hpp
+			Util/Graphics/DisabledButton.hpp
+			Util/DiscordRPC.hpp
+			Util/Graphics/Graphics.hpp
+			Util/Graphics/Line.hpp
+			Util/Logger.cpp)
+
+SET(SOURCES AppEngine.cpp
+			BaseEntity.cpp
+			Bob.cpp
+			Camera.cpp
+			CommentSection.cpp
+			ComponentEntity.cpp
+			GroundMoveComponent.cpp
+			EntityManager.cpp
+			GameCreationState.cpp
+			GameEndState.cpp
+			GamePauseState.cpp
+			GamePlayState.cpp
+			GameStartupState.cpp
+			Google.cpp
+			GooglePlus.cpp
+			Interface.cpp
+			main.cpp
+			MainMenuState.cpp
+			ResourceCounter.cpp
+			ResourceManager.cpp
+			Util/SettingsParser.cpp
+			Util/Graphics/SmallUnitIcon.cpp
+			Util/Graphics/Text.cpp
+			Util/Util.cpp
+			Util/Graphics/DisabledButton.cpp
+			Util/Graphics/DisabledButton.cpp
+			Util/DiscordRPC.cpp
+			Util/DiscordRPC.cpp
+			Util/Graphics/Line.cpp
+			Util/Graphics/Graphics.cpp
+			Util/Logger.cpp
+			Util/Graphics/ProgressBar.cpp)
+
 ADD_EXECUTABLE(${PROJECT_NAME} ${HEADERS} ${SOURCES})
 
-TARGET_INCLUDE_DIRECTORIES(${PROJECT_NAME} PUBLIC ../SFML/include)
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} sfml-graphics sfml-audio sfml-window sfml-network sfml-system -L"../SFML/lib")
+SET(SFUI_INCLUDE_DIR "../../SFUI/include")
+SET(SFUI_LIB_DIR "../../SFUI/lib")
+SET(SFML_INCLUDE_DIR "../../SFML/include")
+SET(SFML_LIB_DIR "../../SFML/lib")
 
-TARGET_INCLUDE_DIRECTORIES(${PROJECT_NAME} PUBLIC ../SFUI/include)
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} sfui -L"../SFUI/lib")
+TARGET_INCLUDE_DIRECTORIES(${PROJECT_NAME} PUBLIC ${SFML_INCLUDE_DIR})
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} sfml-graphics sfml-audio sfml-window sfml-network sfml-system) # ${SFML_LIB_DIR})
+
+TARGET_INCLUDE_DIRECTORIES(${PROJECT_NAME} PUBLIC ${SFUI_INCLUDE_DIR})
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} sfui) #${SFUI_LIB_DIR})
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} stdc++fs)

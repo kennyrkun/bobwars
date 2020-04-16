@@ -1,24 +1,30 @@
 #include "Bob.hpp"
 
-#include "Util/Logger.hpp"
 #include "EntityManager.hpp"
 
-void GroundMoveComponent::setDestination(const sf::Vector2f destination)
-{
-	this->destination = destination;
-	moveInProgress = true;
-}
+#include "Util/Logger.hpp"
 
-void GroundMoveComponent::cancelMovement()
-{
-	moveInProgress = false;
-}
+#include <cmath>
+
+float distance(const sf::Vector2f& one, const sf::Vector2f& two) 
+{ 
+    // Calculating distance 
+	float xDistance = two.x - one.x;
+	xDistance *= xDistance; // sq
+
+	float yDistance = two.y - one.y;
+	yDistance *= yDistance; // sq
+
+    return std::sqrt(xDistance + yDistance); 
+} 
 
 void DrawConnectionsComponent::Frame(float delta)
 {
+	bool attackedThisFrame = false;
+
 	lines.clear();
 
-	for (BaseEntity* entity : entMan->getNearbyEntities(owner, 100, 100, nullptr))
+	for (BaseEntity* entity : entMan->getNearbyEntities(owner, owner->maxViewDistance))
 	{
 		Line line;
 
@@ -29,13 +35,35 @@ void DrawConnectionsComponent::Frame(float delta)
 		else if (entity->team == Team::Neutral)
 			line.setColor(sf::Color::Red);
 		else
-			line.setColor(sf::Color::Black);
+			line.setColor(sf::Color::White);
 
 		line.setPoints(owner->getPosition(), entity->getPosition());
-		lines.push_back(line);
 
-		if (entity->team != owner->team)
-			entity->onDamage(1.0f, owner);
+		if (!attackedThisFrame && entity->team != owner->team)
+		{
+			float dist = distance(owner->getPosition(), entity->getPosition());
+
+			ComponentEntity* compEnt = dynamic_cast<ComponentEntity*>(owner);
+			GroundMoveComponent* move = dynamic_cast<GroundMoveComponent*>(compEnt->hasComponent("GroundMove"));
+
+			if (dist <= owner->maxAttackDistance)
+			{
+				// Don't attack if we're moving, and don't intercept entities while we're moving.
+				if (move != nullptr && !move->getActive())
+				{
+					entity->onDamage(1.0f, owner);
+					attackedThisFrame = true;
+				}
+			}
+			else // move into range
+			{
+				// TODO: only go as far as we need to to attack
+				if (move != nullptr && !move->getActive())
+					move->setMoveDestination(entity->getPosition());
+			}
+		}
+
+		lines.push_back(line);
 	}
 }
 
@@ -43,35 +71,6 @@ void DrawConnectionsComponent::draw(sf::RenderTarget& target, sf::RenderStates s
 {
 	for (int i = 0; i < lines.size(); i++)
 		target.draw(lines[i].vertices, 4, sf::Quads);
-}
-
-void GroundMoveComponent::Frame(float delta)
-{
-//	linear interpolation: c * t / d + b
-
-	if (moveInProgress)
-	{
-		int sX = static_cast<int>(owner->sprite.getPosition().x);
-		int sY = static_cast<int>(owner->sprite.getPosition().y);
-		int gX = static_cast<int>(destination.x);
-		int gY = static_cast<int>(destination.y);
-
-		if (sX > gX)
-			owner->sprite.move(-1.f, 0);
-		else if (sX < gX)
-			owner->sprite.move(1.f, 0);
-
-		if (sY > gY)
-			owner->sprite.move(0, -1.f);
-		else if (sY < gY)
-			owner->sprite.move(0, 1.f);
-
-		if (sX == gX && sY == gY)
-		{
-			logger::INFO("Done moving! (" + std::to_string(owner->entityID) + ")");
-			moveInProgress = false;
-		}
-	}
 }
 
 Bob::Bob(const int entityID) : ComponentEntity(entityID)

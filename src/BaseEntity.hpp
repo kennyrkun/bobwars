@@ -1,4 +1,4 @@
-#ifndef BASE_ENTITY_HPP
+ #ifndef BASE_ENTITY_HPP
 #define BASE_ENTITY_HPP
 
 #include "AppEngine.hpp"
@@ -52,7 +52,11 @@ public:
 
 	AppEngine* app;
 
-	float maxInteractDistance = 25.0f;
+	float maxAttackDistance = 75.0f;
+	float minAttackDistance = 0.0f;
+	float maxViewDistance = 125.0f;
+
+	float creationCost = 100;
 
 	Team team = Team::Neutral;
 
@@ -77,6 +81,8 @@ public:
 
 	std::vector<EntityAction> actions;
 
+	BaseEntity* targetEntity;
+
 	virtual void setPosition(const sf::Vector2f& pos);
 	virtual sf::Vector2f getPosition() const;
 
@@ -98,72 +104,6 @@ public:
 
 	virtual void Frame(float delta);
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-};
-
-class BuildingEntity : public BaseEntity
-{
-public:
-	BuildingEntity(const int entityID, AppEngine* app = nullptr) : BaseEntity(entityID, true, true, false, false, false, EntityType::BuildingEntity, app)
-	{
-	}
-
-	void setGarrisonPoint(const sf::Vector2f& point);
-	bool hasGarrisonPoint;
-	sf::Vector2f garrisonPoint;
-};
-
-class ComponentEntity;
-
-class EntityComponent : public sf::Drawable
-{
-public:
-	ComponentEntity* owner = nullptr;
-
-	virtual void Frame(float delta) {}
-	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {}
-
-	std::string name;
-};
-
-class ComponentEntity : public BaseEntity
-{
-public:
-	ComponentEntity(int entityID, AppEngine* app = nullptr) : BaseEntity(entityID, false, false, false, false, true, EntityType::ComponentEntity, app) {}
-	~ComponentEntity()
-	{
-		for (auto& [name, component] : components)
-			delete component;
-	}
-
-	EntityComponent* addComponent(EntityComponent* component);
-	EntityComponent* removeComponent(EntityComponent* component);
-	void destroyComponent(EntityComponent* component);
-
-	/*
-	// TODO: this doesn't work
-	template <typename T>
-	T* getComponent(const std::string& componentName)
-	{
-		if (components.find(componentName) != components.end())
-		{
-			T component* = dynamic_cast<T>(components.at(componentName));
-			return component;
-		}
-		else
-			return nullptr;
-	}
-	*/
-
-	// TODO: this doesn't work
-	EntityComponent* hasComponent(const std::string& componentName);
-	// TODO: this doesn't work
-	EntityComponent* getComponent(const std::string& componentName);
-
-	void Frame(float delta) override;
-	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-
-private:
-	std::map<const std::string, EntityComponent*> components;
 };
 
 #endif // !BASE_ENTITY_HPP

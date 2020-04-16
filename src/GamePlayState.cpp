@@ -87,7 +87,7 @@ void GamePlayState::Init(AppEngine* app_)
 	entMan->newBob()->setPosition(sf::Vector2f(51, 0));
 	entMan->newBob()->setPosition(sf::Vector2f(-51, 0));
 
-	ui->unitCounter->setCount(2);
+	ui->unitCounter->setCount(5);
 
 	app->dRPC.clearPresence();
 	app->dRPC.setState("in a game");
@@ -151,8 +151,14 @@ void GamePlayState::HandleEvents()
 				if (entMan->entities.size() >= entMan->maxEntsPerTeam)
 				{
 					logger::INFO("Cannot create new Bob because the unit cap has been reached.");
+
+					// TODO: flash the unit icon red
 				}
-				else
+				else if (false)
+				{
+
+				}
+				else // all requirements satisfied
 				{
 					if (entMan->entities.size() < entMan->maxEntsPerTeam)
 					{
@@ -170,9 +176,9 @@ void GamePlayState::HandleEvents()
 								{
 									if (comment->hasGarrisonPoint)
 									{
-										GroundMoveComponent* move = dynamic_cast<GroundMoveComponent*>(bob->getComponent("GroundMove"));
-										move->setDestination(comment->garrisonPoint);
-										//bob->getComponent<GroundMoveComponent>("GroundMove")->setDestination(comment->garrisonPoint);
+										GroundMoveComponent* move = dynamic_cast<GroundMoveComponent*>(bob->hasComponent("GroundMove"));
+										move->setMoveDestination(comment->getGarrisonPoint());
+										//bob->getComponent<GroundMoveComponent>("GroundMove")->setMoveDestination(comment->getGarrisonPoint());
 									}
 								}
 								else
@@ -411,7 +417,7 @@ void GamePlayState::HandleEvents()
 										GroundMoveComponent* move = dynamic_cast<GroundMoveComponent*>(entity->hasComponent("GroundMove"));
 										
 										if (move != nullptr)
-											move->setDestination(movePos);
+											move->setMoveDestination(movePos);
 									}
 						}
 					}
@@ -474,10 +480,17 @@ void GamePlayState::HandleEvents()
 
 void GamePlayState::Update()
 {
-	if (googleTimer.getElapsedTime().asSeconds() > 10)
+	if (googleTimer.getElapsedTime().asSeconds() > 5)
 	{
 		entMan->create<GooglePlus>();
+		ui->unitCounter->add(1);
 		googleTimer.restart();
+	}
+
+	if (resourceTimer.getElapsedTime().asSeconds() > 10)
+	{
+		ui->memesCounter->add(50);
+		resourceTimer.restart();
 	}
 }
 
@@ -592,6 +605,11 @@ void GamePlayState::Draw()
 			util::text::draw(*app->window, debugText, "armor: " + std::to_string(entMan->selectedEnts[0]->armor), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 168));
 //			util::text::draw(*app->window, debugText, "isMovable: " + std::to_string(entMan->selectedEnts[0]->isMovable), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 180));
 //			util::text::draw(*app->window, debugText, "isMoving: " + std::to_string(entMan->selectedEnts[0]->isMoving), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 192));
+
+			if (entMan->selectedEnts[0]->isComponentEntity)
+			{
+			
+			}
 		}
 
 		std::string entries;

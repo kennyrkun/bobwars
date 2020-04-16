@@ -1,9 +1,9 @@
 #ifndef GOOGLE_PLUS_HPP
 #define GOOGLE_PLUS_HPP
 
-#include "BaseEntity.hpp"
+#include "ComponentEntity.hpp"
 
-class GooglePlus : public BaseEntity
+class GooglePlus : public ComponentEntity
 {
 public:
 	GooglePlus(const int entityID);

@@ -1,5 +1,5 @@
-#ifndef GAME_HPP
-#define GAME_HPP
+#ifndef GAME_PLAY_STATE_HPP
+#define GAME_PLAY_STATE_HPP
 
 #include "AppEngine.hpp"
 #include "AppState.hpp"
@@ -51,6 +51,7 @@ private:
 	sf::Time timeSinceLastUpdate;
 
 	sf::Clock googleTimer;
+	sf::Clock resourceTimer;
 
 	EntityManager *entMan;
 	Interface *ui;
@@ -81,4 +82,4 @@ private:
 	void saveGame();
 };
 
-#endif /* GAME_HPP */
+#endif // !GAME_PLAY_STATE_HPP

@@ -1,7 +1,7 @@
 #ifndef COMMENT_SECTION_HPP
 #define COMMENT_SECTION_HPP
 
-#include "BaseEntity.hpp"
+#include "BuildingEntity.hpp"
 
 class CommentSection : public BuildingEntity
 {

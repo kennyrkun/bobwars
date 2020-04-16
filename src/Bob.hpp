@@ -1,28 +1,12 @@
 #ifndef BOB_HPP
 #define BOB_HPP
 
-#include "BaseEntity.hpp"
+#include "ComponentEntity.hpp"
+#include "GroundMoveComponent.hpp"
+
 #include "Util/Graphics/Line.hpp"
 
 class EntityManager;
-
-class GroundMoveComponent : public EntityComponent
-{
-public:
-	GroundMoveComponent()
-	{
-		name = "GroundMove";
-	}
-
-	void setDestination(const sf::Vector2f destination);
-	void cancelMovement();
-
-	void Frame(float delta) override;
-
-private:
-	sf::Vector2f destination;
-	bool moveInProgress = false;
-};
 
 class DrawConnectionsComponent : public EntityComponent
 {
