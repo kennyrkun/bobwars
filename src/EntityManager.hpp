@@ -21,6 +21,7 @@ public:
 
 //	GooglePlus* newGooglePlus();
 
+	// TODO: put this definition in EntityManager.cpp so we can use logger
 	template <typename T>
 	inline T* create()
 	{
@@ -40,10 +41,11 @@ public:
 	void deselectAllEnts();
 	// add selected bool to entity, check if it's selected without looping.
 
-	std::vector<BaseEntity*> getNearbyEntities(BaseEntity* entity, float x, float y, BaseEntity* filter = nullptr);
+	// TODO: Filter: list of Types that we don't care about 
+	std::vector<BaseEntity*> getNearbyEntities(BaseEntity* entity, float radius);
 
 	unsigned long long int physicalMaxEnts = std::numeric_limits<unsigned long long int>::max();
-	unsigned long long int maxEnts = 100000;
+	unsigned long long int maxEnts = 100000; // TODO: rename to entityLimit
 	unsigned long long int maxEntsPerTeam;
 };
 

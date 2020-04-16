@@ -18,7 +18,10 @@ EntityManager::EntityManager()
 EntityManager::~EntityManager()
 {
 	for (size_t i = 0; i < entities.size(); i++)
+	{
 		delete entities[i];
+		entities[i] = nullptr;
+	}
 
 //	is this needed?
 //	in theory, there can be no more selected entities than entities,
@@ -61,21 +64,6 @@ CommentSection* EntityManager::newCommentSection()
 	return newCommentSection;
 }
 
-void EntityManager::deselectAllEnts()
-{
-	//TODO: optimise deselection methods
-
-	for (size_t i = 0; i < selectedEnts.size(); i++)
-	{
-		logger::DEBUG("deselecting entity" + std::to_string(selectedEnts[i]->entityID));
-
-		//delesectEnt(selectedEnts[i]); // broken
-		selectedEnts[i]->isSelected = false;
-	}
-
-	selectedEnts.clear();
-}
-
 void EntityManager::addEnt(BaseEntity* ent)
 {
 	entities.push_back(ent);
@@ -96,6 +84,8 @@ void EntityManager::deleteEnt(BaseEntity* ent)
 		selectedEnts.erase(std::remove(selectedEnts.begin(), selectedEnts.end(), ent), selectedEnts.end());
 
 	entities.erase(std::remove(entities.begin(), entities.end(), ent), entities.end());
+
+	ent = nullptr;
 
 //	for (size_t i = 0; i < entities.size(); i++)
 //	{
@@ -141,14 +131,29 @@ void EntityManager::deselectEnt(BaseEntity *ent)
 	logger::DEBUG("deselected entity" + std::to_string(ent->entityID));
 }
 
-std::vector<BaseEntity*> EntityManager::getNearbyEntities(BaseEntity* entity, float x, float y, BaseEntity* filter)
+void EntityManager::deselectAllEnts()
+{
+	//TODO: optimise deselection methods
+
+	for (size_t i = 0; i < selectedEnts.size(); i++)
+	{
+		logger::DEBUG("deselecting entity" + std::to_string(selectedEnts[i]->entityID));
+
+		//delesectEnt(selectedEnts[i]); // broken
+		selectedEnts[i]->isSelected = false;
+	}
+
+	selectedEnts.clear();
+}
+
+std::vector<BaseEntity*> EntityManager::getNearbyEntities(BaseEntity* entity, float radius)
 {
 	std::vector<BaseEntity*> list;
 	list.reserve(entities.size());
 
 	//sf::FloatRect area = {entity.getPosition().x, entity.getPosition().y, x * 2, y * 2};
 	sf::RectangleShape area;
-	area.setSize(sf::Vector2f(x * 2, y * 2));
+	area.setSize(sf::Vector2f(radius * 2, radius * 2));
 	area.setOrigin(sf::Vector2f(area.getSize().x / 2, area.getSize().y / 2));
 	area.setPosition(entity->getPosition());
 
