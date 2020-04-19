@@ -9,6 +9,8 @@ bool GroundMoveComponent::getActive() const
 
 void GroundMoveComponent::setMoveDestination(const sf::Vector2f destination)
 {
+	marker.setPosition(destination);
+	
 	this->destination = destination;
 	moveInProgress = true;
 }
@@ -45,4 +47,10 @@ void GroundMoveComponent::Frame(float delta)
 			moveInProgress = false;
 		}
 	}
+}
+
+void GroundMoveComponent::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{
+	if (moveInProgress)
+		target.draw(marker, states);
 }
