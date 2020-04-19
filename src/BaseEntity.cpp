@@ -6,7 +6,7 @@
 BaseEntity::BaseEntity(const int entityID, const bool isBuilding, const bool isLand, const bool isSea, const bool isRanged, const bool isComponentEntity, EntityType type, AppEngine* app) :
 						entityID(entityID), isBuilding(isBuilding), isLand(isLand), isSea(isSea), isRanged(isRanged), isComponentEntity(isComponentEntity), typeEnum(type), app(app)
 {
-	logger::INFO("Entity base class constructed.");
+	logger::DEBUG("Entity base class constructed.");
 
 	this->type = "baseentity";
 }
