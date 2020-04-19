@@ -74,8 +74,12 @@ public:
 
 	Keybindings keys;
 
+	time_t delta;
+
 private:
 	bool running;
+
+	time_t lastUpdate;
 };
 
 #endif // !APP_ENGINE_HPP

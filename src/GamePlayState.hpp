@@ -7,8 +7,8 @@
 #include "Camera.hpp"
 
 #include <SFML/Graphics.hpp>
-#include <SFML/System/Vector2.hpp>
-#include <string>	
+
+#include <string>
 
 class EntityManager;
 class Interface;
@@ -47,9 +47,6 @@ public:
 private:
 	AppEngine* app;
 
-	sf::Time timePerFrame; // 60 frames per second
-	sf::Time timeSinceLastUpdate;
-
 	sf::Clock googleTimer;
 	sf::Clock resourceTimer;
 
@@ -66,7 +63,6 @@ private:
 	Camera* mainView2;
 	int baseViewSpeed = 500;
 
-	sf::Clock deltaClock;  // tracks how much time has past since the last frame
 	sf::Clock framesClock; // for maxfps
 	sf::Clock gameClock; // total time of the game
 

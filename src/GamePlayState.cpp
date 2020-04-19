@@ -129,16 +129,10 @@ void GamePlayState::Resume()
 
 void GamePlayState::HandleEvents()
 {
-	timePerFrame = sf::seconds(1.0f / 60.0f); // 60 frames per second
-	timeSinceLastUpdate = sf::Time::Zero;
+	sf::Time timePerFrame = sf::seconds(1.0f / 60.0f); // 60 frames per second
 
-	sf::Time deltaTime = deltaClock.restart();  // get elapsed time and reset clock
-	timeSinceLastUpdate += deltaTime;
-
-//	if (timeSinceLastUpdate >= timePerFrame)
+	if (sf::milliseconds(app->delta) <= timePerFrame)
 	{
-		timeSinceLastUpdate -= timePerFrame;
-
 		sf::Event event;
 		while (app->window->pollEvent(event))
 		{
@@ -451,7 +445,7 @@ void GamePlayState::HandleEvents()
 
 		for (size_t i = 0; i < entMan->entities.size(); i++)
 		{
-			entMan->entities[i]->Frame(deltaTime.asSeconds());
+			entMan->entities[i]->Frame(app->delta);
 
 			if (entMan->entities[i]->health <= 0)
 				entMan->deleteEnt(entMan->entities[i]);
@@ -470,11 +464,8 @@ void GamePlayState::HandleEvents()
 			// todo: clamp the mouse and keep it in the window`
 
 			float frames_per_second = framesClock.restart().asSeconds();
-			debugFrameCounter.setString("FPS: " + std::to_string(static_cast<int>(1.0f / frames_per_second)));
+			debugFrameCounter.setString("FPS: " + std::to_string(static_cast<int>(1.0f / app->delta)));
 		} // app->window.hasFocus()
-
-		sf::Time deltaTime = deltaClock.restart();  // get elapsed time and reset clock
-		timeSinceLastUpdate += deltaTime;
 	}
 }
 
@@ -593,7 +584,7 @@ void GamePlayState::Draw()
 		util::text::draw(*app->window, debugText, "maxEntities: " + std::to_string(entMan->maxEnts), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 48));
 		util::text::draw(*app->window, debugText, "physicalMaxEntities: " + std::to_string(entMan->physicalMaxEnts), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 60));
 		util::text::draw(*app->window, debugText, "maxEntitiesPerTeam: " + std::to_string(entMan->maxEntsPerTeam), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 72));
-		util::text::draw(*app->window, debugText, "delta: " + std::to_string(deltaClock.getElapsedTime().asMilliseconds()), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 84));
+		util::text::draw(*app->window, debugText, "delta: " + std::to_string(app->delta), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 84));
 
 		if (!entMan->selectedEnts.empty() && entMan->selectedEnts.size() == 1)
 		{
@@ -630,7 +621,7 @@ void GamePlayState::Draw()
 void GamePlayState::updateGameCamera()
 {
 	int moveX = 0, moveY = 0;
-	int moveAmount = baseViewSpeed * timePerFrame.asSeconds();
+	int moveAmount = baseViewSpeed * app->delta;
 
 	// keyboard based camera movement
 	if (sf::Keyboard::isKeyPressed(app->keys.moveCameraUp))
