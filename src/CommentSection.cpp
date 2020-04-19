@@ -2,7 +2,7 @@
 
 #include "Util/Logger.hpp"
 
-CommentSection::CommentSection(const int entityID) : BuildingEntity(entityID)
+CommentSection::CommentSection(const int entityID) : Building(entityID)
 {
 	logger::INFO("CommentSection entity created.");
 
