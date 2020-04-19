@@ -21,6 +21,14 @@ EntityComponent* ComponentEntity::removeComponent(EntityComponent* component)
 	return component;
 }
 
+void ComponentEntity::destroyComponent(EntityComponent* component)
+{
+	component->owner = nullptr;
+	components.erase(component->name);
+	delete component;
+	component = nullptr;
+}
+
 EntityComponent* ComponentEntity::hasComponent(const std::string& componentName)
 {
 	if (components.find(componentName) != components.end())

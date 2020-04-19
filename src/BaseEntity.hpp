@@ -52,6 +52,14 @@ public:
 
 	AppEngine* app;
 
+	enum class Stance
+	{
+		Aggressive,
+		Defensive,
+		StandGround,
+		NoAttack
+	};
+
 	float maxAttackDistance = 75.0f;
 	float minAttackDistance = 0.0f;
 	float maxViewDistance = 125.0f;

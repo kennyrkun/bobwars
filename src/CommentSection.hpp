@@ -1,9 +1,9 @@
 #ifndef COMMENT_SECTION_HPP
 #define COMMENT_SECTION_HPP
 
-#include "BuildingEntity.hpp"
+#include "Building.hpp"
 
-class CommentSection : public BuildingEntity
+class CommentSection : public Building
 {
 public:
 	CommentSection(const int entityID);

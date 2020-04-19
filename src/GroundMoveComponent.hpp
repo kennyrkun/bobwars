@@ -15,14 +15,6 @@ public:
 		marker.setOrigin(sf::Vector2f(marker.getGlobalBounds().width / 2, marker.getGlobalBounds().height / 2));
 	}
 
-	enum class Stance
-	{
-		Aggressive,
-		Defensive,
-		StandGround,
-		NoAttack
-	};
-
 	bool getActive() const;
 
 	void setMoveDestination(const sf::Vector2f destination);

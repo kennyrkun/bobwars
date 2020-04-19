@@ -19,7 +19,7 @@ public:
 
 	EntityComponent* addComponent(EntityComponent* component);
 	EntityComponent* removeComponent(EntityComponent* component);
-//	void destroyComponent(EntityComponent* component);
+	void 			 destroyComponent(EntityComponent* component);
 
 	/*
 	// TODO: this doesn't work
