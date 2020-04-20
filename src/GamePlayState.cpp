@@ -510,7 +510,6 @@ void GamePlayState::Draw()
 		originShape.setOrigin(sf::Vector2f(1, 1));
 		originShape.setFillColor(sf::Color::Red);
 
-		for (size_t i = 0; i < entMan->entities.size(); i++) // outline entities
 		for (BaseEntity* entity : entMan->entities)
 		{
 			if (!entMan->entities.empty())
@@ -528,42 +527,33 @@ void GamePlayState::Draw()
 
 				app->window->draw(originShape);
 
+				Line line;
+				line.setThickness(1.0f);
+
 				if (entity->isComponentEntity)
 				{
 					ComponentEntity* ent = static_cast<ComponentEntity*>(entity);
 
+					if (entity->isSelected)
+						line.setColor(sf::Color::Yellow);
+					else
+						line.setColor(sf::Color::Red);
+
 					if (ent->hasComponent("GroundMove"))
 					{
 						GroundMoveComponent* move = static_cast<GroundMoveComponent*>(ent->getComponent("GroundMove"));
-
-						Line line;
-
-						/*
-						if (entity->isSelected)
-						{
-							move->moveDest.setFillColor(sf::Color::Yellow);
-							line.setColor(sf::Color::Yellow);
-						}
-						else
-						{
-							line.setColor(sf::Color::Red);
-							entity->moveDest.setFillColor(sf::Color::Red);
-						}
-						*/
-
-//						app->window->draw(entity->moveDest);
 						line.setPoints(entity->sprite.getPosition(), move->getMoveDesintation());
-
-						line.setThickness(1.0f);
-
-						app->window->draw(line.vertices, 4, sf::Quads);
 					}
 				}
-				/*
 				else if (entity->isBuilding)
-					if (entity->isSelected)
-						app->window->draw(entity->grarrisonPoint);
-						*/
+				{
+					Building* building = static_cast<Building*>(entity);
+
+					if (building->hasGarrisonPoint)
+						line.setPoints(entity->sprite.getPosition(), building->getGarrisonPoint());
+				}
+
+				app->window->draw(line.vertices, 4, sf::Quads);
 			}
 		}
 	}
@@ -621,13 +611,13 @@ void GamePlayState::Draw()
 			util::text::draw(*app->window, debugText, "health: " + std::to_string(entMan->selectedEnts[0]->health), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 144));
 			util::text::draw(*app->window, debugText, "hitpoints: " + std::to_string(entMan->selectedEnts[0]->hitpoints), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 156));
 			util::text::draw(*app->window, debugText, "armor: " + std::to_string(entMan->selectedEnts[0]->armor), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 168));
-//			util::text::draw(*app->window, debugText, "isMovable: " + std::to_string(entMan->selectedEnts[0]->isMovable), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 180));
-//			util::text::draw(*app->window, debugText, "isMoving: " + std::to_string(entMan->selectedEnts[0]->isMoving), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 192));
 
+/*
 			if (entMan->selectedEnts[0]->isComponentEntity)
 			{
-			
+				static_cast<ComponentEntity*>(entMan->selectedEnts[0])->componentList();
 			}
+*/
 		}
 
 		std::string entries;
