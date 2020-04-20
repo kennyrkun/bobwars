@@ -17,9 +17,6 @@ public:
 	std::vector<BaseEntity*> selectedEnts;
 
 	Bob* newBob();
-	CommentSection* newCommentSection();
-
-//	GooglePlus* newGooglePlus();
 
 	// TODO: put this definition in EntityManager.cpp so we can use logger
 	template <typename T>
@@ -31,6 +28,11 @@ public:
 				
 //		logger::DEBUG("created " + newEntity->type + " entity (" + std::to_string(newEntity->entityID) + ")");
 		return newEntity;
+	}
+
+	inline int getNextID()
+	{
+		return totalEntities += 1;
 	}
 
 	void addEnt(BaseEntity *ent);
@@ -47,6 +49,8 @@ public:
 	unsigned long long int physicalMaxEnts = std::numeric_limits<unsigned long long int>::max();
 	unsigned long long int maxEnts = 100000; // TODO: rename to entityLimit
 	unsigned long long int maxEntsPerTeam;
+
+	unsigned long long int totalEntities;
 };
 
 #endif // ENTITY_MANAGER_HPP

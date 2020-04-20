@@ -6,7 +6,6 @@
 #include "BaseEntity.hpp"
 
 #include "Bob.hpp"
-#include "CommentSection.hpp"
 
 EntityManager::EntityManager()
 {
@@ -23,13 +22,6 @@ EntityManager::~EntityManager()
 		entities[i] = nullptr;
 	}
 
-//	is this needed?
-//	in theory, there can be no more selected entities than entities,
-//	so deleting all entities will also delete all selected entities
-//	thus rendering this code uselss and crash-creaty
-//	for (size_t i = 0; i < selectedEnts.size(); i++)
-//		delete selectedEnts[i];
-
 	selectedEnts.clear();
 	entities.clear();
 
@@ -45,28 +37,18 @@ Bob* EntityManager::newBob()
 	DrawConnectionsComponent* comp = new DrawConnectionsComponent(this);
 	newBobEntity->addComponent(comp);
 
-	entities.push_back(newBobEntity); // add it to the stack
+	addEnt(newBobEntity);
 
 	logger::DEBUG("creating new bob entity (" + std::to_string(newBobEntity->entityID) + ")");
 	return newBobEntity;
 }
 
-CommentSection* EntityManager::newCommentSection()
-{
-	//TODO: optimise entity creation
-	//TODO: comment sections might not want to be selected on creation
-
-	CommentSection *newCommentSection = new CommentSection(entities.size() + 1);
-
-	entities.push_back(newCommentSection);
-				
-	logger::DEBUG("created comment section entity (" + std::to_string(newCommentSection->entityID) + ")");
-	return newCommentSection;
-}
-
 void EntityManager::addEnt(BaseEntity* ent)
 {
 	entities.push_back(ent);
+
+	if (ent->entityID != entities.size())
+		logger::WARNING("Entity ID mismatch. " + std::to_string(ent->entityID) + " should be " + std::to_string(entities.size()));
 
 	if (ent->isSelected)
 		selectedEnts.push_back(ent);

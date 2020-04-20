@@ -13,7 +13,7 @@ class AppState;
 
 struct AppSettings
 {
-	std::string version = "0.15-20w17a";
+	std::string version = "0.16-20w17b";
 	std::string title = "bobwars " + version;
 	bool fullscreen = false;
 	bool vsync = true;
@@ -40,7 +40,7 @@ struct Keybindings
 	sf::Keyboard::Key moveCameraRight = sf::Keyboard::Key::D;
 	sf::Keyboard::Key deleteSelected = sf::Keyboard::Key::Delete;
 
-	sf::Keyboard::Key groupSelect = sf::Keyboard::Key::LControl;
+	sf::Keyboard::Key multipleSelectionModifier = sf::Keyboard::Key::LControl;
 };
 
 class AppEngine

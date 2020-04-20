@@ -83,7 +83,7 @@ void GamePlayState::Init(AppEngine* app_)
 
 	baseViewSpeed = 500;
 
-	entMan->newCommentSection();
+	entMan->addEnt(new CommentSection(entMan->getNextID(), entMan));
 
 	entMan->newBob()->setPosition(sf::Vector2f(0, 51));
 	entMan->newBob()->setPosition(sf::Vector2f(0, -51));
@@ -152,7 +152,11 @@ void GamePlayState::HandleEvents()
 
 				CommentSection* section = static_cast<CommentSection*>(entMan->entities[0]);
 
-				section->addTask(CommentSection::Task::Type::CreateBob);
+				if (sf::Keyboard::isKeyPressed(app->keys.multipleSelectionModifier))
+					for (size_t i = 0; i < section->maxTasks; i++)
+						section->addTask(EntityType::Bob);
+				else
+					section->addTask(EntityType::Bob);
 
 				break;
 			}
@@ -206,7 +210,7 @@ void GamePlayState::HandleEvents()
 					// TODO: make the thing flash
 					return;
 					
-				Boomer* boomer = new Boomer(entMan->entities.size() + 1, entMan);
+				Boomer* boomer = new Boomer(entMan->getNextID(), entMan);
 				entMan->addEnt(boomer);
 
 				if (entMan->selectedEnts.size() <= 1)
@@ -246,7 +250,8 @@ void GamePlayState::HandleEvents()
 			}
 			case MENU_CALLBACKS::CREATE_COMMENT_SECTION:
 			{
-				CommentSection* commentSection = entMan->newCommentSection();
+				CommentSection* commentSection = new CommentSection(entMan->getNextID(), entMan);
+				entMan->addEnt(commentSection);
 
 				if (entMan->selectedEnts.size() == 1)
 					commentSection->setPosition(entMan->selectedEnts[0]->getPosition());
@@ -370,7 +375,7 @@ void GamePlayState::HandleEvents()
 									// this entity is already selected
 									// and we're in group select mode
 									// so remove the entity from the selection
-									if (sf::Keyboard::isKeyPressed(app->keys.groupSelect))
+									if (sf::Keyboard::isKeyPressed(app->keys.multipleSelectionModifier))
 									{
 										// in Age of Empires II, if you hold control and click
 										// on an already selected entity it is deselected
@@ -761,14 +766,15 @@ void GamePlayState::deleteButton()
 	{
 		for (size_t i = 0; i < entMan->selectedEnts.size(); i++)
 		{
-			logger::INFO("deleting entity " + std::to_string(entMan->selectedEnts[i]->entityID));
+			logger::DEBUG("Deleting entity " + std::to_string(entMan->selectedEnts[i]->entityID));
 
 			entMan->deleteEnt(entMan->selectedEnts[i]);
 
 			// this is here because deleteEnt will delete the object from both entities and selectedEntities,
-			// when it does this, those vectors resize themselven. this resize causes the deletion to skip numbers
+			// when it does this, those vectors resize themselves. this resize causes the deletion to skip numbers
 			// instead of deleting 1 2 3 4, like we expect, it deletes 2 4 6 8.
 			// keep this
+			// TODO: i think this is bullshit
 			i--;
 		}
 
