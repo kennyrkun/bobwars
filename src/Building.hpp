@@ -17,6 +17,7 @@ public:
 	inline void setGarrisonPoint(const sf::Vector2f& point)
 	{
 		garrisonPoint.setPosition(point);
+		hasGarrisonPoint = true;
 	}
 
 	inline const sf::Vector2f& getGarrisonPoint() const
