@@ -98,12 +98,16 @@ void MainMenuState::HandleEvents()
 		case MAIN_MENU_CALLBACKS::EXIT_BUTTON:
 			logger::INFO("Exiting game...");
 			app->Quit();
+			return;
 		default:
 			break;
 		}
 
 		if (event.type == sf::Event::EventType::Closed)
+		{
 			app->Quit();
+			return;
+		}
 		else if (event.type == sf::Event::EventType::KeyPressed)
 		{
 			if (event.key.code == sf::Keyboard::Key::Tilde)
