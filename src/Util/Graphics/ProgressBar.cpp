@@ -115,7 +115,7 @@ void ProgressBar::setValue(int thingsDone_, int thingsToDo_)
 
 	bar[1].position.x = bar[2].position.x = x;
 
-	std::cout << percentDone << "/" << 100 << "*" << width << "=" << (percentDone / 100) * width << "(" << x << ")" << std::endl;
+//	std::cout << percentDone << "/" << 100 << "*" << width << "=" << (percentDone / 100) * width << "(" << x << ")" << std::endl;
 }
 
 float ProgressBar::getValue() const
