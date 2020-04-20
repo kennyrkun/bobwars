@@ -5,6 +5,7 @@
 #include "Interface.hpp"
 #include "EntityManager.hpp"
 #include "GooglePlus.hpp"
+#include "Boomer.hpp"
 
 #include "Util/Util.hpp"
 #include "Util/Logger.hpp"
@@ -20,6 +21,7 @@ sf::CircleShape test;
 enum MENU_CALLBACKS
 {
 	CREATE_BOB,
+	CREATE_BOOMER,
 	CREATE_COMMENT_SECTION,
 	DELETE_SELECTION,
 };
@@ -131,7 +133,7 @@ void GamePlayState::HandleEvents()
 {
 	sf::Time timePerFrame = sf::seconds(1.0f / 60.0f); // 60 frames per second
 
-	if (sf::milliseconds(app->delta) <= timePerFrame)
+	//if (sf::milliseconds(app->delta) <= timePerFrame)
 	{
 		sf::Event event;
 		while (app->window->pollEvent(event))
@@ -191,6 +193,62 @@ void GamePlayState::HandleEvents()
 						}
 
 						ui->unitCounter->setCount(entMan->entities.size());
+					}
+				}
+				break;
+			}
+			case MENU_CALLBACKS::CREATE_BOOMER:
+			{
+				if (entMan->entities.size() >= entMan->maxEntsPerTeam)
+				{
+					logger::INFO("Cannot create new Boomer because the unit cap has been reached.");
+
+					// TODO: flash the unit icon red
+				}
+				else if (false)
+				{
+
+				}
+				else // all requirements satisfied
+				{
+					if (entMan->entities.size() < entMan->maxEntsPerTeam)
+					{
+						Boomer* boomer = new Boomer(entMan->entities.size() + 1, entMan);
+						entMan->addEnt(boomer);
+
+						if (entMan->selectedEnts.size() <= 1)
+						{
+							boomer->setPosition(entMan->selectedEnts[0]->getPosition());
+
+							if (entMan->selectedEnts[0]->type == "commentsection")
+							{
+								CommentSection* comment = dynamic_cast<CommentSection*>(entMan->selectedEnts[0]);
+
+								if (comment != nullptr)
+								{
+									if (comment->hasGarrisonPoint)
+									{
+										GroundMoveComponent* move = dynamic_cast<GroundMoveComponent*>(boomer->hasComponent("GroundMove"));
+										move->setMoveDestination(comment->getGarrisonPoint());
+										//bob->getComponent<GroundMoveComponent>("GroundMove")->setMoveDestination(comment->getGarrisonPoint());
+									}
+								}
+								else
+								{
+									logger::ERROR("commentsection is null");
+									logger::DEBUG("the first entity in the selected list is: " + entMan->selectedEnts[0]->type);
+								}
+							}
+						}
+
+						if (entMan->entities.size() >= entMan->maxEntsPerTeam)
+						{
+							logger::INFO("unit cap reached");
+							ui->unitCounter->text.setFillColor(sf::Color::Red);
+							ui->createEnabled = false;
+						}
+
+						ui->unitCounter->add(1);
 					}
 				}
 				break;
@@ -402,13 +460,13 @@ void GamePlayState::HandleEvents()
 								for (size_t i = 0; i < entMan->selectedEnts.size(); i++)
 									if (entMan->selectedEnts[i]->isBuilding)
 									{
-										BuildingEntity* ent = dynamic_cast<BuildingEntity*>(entMan->selectedEnts[i]);
+										Building* ent = static_cast<Building*>(entMan->selectedEnts[i]);
 										ent->setGarrisonPoint(movePos);
 									}
 									else if (entMan->selectedEnts[i]->isComponentEntity)
 									{
-										ComponentEntity* entity = dynamic_cast<ComponentEntity*>(entMan->selectedEnts[i]);
-										GroundMoveComponent* move = dynamic_cast<GroundMoveComponent*>(entity->hasComponent("GroundMove"));
+										ComponentEntity* entity = static_cast<ComponentEntity*>(entMan->selectedEnts[i]);
+										GroundMoveComponent* move = entity->getComponent<GroundMoveComponent*>();
 										
 										if (move != nullptr)
 											move->setMoveDestination(movePos);
@@ -443,6 +501,19 @@ void GamePlayState::HandleEvents()
 			ui->HandleEvents(event);
 		} // pollevent
 
+		if (googleTimer.getElapsedTime().asSeconds() > 5)
+		{
+			entMan->create<GooglePlus>();
+			ui->unitCounter->add(1);
+			googleTimer.restart();
+		}
+
+		if (resourceTimer.getElapsedTime().asSeconds() > 10)
+		{
+			ui->memesCounter->add(50);
+			resourceTimer.restart();
+		}
+
 		for (size_t i = 0; i < entMan->entities.size(); i++)
 		{
 			entMan->entities[i]->Frame(app->delta);
@@ -471,18 +542,6 @@ void GamePlayState::HandleEvents()
 
 void GamePlayState::Update()
 {
-	if (googleTimer.getElapsedTime().asSeconds() > 5)
-	{
-		entMan->create<GooglePlus>();
-		ui->unitCounter->add(1);
-		googleTimer.restart();
-	}
-
-	if (resourceTimer.getElapsedTime().asSeconds() > 10)
-	{
-		ui->memesCounter->add(50);
-		resourceTimer.restart();
-	}
 }
 
 void GamePlayState::Draw()
@@ -499,6 +558,11 @@ void GamePlayState::Draw()
 
 	if (app->settings.debug)
 	{
+		sf::CircleShape originShape;
+		originShape.setRadius(2);
+		originShape.setOrigin(sf::Vector2f(1, 1));
+		originShape.setFillColor(sf::Color::Red);
+
 		for (size_t i = 0; i < entMan->entities.size(); i++) // outline entities
 		{
 			if (!entMan->entities.empty())
@@ -511,6 +575,10 @@ void GamePlayState::Draw()
 				showObjectCoords(entMan->entities[i]->sprite);
 				util::text::draw(*app->window, debugText, std::to_string(entMan->entities[i]->entityID) + "/" + std::to_string(entMan->entities.size()), sf::Vector2f(entMan->entities[i]->sprite.getPosition().x, entMan->entities[i]->sprite.getPosition().y - entMan->entities[i]->sprite.getLocalBounds().height / 2), sf::Vector2f(.2f, .2f));
 				util::text::draw(*app->window, debugText, entMan->entities[i]->type, sf::Vector2f(entMan->entities[i]->sprite.getPosition().x, entMan->entities[i]->sprite.getPosition().y), sf::Vector2f(.2f, .2f));
+
+				originShape.setPosition(entMan->entities[i]->getPosition());
+
+				app->window->draw(originShape);
 
 				/*
 				if (entMan->entities[i]->isMoving)
@@ -621,7 +689,8 @@ void GamePlayState::Draw()
 void GamePlayState::updateGameCamera()
 {
 	int moveX = 0, moveY = 0;
-	int moveAmount = baseViewSpeed * app->delta;
+//	int moveAmount = baseViewSpeed * app->delta;
+	int moveAmount = baseViewSpeed * .01;
 
 	// keyboard based camera movement
 	if (sf::Keyboard::isKeyPressed(app->keys.moveCameraUp))

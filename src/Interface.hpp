@@ -27,6 +27,7 @@ private:
 enum InterfaceCallbacks
 {
 	CreateBob,
+	CreateBoomer,
 	CreateCommentSection,
 	DeleteEntity,
 	DeleteAll,

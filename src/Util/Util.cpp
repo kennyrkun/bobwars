@@ -1,9 +1,10 @@
 #include "Util.hpp"
 
-#include <string>
 #include <ctime>
-#include <fstream>
+#include <cmath>
 #include <experimental/filesystem>
+#include <fstream>
+#include <string>
 
 namespace util
 {
@@ -43,6 +44,18 @@ namespace util
 				return false;
 		}
 	}
+
+	float distance(const sf::Vector2f& one, const sf::Vector2f& two)
+	{ 
+		// Calculating distance 
+		float xDistance = two.x - one.x;
+		xDistance *= xDistance; // sq
+
+		float yDistance = two.y - one.y;
+		yDistance *= yDistance; // sq
+
+		return std::sqrt(xDistance + yDistance); 
+	} 
 
 	void screenshot(sf::RenderWindow &window)
 	{

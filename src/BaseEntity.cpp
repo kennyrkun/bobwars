@@ -31,7 +31,7 @@ void BaseEntity::onDamage(float amount, BaseEntity* entity, DamageCause cause)
 	health -= amount;
 
 	if (health <= 0)
-		logger::INFO("this entity is now FUCKING DEAD");
+		logger::INFO(type + " was killed by " + entity->type);
 }
 
 void BaseEntity::Frame(float delta)

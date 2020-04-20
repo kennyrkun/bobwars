@@ -20,6 +20,8 @@ namespace util
 		bool mouseIsOver(sf::Sprite &object, sf::RenderWindow &window);
 	}
 
+	float distance(const sf::Vector2f& one, const sf::Vector2f& two);
+
 	// TODO: take screen shot, save screenshot, game screenshot functions
 	void screenshot(sf::RenderWindow &window);
 

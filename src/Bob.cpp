@@ -3,20 +3,7 @@
 #include "EntityManager.hpp"
 
 #include "Util/Logger.hpp"
-
-#include <cmath>
-
-float distance(const sf::Vector2f& one, const sf::Vector2f& two) 
-{ 
-    // Calculating distance 
-	float xDistance = two.x - one.x;
-	xDistance *= xDistance; // sq
-
-	float yDistance = two.y - one.y;
-	yDistance *= yDistance; // sq
-
-    return std::sqrt(xDistance + yDistance); 
-} 
+#include "Util/Util.hpp"
 
 void DrawConnectionsComponent::Frame(float delta)
 {
@@ -39,9 +26,9 @@ void DrawConnectionsComponent::Frame(float delta)
 
 		line.setPoints(owner->getPosition(), entity->getPosition());
 
-		if (!attackedThisFrame && entity->team != owner->team)
+		if (!attackedThisFrame && entity->team == Team::BadGuys)
 		{
-			float dist = distance(owner->getPosition(), entity->getPosition());
+			float dist = util::distance(owner->getPosition(), entity->getPosition());
 
 			ComponentEntity* compEnt = dynamic_cast<ComponentEntity*>(owner);
 			GroundMoveComponent* move = dynamic_cast<GroundMoveComponent*>(compEnt->hasComponent("GroundMove"));

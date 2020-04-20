@@ -25,9 +25,11 @@ enum class EntityType
 	BuildingEntity,
 	InteractableObject,
 	Bob,
+	Boomer,
 	CommentSection,
 	Google,
 	GooglePlus,
+	Explosion,
 };
 
 class EntityAction
@@ -110,7 +112,7 @@ public:
 
 	virtual void onDamage(float amount, BaseEntity* entity, DamageCause cause = DamageCause::Unknown);
 
-	virtual void Frame(float delta);
+	virtual void Frame(const float delta);
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };
 

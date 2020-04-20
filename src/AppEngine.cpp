@@ -158,12 +158,12 @@ void AppEngine::PopState(int amount)
 
 void AppEngine::HandleEvents()
 {
-	delta = time_t(0) - lastUpdate;
+	time_t timeNow = time_t(0);
+	delta = timeNow - lastUpdate;
+	lastUpdate = timeNow;
 
 	if (running)
 		states.back()->HandleEvents();
-
-	lastUpdate = time_t(0);
 }
 
 void AppEngine::Update()

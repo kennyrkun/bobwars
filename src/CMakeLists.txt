@@ -9,13 +9,15 @@ PROJECT(${PROJECT_NAME} LANGUAGES CXX)
 
 SET(HEADERS AppEngine.hpp 
 			BaseEntity.hpp 
-			BuildingEntity.hpp
+			Building.hpp
 			Bob.hpp 
+			Boomer.hpp
 			Camera.hpp 
 			CommentSection.hpp
 			ComponentEntity.hpp
 			EntityComponent.hpp
 			EntityManager.hpp
+			Explosion.hpp
 			GroundMoveComponent.hpp
 			GameCreationState.hpp
 			GameEndState.hpp
@@ -42,11 +44,13 @@ SET(HEADERS AppEngine.hpp
 SET(SOURCES AppEngine.cpp
 			BaseEntity.cpp
 			Bob.cpp
+			Boomer.cpp
 			Camera.cpp
 			CommentSection.cpp
 			ComponentEntity.cpp
 			GroundMoveComponent.cpp
 			EntityManager.cpp
+			Explosion.cpp
 			GameCreationState.cpp
 			GameEndState.cpp
 			GamePauseState.cpp

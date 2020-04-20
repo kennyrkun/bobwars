@@ -11,6 +11,7 @@
 enum MENU_CALLBACKS
 {
 	CREATE_BOB,
+	CREATE_BOOMER,
 	CREATE_COMMENT_SECTION,
 	DELETE_SELECTION,
 };
@@ -195,9 +196,13 @@ void Interface::updateSelectionInfo(const std::vector<BaseEntity*>& entities)
 		{
 			sf::Texture* buttonTexture = new sf::Texture;
 			buttonTexture->loadFromFile("./bobwars/resource/textures/spritebuttons/createbob.png");
+			SFUI::SpriteButton* createBobButton = new SFUI::SpriteButton(*buttonTexture);
+			topRow->add(createBobButton, MENU_CALLBACKS::CREATE_BOB);
 
-			SFUI::SpriteButton* createCommentSectionButton = new SFUI::SpriteButton(*buttonTexture);
-			topRow->add(createCommentSectionButton, MENU_CALLBACKS::CREATE_BOB);
+			sf::Texture* buttonTexture2 = new sf::Texture;
+			buttonTexture2->loadFromFile("./bobwars/resource/textures/spritebuttons/createboomer.png");
+			SFUI::SpriteButton* createBoomerButton = new SFUI::SpriteButton(*buttonTexture2);
+			topRow->add(createBoomerButton, MENU_CALLBACKS::CREATE_BOOMER);
 		}
 		else
 			logger::WARNING("trying to update entity info for unknown entity");
@@ -205,7 +210,7 @@ void Interface::updateSelectionInfo(const std::vector<BaseEntity*>& entities)
 		sf::Texture* emptyTexture = new sf::Texture;
 		emptyTexture->loadFromFile("./bobwars/resource/textures/spritebuttons/empty.png");
 
-		for (int i = 0; i < 2; i++)
+		for (int i = 0; i < 1; i++)
 		{
 			SFUI::SpriteButton* emptyButton = new SFUI::SpriteButton(*emptyTexture);
 			topRow->add(emptyButton);

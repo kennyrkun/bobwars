@@ -21,20 +21,16 @@ public:
 	EntityComponent* removeComponent(EntityComponent* component);
 	void 			 destroyComponent(EntityComponent* component);
 
-	/*
-	// TODO: this doesn't work
+	// Beware: this function is likely quite slow, due to multiple typecasts.
 	template <typename T>
-	T* getComponent(const std::string& componentName)
+	T getComponent()
 	{
-		if (components.find(componentName) != components.end())
-		{
-			T component* = dynamic_cast<T>(components.at(componentName));
-			return component;
-		}
-		else
-			return nullptr;
+		for (auto& [name, component] : components)
+			if (dynamic_cast<T>(component))
+				return static_cast<T>(component);
+
+		return nullptr;
 	}
-	*/
 
 	// TODO: this doesn't work
 	EntityComponent* hasComponent(const std::string& componentName);
