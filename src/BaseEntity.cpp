@@ -3,8 +3,8 @@
 #include "Util/Graphics/Line.hpp"
 #include "Util/Util.hpp"
 
-BaseEntity::BaseEntity(const int entityID, const bool isBuilding, const bool isLand, const bool isSea, const bool isRanged, const bool isComponentEntity, EntityType type, AppEngine* app) :
-						entityID(entityID), isBuilding(isBuilding), isLand(isLand), isSea(isSea), isRanged(isRanged), isComponentEntity(isComponentEntity), typeEnum(type), app(app)
+BaseEntity::BaseEntity(const int entityID, const bool isBuilding, const bool isLand, const bool isSea, const bool isRanged, const bool isComponentEntity, EntityType type, AppEngine* app, const int maxTasks) :
+						entityID(entityID), isBuilding(isBuilding), isLand(isLand), isSea(isSea), isRanged(isRanged), isComponentEntity(isComponentEntity), typeEnum(type), app(app), maxTasks(maxTasks)
 {
 	logger::DEBUG("Entity base class constructed.");
 

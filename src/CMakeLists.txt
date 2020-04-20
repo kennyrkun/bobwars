@@ -39,6 +39,7 @@ SET(HEADERS AppEngine.hpp
 			Util/DiscordRPC.hpp
 			Util/Graphics/Graphics.hpp
 			Util/Graphics/Line.hpp
+			Util/Graphics/SpriteButtonWithTooltip.hpp
 			Util/Logger.cpp)
 
 SET(SOURCES AppEngine.cpp
@@ -73,6 +74,7 @@ SET(SOURCES AppEngine.cpp
 			Util/DiscordRPC.cpp
 			Util/Graphics/Line.cpp
 			Util/Graphics/Graphics.cpp
+			Util/Graphics/SpriteButtonWithTooltip.cpp
 			Util/Logger.cpp
 			Util/Graphics/ProgressBar.cpp)
 

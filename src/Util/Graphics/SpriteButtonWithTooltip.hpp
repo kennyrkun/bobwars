@@ -3,14 +3,11 @@
 
 #include <SFUI/Widget.hpp>
 
-// TODO: why is this different than the other Buttons?
-// TODO: SpriteButton doesn't release when mouse is moved out of bounds
-
 // Button with custom spritesheet and text options.
-class SpriteButtonWithToolTip : public SFUI::Widget
+class SpriteButtonWithTooltip : public SFUI::Widget
 {
 public:
-	SpriteButton(const sf::Texture& texture, const sf::String& label = "");
+	SpriteButtonWithTooltip(const sf::Texture& texture, const sf::String& label = "");
 
 	void setString(const sf::String& string);
 	const sf::String& getString() const;
@@ -22,7 +19,7 @@ public:
 
 	void setTexture(const sf::Texture& texture);
 
-	void onStateChanged(State state);
+	void onStateChanged(SFUI::State state);
 	void onMouseMoved(float x, float y);
 	void onMousePressed(float x, float y);
 	void onMouseReleased(float x, float y);

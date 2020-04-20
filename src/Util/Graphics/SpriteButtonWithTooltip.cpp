@@ -4,7 +4,7 @@
 
 // TODO: fix button not showing unpressed state
 
-SpriteButtonWithTooltip::SpriteButton(const sf::Texture& texture, const sf::String& string) : m_pressed(false)
+SpriteButtonWithTooltip::SpriteButtonWithTooltip(const sf::Texture& texture, const sf::String& string) : m_pressed(false)
 {
 	size_t width = texture.getSize().x;
 	size_t height = texture.getSize().y / 4; // default, hover, pressed, focus
@@ -68,21 +68,21 @@ void SpriteButtonWithTooltip::draw(sf::RenderTarget& target, sf::RenderStates st
 
 // Callbacks
 
-void SpriteButtonWithTooltip::onStateChanged(State state)
+void SpriteButtonWithTooltip::onStateChanged(SFUI::State state)
 {
 	sf::Vector2f size = getSize();
 	switch (state)
 	{
-	case State::Default:
+	case SFUI::State::Default:
 		m_background.setTextureRect(sf::IntRect(0, 0, size.x, size.y));
 		break;
-	case State::Hovered:
+	case SFUI::State::Hovered:
 		m_background.setTextureRect(sf::IntRect(0, size.y, size.x, size.y));
 		break;
-	case State::Pressed:
+	case SFUI::State::Pressed:
 		m_background.setTextureRect(sf::IntRect(0, size.y * 2, size.x, size.y));
 		break;
-	case State::Focused:
+	case SFUI::State::Focused:
 		m_background.setTextureRect(sf::IntRect(0, size.y * 3, size.x, size.y));
 		break;
 	}
@@ -98,7 +98,7 @@ void SpriteButtonWithTooltip::onMouseMoved(float x, float y)
 			release();
 	}
 
-	if (getState() == State::Pressed)
+	if (getState() == SFUI::State::Pressed)
 	{
 		if (containsPoint({ x, y })) // TODO: check if this should check if left mouse button is pressed
 			press();
@@ -127,7 +127,7 @@ void SpriteButtonWithTooltip::onKeyPressed(sf::Keyboard::Key key)
 		press();
 		triggerCallback();
 		// HACK: we don't have to do this in onMousePressed, why do we have to do it here?
-		onStateChanged(State::Pressed);
+		onStateChanged(SFUI::State::Pressed);
 	}
 }
 
@@ -137,7 +137,7 @@ void SpriteButtonWithTooltip::onKeyReleased(sf::Keyboard::Key key)
 	{
 		release();
 		// HACK: we don't have to do this in onMousePressed, why do we have to do it here?
-		onStateChanged(State::Focused);
+		onStateChanged(SFUI::State::Focused);
 	}
 }
 

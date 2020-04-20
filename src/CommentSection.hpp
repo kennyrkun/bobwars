@@ -11,33 +11,12 @@
 class CommentSection : public Building
 {
 public:
-	CommentSection(const int entityID, EntityManager* manager, const int maxTasks = 15);
+	CommentSection(const int entityID, EntityManager* manager);
 	~CommentSection();
 
-	struct Task
-	{
-		EntityType type;
-		float progress;
-		float duration; // Seconds
-		bool finished = false;
-	};
-
-	enum class Status
-	{
-		NotEnoughResource,
-		TooManyEntities,
-		TooManyTasks,
-
-		Success
-	} fail;
-
-	const int maxTasks = 15;
-
-	std::vector<Task> tasks;
-
-	Status addTask(EntityType type);
-
 	void setPosition(const sf::Vector2f& position);
+
+	BaseEntity::Status addTask(EntityType type) override;
 
 	void Frame(const float delta) override;
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;

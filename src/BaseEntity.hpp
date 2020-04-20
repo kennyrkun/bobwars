@@ -47,7 +47,7 @@ public:
 class BaseEntity : public sf::Drawable
 {
 public:
-	BaseEntity(const int entityID, const bool isBuilding, const bool isLand, const bool isSea, const bool isRanged, const bool isComponentEntity, EntityType type, AppEngine* app = nullptr);
+	BaseEntity(const int entityID, const bool isBuilding, const bool isLand, const bool isSea, const bool isRanged, const bool isComponentEntity, EntityType type, AppEngine* app = nullptr, const int maxTasks = 15);
 	~BaseEntity();
 
 	const int entityID;
@@ -61,6 +61,30 @@ public:
 		StandGround,
 		NoAttack
 	};
+
+	struct Task
+	{
+		EntityType type;
+		float progress;
+		float duration; // Seconds
+		bool finished = false;
+	};
+
+	// TODO: put this in Task if we can
+	enum class Status
+	{
+		NotEnoughResource,
+		TooManyEntities,
+		TooManyTasks,
+
+		Success
+	} fail;
+
+	const int maxTasks = 15;
+
+	std::vector<Task> tasks;
+
+	virtual Status addTask(EntityType type) {}
 
 	float maxAttackDistance = 75.0f;
 	float minAttackDistance = 0.0f;

@@ -2,8 +2,6 @@
 #define ENTITY_MANAGER_HPP
 
 #include "BaseEntity.hpp"
-#include "Bob.hpp"
-#include "CommentSection.hpp"
 
 #include <vector>
 
@@ -15,8 +13,6 @@ public:
 
 	std::vector<BaseEntity*> entities;
 	std::vector<BaseEntity*> selectedEnts;
-
-	Bob* newBob();
 
 	// TODO: put this definition in EntityManager.cpp so we can use logger
 	template <typename T>
@@ -35,7 +31,7 @@ public:
 		return totalEntities += 1;
 	}
 
-	void addEnt(BaseEntity *ent);
+	BaseEntity* addEnt(BaseEntity *ent);
 	void deleteEnt(BaseEntity *ent);
 
 	bool selectEnt(BaseEntity *ent);

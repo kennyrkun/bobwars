@@ -18,6 +18,8 @@ public:
 	bool getActive() const;
 
 	void setMoveDestination(const sf::Vector2f destination);
+ 	const sf::Vector2f& getMoveDesintation() const;
+
 	void cancelMovement();
 
 	void Frame(float delta) override;

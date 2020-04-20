@@ -1,6 +1,7 @@
 #include "Bob.hpp"
 
 #include "EntityManager.hpp"
+#include "CommentSection.hpp"
 
 #include "Util/Logger.hpp"
 #include "Util/Util.hpp"
@@ -20,9 +21,7 @@ void DrawConnectionsComponent::Frame(float delta)
 		else if (entity->team == Team::BadGuys)
 			line.setColor(sf::Color::Red);
 		else if (entity->team == Team::Neutral)
-			line.setColor(sf::Color::Red);
-		else
-			line.setColor(sf::Color::White);
+			line.setColor(sf::Color::Yellow);
 
 		line.setPoints(owner->getPosition(), entity->getPosition());
 
@@ -38,6 +37,7 @@ void DrawConnectionsComponent::Frame(float delta)
 				// Don't attack if we're moving, and don't intercept entities while we're moving.
 				if (move != nullptr && !move->getActive())
 				{
+					line.setColor(sf::Color::Black);
 					entity->onDamage(1.0f, owner);
 					attackedThisFrame = true;
 				}
@@ -60,7 +60,7 @@ void DrawConnectionsComponent::draw(sf::RenderTarget& target, sf::RenderStates s
 		target.draw(lines[i].vertices, 4, sf::Quads);
 }
 
-Bob::Bob(const int entityID) : ComponentEntity(entityID)
+Bob::Bob(const int entityID, EntityManager* entities) : entities(entities), ComponentEntity(entityID)
 {
 	logger::INFO("Bob entity created.");
 
@@ -74,13 +74,36 @@ Bob::Bob(const int entityID) : ComponentEntity(entityID)
 	hitpoints = 1;
 	type = "bob";
 
-	actions.push_back({ "Create Comment Section", "Creates a Comment Section", sf::Keyboard::Key::C, "commentsection.png" });
+	actions.push_back({ "Create Comment Section", "Creates a Comment Section", sf::Keyboard::Key::C, "createcommentsection", static_cast<int>(EntityType::CommentSection) });
 
 	addComponent(new GroundMoveComponent);
-	// TODO: this component can only be added with an instance of EntityManager
-//	addComponent(new DrawConnectionsComponent);
+	addComponent(new DrawConnectionsComponent(entities));
 }
 
 Bob::~Bob()
 {
+}
+
+BaseEntity::Status Bob::addTask(EntityType type)
+{
+	if (entities->entities.size() >= entities->maxEntsPerTeam)
+		return Status::TooManyEntities;
+	else if (tasks.size() >= maxTasks)
+		return Status::TooManyTasks;
+
+	switch (type)
+	{
+	case EntityType::CommentSection:
+	{
+		CommentSection* comment = new CommentSection(entities->getNextID(), entities);
+		comment->setPosition(getPosition());
+		entities->addEnt(comment);
+		break;
+	}
+	default:
+		break; 
+	}
+
+	logger::DEBUG("Added task to Bob.");
+	return Status::Success;
 }

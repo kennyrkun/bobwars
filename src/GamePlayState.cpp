@@ -4,6 +4,8 @@
 
 #include "Interface.hpp"
 #include "EntityManager.hpp"
+#include "Bob.hpp"
+#include "CommentSection.hpp"
 #include "GooglePlus.hpp"
 #include "Boomer.hpp"
 
@@ -18,14 +20,6 @@
 
 // TODO: what the fuck is this
 sf::CircleShape test;
-
-enum MENU_CALLBACKS
-{
-	CREATE_BOB,
-	CREATE_BOOMER,
-	CREATE_COMMENT_SECTION,
-	DELETE_SELECTION,
-};
 
 void GamePlayState::Init(AppEngine* app_)
 {
@@ -89,10 +83,10 @@ void GamePlayState::Init(AppEngine* app_)
 
 	entMan->addEnt(new CommentSection(entMan->getNextID(), entMan));
 
-	entMan->newBob()->setPosition(sf::Vector2f(0, 51));
-	entMan->newBob()->setPosition(sf::Vector2f(0, -51));
-	entMan->newBob()->setPosition(sf::Vector2f(51, 0));
-	entMan->newBob()->setPosition(sf::Vector2f(-51, 0));
+	entMan->addEnt(new Bob(entMan->getNextID(), entMan))->setPosition(sf::Vector2f(0, 51));
+	entMan->addEnt(new Bob(entMan->getNextID(), entMan))->setPosition(sf::Vector2f(0, -51));
+	entMan->addEnt(new Bob(entMan->getNextID(), entMan))->setPosition(sf::Vector2f(51, 0));
+	entMan->addEnt(new Bob(entMan->getNextID(), entMan))->setPosition(sf::Vector2f(-51, 0));
 
 	ui->unitCounter->setCount(5);
 
@@ -145,127 +139,29 @@ void GamePlayState::HandleEvents()
 		{
 			int actionID = ui->unitActionMenu->onEvent(event);
 
+			if (actionID != -1)
+				logger::INFO(std::to_string(actionID));
+
 			switch (actionID)
 			{
-			case MENU_CALLBACKS::CREATE_BOB:
-			{
-				if (entMan->selectedEnts.size() != 1)
-					break;
-				else if (entMan->selectedEnts[0]->type != "commentsection")
-					break;
-
-				CommentSection* section = static_cast<CommentSection*>(entMan->selectedEnts[0]);
-
-				if (sf::Keyboard::isKeyPressed(app->keys.multipleSelectionModifier))
-					for (size_t i = 0; i < section->maxTasks; i++)
-						section->addTask(EntityType::Bob);
-				else
-					section->addTask(EntityType::Bob);
-
-				break;
-			}
-			/*
-			case MENU_CALLBACKS::CREATE_BOB:
-			{
-				if (entMan->entities.size() >= entMan->maxEntsPerTeam)
-					break;
-
-				Bob* bob = entMan->newBob();
-
-				if (entMan->selectedEnts.size() <= 1)
-				{
-					bob->setPosition(entMan->selectedEnts[0]->getPosition());
-
-					if (entMan->selectedEnts[0]->type == "commentsection")
-					{
-						CommentSection* comment = dynamic_cast<CommentSection*>(entMan->selectedEnts[0]);
-
-						if (comment != nullptr)
-						{
-							if (comment->hasGarrisonPoint)
-							{
-								GroundMoveComponent* move = dynamic_cast<GroundMoveComponent*>(bob->hasComponent("GroundMove"));
-								move->setMoveDestination(comment->getGarrisonPoint());
-								//bob->getComponent<GroundMoveComponent>("GroundMove")->setMoveDestination(comment->getGarrisonPoint());
-							}
-						}
-						else
-						{
-							logger::ERROR("commentsection is null");
-							logger::INFO("the first entity in the selected list is: " + entMan->selectedEnts[0]->type);
-						}
-					}
-				}
-
-				if (entMan->entities.size() >= entMan->maxEntsPerTeam)
-				{
-					logger::INFO("unit cap reached");
-					ui->unitCounter->text.setFillColor(sf::Color::Red);
-					ui->createEnabled = false;
-				}
-
-				ui->unitCounter->add(1);
-				break;
-			}
-			*/
-			case MENU_CALLBACKS::CREATE_BOOMER:
-			{
-				if (entMan->entities.size() >= entMan->maxEntsPerTeam)
-					// TODO: make the thing flash
-					return;
-					
-				Boomer* boomer = new Boomer(entMan->getNextID(), entMan);
-				entMan->addEnt(boomer);
-
-				if (entMan->selectedEnts.size() <= 1)
-				{
-					boomer->setPosition(entMan->selectedEnts[0]->getPosition());
-
-					if (entMan->selectedEnts[0]->type == "commentsection")
-					{
-						CommentSection* comment = dynamic_cast<CommentSection*>(entMan->selectedEnts[0]);
-
-						if (comment != nullptr)
-						{
-							if (comment->hasGarrisonPoint)
-							{
-								GroundMoveComponent* move = dynamic_cast<GroundMoveComponent*>(boomer->hasComponent("GroundMove"));
-								move->setMoveDestination(comment->getGarrisonPoint());
-								//bob->getComponent<GroundMoveComponent>("GroundMove")->setMoveDestination(comment->getGarrisonPoint());
-							}
-						}
-						else
-						{
-							logger::ERROR("commentsection is null");
-							logger::DEBUG("the first entity in the selected list is: " + entMan->selectedEnts[0]->type);
-						}
-					}
-				}
-
-				if (entMan->entities.size() >= entMan->maxEntsPerTeam)
-				{
-					logger::INFO("unit cap reached");
-					ui->unitCounter->text.setFillColor(sf::Color::Red);
-					ui->createEnabled = false;
-				}
-
-				ui->unitCounter->add(1);
-				break;
-			}
-			case MENU_CALLBACKS::CREATE_COMMENT_SECTION:
-			{
-				CommentSection* commentSection = new CommentSection(entMan->getNextID(), entMan);
-				entMan->addEnt(commentSection);
-
-				if (entMan->selectedEnts.size() == 1)
-					commentSection->setPosition(entMan->selectedEnts[0]->getPosition());
-				break;
-			}
 			case MENU_CALLBACKS::DELETE_SELECTION:
 				deleteButton();
 				break;
-			default:
+			case MENU_CALLBACKS::NULL_CALLBACK:
 				break;
+			default:
+			{
+				if (entMan->selectedEnts.size() != 1)
+					break;
+
+				if (sf::Keyboard::isKeyPressed(app->keys.multipleSelectionModifier))
+					for (size_t i = 0; i < entMan->selectedEnts[0]->maxTasks; i++)
+						entMan->selectedEnts[0]->addTask(static_cast<EntityType>(actionID));
+				else
+					entMan->selectedEnts[0]->addTask(static_cast<EntityType>(actionID));
+
+				break;
+			}
 			}
 
 			if (event.type == sf::Event::EventType::Closed)
@@ -615,47 +511,59 @@ void GamePlayState::Draw()
 		originShape.setFillColor(sf::Color::Red);
 
 		for (size_t i = 0; i < entMan->entities.size(); i++) // outline entities
+		for (BaseEntity* entity : entMan->entities)
 		{
 			if (!entMan->entities.empty())
 			{
-				if (!entMan->entities[i]->isSelected)
-					util::graphics::outline(*app->window, entMan->entities[i]->sprite, 2, sf::Color::Red);
+				if (!entity->isSelected)
+					util::graphics::outline(*app->window, entity->sprite, 2, sf::Color::Red);
 				else
-					util::graphics::outline(*app->window, entMan->entities[i]->sprite, 2, sf::Color::Yellow);
+					util::graphics::outline(*app->window, entity->sprite, 2, sf::Color::Yellow);
 
-				showObjectCoords(entMan->entities[i]->sprite);
-				util::text::draw(*app->window, debugText, std::to_string(entMan->entities[i]->entityID), sf::Vector2f(entMan->entities[i]->sprite.getPosition().x, entMan->entities[i]->sprite.getPosition().y - entMan->entities[i]->sprite.getLocalBounds().height / 2), sf::Vector2f(.2f, .2f));
-				util::text::draw(*app->window, debugText, entMan->entities[i]->type, sf::Vector2f(entMan->entities[i]->sprite.getPosition().x, entMan->entities[i]->sprite.getPosition().y), sf::Vector2f(.2f, .2f));
+				showObjectCoords(entity->sprite);
+				util::text::draw(*app->window, debugText, std::to_string(entity->entityID), sf::Vector2f(entity->sprite.getPosition().x, entity->sprite.getPosition().y - entity->sprite.getLocalBounds().height / 2), sf::Vector2f(.2f, .2f));
+				util::text::draw(*app->window, debugText, entity->type, sf::Vector2f(entity->sprite.getPosition().x, entity->sprite.getPosition().y), sf::Vector2f(.2f, .2f));
 
-				originShape.setPosition(entMan->entities[i]->getPosition());
+				originShape.setPosition(entity->getPosition());
 
 				app->window->draw(originShape);
 
-				/*
-				if (entMan->entities[i]->isMoving)
+				if (entity->isComponentEntity)
 				{
-					Line line;
+					ComponentEntity* ent = static_cast<ComponentEntity*>(entity);
 
-					if (entMan->entities[i]->isSelected)
+					if (ent->hasComponent("GroundMove"))
 					{
-						entMan->entities[i]->moveDest.setFillColor(sf::Color::Yellow);
-						line.setColor(sf::Color::Yellow);
-					}
-					else
-					{
-						line.setColor(sf::Color::Red);
-						entMan->entities[i]->moveDest.setFillColor(sf::Color::Red);
-					}
+						GroundMoveComponent* move = static_cast<GroundMoveComponent*>(ent->getComponent("GroundMove"));
 
-					app->window->draw(entMan->entities[i]->moveDest);
-					line.setPoints(entMan->entities[i]->sprite.getPosition(), entMan->entities[i]->moveDest.getPosition());
+						Line line;
 
-					app->window->draw(line.vertices, 4, sf::Quads);
+						/*
+						if (entity->isSelected)
+						{
+							move->moveDest.setFillColor(sf::Color::Yellow);
+							line.setColor(sf::Color::Yellow);
+						}
+						else
+						{
+							line.setColor(sf::Color::Red);
+							entity->moveDest.setFillColor(sf::Color::Red);
+						}
+						*/
+
+//						app->window->draw(entity->moveDest);
+						line.setPoints(entity->sprite.getPosition(), move->getMoveDesintation());
+
+						line.setThickness(1.0f);
+
+						app->window->draw(line.vertices, 4, sf::Quads);
+					}
 				}
-				else if (entMan->entities[i]->isBuilding)
-					if (entMan->entities[i]->isSelected)
-						app->window->draw(entMan->entities[i]->grarrisonPoint);
-				*/
+				/*
+				else if (entity->isBuilding)
+					if (entity->isSelected)
+						app->window->draw(entity->grarrisonPoint);
+						*/
 			}
 		}
 	}

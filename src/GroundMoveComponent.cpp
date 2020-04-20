@@ -15,6 +15,11 @@ void GroundMoveComponent::setMoveDestination(const sf::Vector2f destination)
 	moveInProgress = true;
 }
 
+const sf::Vector2f& GroundMoveComponent::getMoveDesintation() const
+{
+	return destination;
+}
+
 void GroundMoveComponent::cancelMovement()
 {
 	moveInProgress = false;

@@ -3,18 +3,10 @@
 #include "Util/Logger.hpp"
 #include "Util/Graphics/ProgressBar.hpp"
 #include "Util/Graphics/SmallUnitIcon.hpp"
+#include "Util/Graphics/SpriteButtonWithTooltip.hpp"
 
 #include <SFUI/Image.hpp>
-#include <SFUI/SpriteButton.hpp>
 #include <SFUI/Theme.hpp>
-
-enum MENU_CALLBACKS
-{
-	CREATE_BOB,
-	CREATE_BOOMER,
-	CREATE_COMMENT_SECTION,
-	DELETE_SELECTION,
-};
 
 Interface::Interface(sf::RenderWindow *_targetWindow, sf::View *_mainView) : targetWindow(_targetWindow), mainView(_mainView)
 {
@@ -184,55 +176,20 @@ void Interface::updateSelectionInfo(const std::vector<BaseEntity*>& entities)
 			shieldContainer->addLabel(std::to_string(entity->armor));
 		}
 
-		if (entity->type == "bob")
+		for (EntityAction action : entity->actions)
 		{
-			sf::Texture* buttonTexture = new sf::Texture;
-			buttonTexture->loadFromFile("./bobwars/resource/textures/spritebuttons/createcommentsection.png");
+			sf::Texture* texture = new sf::Texture;
+			texture->loadFromFile("./bobwars/resource/textures/spritebuttons/" + action.buttonTexture + ".png");
 
-			SFUI::SpriteButton* createCommentSectionButton = new SFUI::SpriteButton(*buttonTexture);
-			topRow->add(createCommentSectionButton, MENU_CALLBACKS::CREATE_COMMENT_SECTION);
+			SpriteButtonWithTooltip* button = new SpriteButtonWithTooltip(*texture);
+			topRow->add(button, action.callbackID);
 		}
-		else if (entity->type == "commentsection")
-		{
-			sf::Texture* buttonTexture = new sf::Texture;
-			buttonTexture->loadFromFile("./bobwars/resource/textures/spritebuttons/createbob.png");
-			SFUI::SpriteButton* createBobButton = new SFUI::SpriteButton(*buttonTexture);
-			topRow->add(createBobButton, MENU_CALLBACKS::CREATE_BOB);
-
-			sf::Texture* buttonTexture2 = new sf::Texture;
-			buttonTexture2->loadFromFile("./bobwars/resource/textures/spritebuttons/createboomer.png");
-			SFUI::SpriteButton* createBoomerButton = new SFUI::SpriteButton(*buttonTexture2);
-			topRow->add(createBoomerButton, MENU_CALLBACKS::CREATE_BOOMER);
-		}
-		else
-			logger::WARNING("trying to update entity info for unknown entity");
-
-		sf::Texture* emptyTexture = new sf::Texture;
-		emptyTexture->loadFromFile("./bobwars/resource/textures/spritebuttons/empty.png");
-
-		for (int i = 0; i < 1; i++)
-		{
-			SFUI::SpriteButton* emptyButton = new SFUI::SpriteButton(*emptyTexture);
-			topRow->add(emptyButton);
-		}
-
+		
 		sf::Texture* skullTexture = new sf::Texture;
 		skullTexture->loadFromFile("./bobwars/resource/textures/spritebuttons/skull.png");
-
-		SFUI::SpriteButton* deleteSelectionButton = new SFUI::SpriteButton(*skullTexture);
+		
+		SpriteButtonWithTooltip* deleteSelectionButton = new SpriteButtonWithTooltip(*skullTexture);
 		topRow->add(deleteSelectionButton, MENU_CALLBACKS::DELETE_SELECTION);
-
-		for (int i = 0; i < 4; i++)
-		{
-			SFUI::SpriteButton* emptyButton = new SFUI::SpriteButton(*emptyTexture);
-			middleRow->add(emptyButton);
-		}
-
-		for (int i = 0; i < 4; i++)
-		{
-			SFUI::SpriteButton* emptyButton = new SFUI::SpriteButton(*emptyTexture);
-			bottomRow->add(emptyButton);
-		}
 
 		sf::Vector2f newPosition;
 		newPosition.x = unitActionMenu->getPosition().x + unitActionMenu->getSize().x + SFUI::Theme::MARGIN;
@@ -263,19 +220,19 @@ void Interface::updateSelectionInfo(const std::vector<BaseEntity*>& entities)
 		emptyTexture->loadFromFile("./bobwars/resource/textures/spritebuttons/empty.png");
 
 		for (int i = 0; i < 3; i++)
-			topRow->add(new SFUI::SpriteButton(*emptyTexture));
+			topRow->add(new SpriteButtonWithTooltip(*emptyTexture));
 
 		sf::Texture* skullTexture = new sf::Texture;
 		skullTexture->loadFromFile("./bobwars/resource/textures/spritebuttons/skull.png");
 
-		SFUI::SpriteButton* deleteSelectionButton = new SFUI::SpriteButton(*skullTexture);
+		SpriteButtonWithTooltip* deleteSelectionButton = new SpriteButtonWithTooltip(*skullTexture);
 		topRow->add(deleteSelectionButton, MENU_CALLBACKS::DELETE_SELECTION);
 
 		for (int i = 0; i < 4; i++)
-			middleRow->add(new SFUI::SpriteButton(*emptyTexture));
+			middleRow->add(new SpriteButtonWithTooltip(*emptyTexture));
 
 		for (int i = 0; i < 4; i++)
-			bottomRow->add(new SFUI::SpriteButton(*emptyTexture));
+			bottomRow->add(new SpriteButtonWithTooltip(*emptyTexture));
 
 		sf::Vector2f newPosition;
 		newPosition.x = unitActionMenu->getPosition().x + unitActionMenu->getSize().x + SFUI::Theme::MARGIN;

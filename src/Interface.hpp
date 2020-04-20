@@ -5,6 +5,7 @@
 #include "ResourceCounter.hpp"
 
 #include <SFML/Graphics.hpp>
+
 #include <SFUI/Layouts/Menu.hpp>
 #include <SFUI/Layouts/HorizontalBoxLayout.hpp>
 #include <SFUI/Layouts/HorizontalBoxLayout.hpp>
@@ -24,13 +25,10 @@ private:
 };
 */
 
-enum InterfaceCallbacks
+enum MENU_CALLBACKS
 {
-	CreateBob,
-	CreateBoomer,
-	CreateCommentSection,
-	DeleteEntity,
-	DeleteAll,
+	DELETE_SELECTION = -2,
+	NULL_CALLBACK = -1,
 };
 
 class Interface

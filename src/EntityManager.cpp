@@ -1,11 +1,9 @@
 #include "EntityManager.hpp"
 
-#include "Util/Util.hpp"
-#include "Util/Logger.hpp"
-
 #include "BaseEntity.hpp"
 
-#include "Bob.hpp"
+#include "Util/Util.hpp"
+#include "Util/Logger.hpp"
 
 EntityManager::EntityManager()
 {
@@ -28,22 +26,7 @@ EntityManager::~EntityManager()
 	logger::DEBUG("ObjectManager deconstructed.", true);
 }
 
-Bob* EntityManager::newBob()
-{
-	//TODO: optimise entity creation
-
-	Bob *newBobEntity = new Bob(entities.size() + 1);
-
-	DrawConnectionsComponent* comp = new DrawConnectionsComponent(this);
-	newBobEntity->addComponent(comp);
-
-	addEnt(newBobEntity);
-
-	logger::DEBUG("creating new bob entity (" + std::to_string(newBobEntity->entityID) + ")");
-	return newBobEntity;
-}
-
-void EntityManager::addEnt(BaseEntity* ent)
+BaseEntity* EntityManager::addEnt(BaseEntity* ent)
 {
 	entities.push_back(ent);
 
@@ -52,6 +35,8 @@ void EntityManager::addEnt(BaseEntity* ent)
 
 	if (ent->isSelected)
 		selectedEnts.push_back(ent);
+
+	return ent;
 }
 
 void EntityManager::deleteEnt(BaseEntity* ent)

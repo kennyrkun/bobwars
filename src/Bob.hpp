@@ -3,10 +3,9 @@
 
 #include "ComponentEntity.hpp"
 #include "GroundMoveComponent.hpp"
+#include "EntityManager.hpp"
 
 #include "Util/Graphics/Line.hpp"
-
-class EntityManager;
 
 class DrawConnectionsComponent : public EntityComponent
 {
@@ -27,8 +26,13 @@ private:
 class Bob : public ComponentEntity
 {
 public:
-	Bob(const int entityID);
+	Bob(const int entityID, EntityManager* entities);
 	~Bob();
+
+	Status addTask(EntityType type) override;
+
+private:
+	EntityManager* entities;
 };
 
 #endif // !BOB_HPP
