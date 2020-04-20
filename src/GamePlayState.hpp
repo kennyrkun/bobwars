@@ -59,6 +59,9 @@ private:
 	sf::Text debugFrameCounter;
 	sf::Text debugText;
 
+	sf::RectangleShape rectSelect;
+	bool rectSelecting = false;
+
 	// TODO: rename this
 	Camera* mainView2;
 	int baseViewSpeed = 1;

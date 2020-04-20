@@ -60,6 +60,10 @@ void GamePlayState::Init(AppEngine* app_)
 	test.setRadius(3);
 	test.setOrigin(test.getLocalBounds().width / 2, test.getLocalBounds().height / 2);
 
+	rectSelect.setOutlineThickness(1);
+	rectSelect.setOutlineColor(sf::Color(51, 153, 255));
+	rectSelect.setFillColor(sf::Color(51, 153, 255, 100));
+
 	debugFrameCounter.setFont(SFUI::Theme::getFont());
 	debugFrameCounter.setPosition(20, 40);
 	debugFrameCounter.setCharacterSize(14);
@@ -426,14 +430,20 @@ void GamePlayState::HandleEvents()
 						if (selectedNothing) // selected nothing and didn't already have nothing
 						{
 							if (!entMan->entities.empty())
-							{	
+							{
 								entMan->deselectAllEnts();
+
+								ui->deleteEnabled = false;
+
+								logger::INFO("All entities deselected");
+								ui->updateSelectionInfo(entMan->selectedEnts);
 							}
 
-							ui->deleteEnabled = false;
+							rectSelecting = true;
+							rectSelect.setSize(sf::Vector2f(0, 0));
+							sf::Vector2f pos(app->window->mapPixelToCoords(sf::Mouse::getPosition(*app->window), mainView2->view));
+							rectSelect.setPosition(sf::Vector2f(pos.x, pos.y));
 
-							logger::INFO("All entities deselected");
-							ui->updateSelectionInfo(entMan->selectedEnts);
 							break;
 						}
 
@@ -467,6 +477,36 @@ void GamePlayState::HandleEvents()
 											move->setMoveDestination(movePos);
 									}
 						}
+					}
+				}
+			}
+			else if (event.type == sf::Event::EventType::MouseMoved)
+			{
+				sf::Vector2f pos = rectSelect.getPosition();
+				sf::Vector2f mouse(app->window->mapPixelToCoords(sf::Mouse::getPosition(*app->window), mainView2->view));
+
+				sf::Vector2f newSize;
+
+				newSize.x = mouse.x - pos.x;
+				newSize.y = mouse.y - pos.y;
+
+				rectSelect.setSize(newSize);
+			}
+			else if (event.type == sf::Event::EventType::MouseButtonReleased)
+			{
+				if (rectSelecting)
+				{
+					rectSelecting = false;
+
+					sf::FloatRect bounds = rectSelect.getGlobalBounds();
+
+					for (size_t i = 0; i < entMan->entities.size(); i++)
+					{
+						// TODO: make sure this works for all entities.
+						// not all entities may have a sprite, and some may have more than one
+						// BaseEntity should implement getGlobalBounds();
+						if (bounds.intersects(entMan->entities[i]->sprite.getGlobalBounds()))
+							entMan->selectEnt(entMan->entities[i]);
 					}
 				}
 			}
@@ -563,6 +603,9 @@ void GamePlayState::Draw()
 
 	for (size_t i = 0; i < entMan->entities.size(); i++)
 		app->window->draw(*entMan->entities[i]);
+
+	if (rectSelecting)
+		app->window->draw(rectSelect);
 
 	if (app->settings.debug)
 	{
