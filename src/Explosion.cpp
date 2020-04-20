@@ -24,6 +24,8 @@ Explosion::Explosion(const int entityID, EntityManager* app, const sf::Vector2f&
     shape.setOrigin(sf::Vector2f(shape.getGlobalBounds().width / 2, shape.getGlobalBounds().height / 2));
     shape.setPosition(position);
 
+    setPosition(position);
+
     originalRadius = radius;
     changeInRadius = 0 - radius;
 
@@ -46,9 +48,6 @@ void Explosion::Frame(const float delta)
 {
 	for (BaseEntity* entity : entities->getNearbyEntities(this, shape.getRadius()))
 	{
-        if (entity == this)
-            logger::ERROR("Explosion will target itself!");
-
         float dist = util::distance(getPosition(), entity->getPosition());
 
         if (dist <= shape.getRadius())
@@ -59,7 +58,6 @@ void Explosion::Frame(const float delta)
     int sizeDiff = shape.getRadius() - newSize;
     shape.setRadius(newSize);
     shape.move(sf::Vector2f(sizeDiff, sizeDiff));
-
 
     if (timer.getElapsedTime().asSeconds() > duration)
     {

@@ -45,7 +45,7 @@ void Boomer::Frame(const float delta)
             entitiesInRange += 1;
 	}
 
-    const int requiredEntityCount = 1;
+    const int requiredEntityCount = 10;
 
     if (entitiesInRange >= requiredEntityCount)
     {
