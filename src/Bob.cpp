@@ -74,13 +74,7 @@ Bob::Bob(const int entityID) : ComponentEntity(entityID)
 	hitpoints = 1;
 	type = "bob";
 
-	EntityAction createCommentSectionAction;
-	createCommentSectionAction.name = "Create CommentSection";
-	createCommentSectionAction.description = "Creates a CommentSection";
-	createCommentSectionAction.hotkey = sf::Keyboard::Key::C;
-	createCommentSectionAction.buttonTexture = "./bobwars/resources/textures/spritebuttons/commentsection.png";
-
-	actions.push_back(createCommentSectionAction);
+	actions.push_back({ "Create Comment Section", "Creates a Comment Section", sf::Keyboard::Key::C, "commentsection.png" });
 
 	addComponent(new GroundMoveComponent);
 	// TODO: this component can only be added with an instance of EntityManager
