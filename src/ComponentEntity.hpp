@@ -49,6 +49,8 @@ public:
 	}
 	*/
 
+	// Note: It is important that any entity which overrides this method call down to ComponentEntity::Frame(delta)
+	// If the derived entity fails to do this, no components will be updated.
 	virtual void Frame(float delta) override;
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 

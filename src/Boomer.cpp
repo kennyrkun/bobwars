@@ -50,4 +50,6 @@ void Boomer::Frame(const float delta)
 
     if (entitiesInRange >= requiredEntityCount)
         health = -1;
+
+	ComponentEntity::Frame(delta);
 }

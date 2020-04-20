@@ -111,6 +111,8 @@ void CommentSection::Frame(const float delta)
 		task.progress += 1;
 		progressBar.setValue(task.progress, 100);
 	}
+
+	Building::Frame(delta);
 }
 
 void CommentSection::draw(sf::RenderTarget& target, sf::RenderStates states) const
