@@ -8,6 +8,7 @@ class Boomer : public ComponentEntity
 {
 public:
     Boomer(int entityID, EntityManager* app);
+    ~Boomer();
 
     void Frame(const float delta) override;
 

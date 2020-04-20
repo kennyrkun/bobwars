@@ -20,14 +20,15 @@ Boomer::Boomer(int entityID, EntityManager* app) : entities(app), ComponentEntit
 	hitpoints = 1;
 	type = "boomer";
 
-	EntityAction detonateAction;
-	detonateAction.name = "Detonate";
-	detonateAction.description = "Detonates the Boomer.";
-	detonateAction.hotkey = sf::Keyboard::Key::C;
-	detonateAction.buttonTexture = "./bobwars/resources/textures/spritebuttons/boomer_detonate.png";
-	actions.push_back(detonateAction);
+	actions.push_back({ "Detonate", "Detonate the Boomer", sf::Keyboard::Key::D, "boomer_detonate.png" });
 
 	addComponent(new GroundMoveComponent);
+}
+
+Boomer::~Boomer()
+{
+	Explosion* explosion = new Explosion(entities->getNextID(), entities, getPosition(), maxViewDistance, 100.0f, 3.0f);
+	entities->addEnt(explosion);
 }
 
 void Boomer::Frame(const float delta)
@@ -48,10 +49,5 @@ void Boomer::Frame(const float delta)
     const int requiredEntityCount = 10;
 
     if (entitiesInRange >= requiredEntityCount)
-    {
         health = -1;
-
-        Explosion*  explosion = new Explosion(entities->entities.size() + 1, entities, getPosition(), maxViewDistance, 100.0f, 3.0f);
-        entities->addEnt(explosion);
-    }
 }
