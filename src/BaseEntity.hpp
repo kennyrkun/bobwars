@@ -39,9 +39,9 @@ public:
 	std::string description;
 	sf::Keyboard::Key hotkey;
 
-	int callbackID = -1;
-
 	std::string buttonTexture;
+
+	int callbackID = -1;
 };
 
 class BaseEntity : public sf::Drawable
@@ -73,9 +73,10 @@ public:
 	int armor = -1;
 	int health = -1, maxHealth = -1;
 	int hitpoints = -1;
-	float rateOfFire = -1;
+	float attackRate = -1;
 
 	bool isSelected = false;
+	bool isSelectable = true;
 
 	const bool isBuilding = false;
 	const bool isLand = false;

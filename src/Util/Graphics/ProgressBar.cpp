@@ -10,12 +10,7 @@ ProgressBar::ProgressBar()
 
 ProgressBar::ProgressBar(sf::Vector2f position, float width, float height)
 {
-	box.setPosition(position);
-
-	bar[0].position = sf::Vector2f(position.x + 0, position.y + 0);
-	bar[1].position = sf::Vector2f(position.x + width, position.y + 0);
-	bar[3].position = sf::Vector2f(position.x + 0, position.y + height);
-	bar[2].position = sf::Vector2f(position.x + width, position.y + height);
+	setPosition(position);
 
 	for (int i = 0; i < 4; ++i)
 		bar[i].color = barColor;
@@ -62,16 +57,12 @@ sf::Vector2f ProgressBar::getPosition() const
 
 void ProgressBar::addThingToDo()
 {
-//	std::cout << "Mr. ProgressBar: Added one more task." << std::endl;
-
 	thingsToDo += 1;
 	setValue(thingsDone, thingsToDo);
 }
 
 void ProgressBar::addThingsToDo(signed int things)
 {
-//	std::cout << "Mr. Progressbar: Added " << things << " more tasks" << std::endl;
-
 	thingsToDo += things;
 	setValue(thingsDone, thingsToDo);
 }
@@ -113,7 +104,7 @@ void ProgressBar::setValue(int thingsDone_, int thingsToDo_)
 
 	float x = (percentDone / 100) * width;
 
-	bar[1].position.x = bar[2].position.x = x;
+	bar[1].position.x = bar[2].position.x = box.getPosition().x + x;
 
 //	std::cout << percentDone << "/" << 100 << "*" << width << "=" << (percentDone / 100) * width << "(" << x << ")" << std::endl;
 }

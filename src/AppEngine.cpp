@@ -158,9 +158,7 @@ void AppEngine::PopState(int amount)
 
 void AppEngine::HandleEvents()
 {
-	time_t timeNow = time_t(0);
-	delta = timeNow - lastUpdate;
-	lastUpdate = timeNow;
+	delta = deltaClock.restart().asMilliseconds();
 
 	if (running)
 		states.back()->HandleEvents();

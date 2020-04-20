@@ -285,4 +285,3 @@ void Interface::updateSelectionInfo(const std::vector<BaseEntity*>& entities)
 
 	logger::DEBUG("[INTERFACE] Updated Unit Information.");
 }
-

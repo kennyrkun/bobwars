@@ -150,7 +150,7 @@ void GamePlayState::HandleEvents()
 				else if (entMan->selectedEnts[0]->type != "commentsection")
 					break;
 
-				CommentSection* section = static_cast<CommentSection*>(entMan->entities[0]);
+				CommentSection* section = static_cast<CommentSection*>(entMan->selectedEnts[0]);
 
 				if (sf::Keyboard::isKeyPressed(app->keys.multipleSelectionModifier))
 					for (size_t i = 0; i < section->maxTasks; i++)
@@ -354,7 +354,7 @@ void GamePlayState::HandleEvents()
 			{
 				test.setPosition(sf::Vector2f(sf::Mouse::getPosition(*app->window).x, sf::Mouse::getPosition(*app->window).y));
 
-				if (!util::logic::mouseIsOver(ui->bottomBar, *app->window) && !util::logic::mouseIsOver(ui->bottomBar, *app->window))
+				if (!util::logic::mouseIsOver(ui->topBar, *app->window) && !util::logic::mouseIsOver(ui->bottomBar, *app->window))
 				{
 					if (event.mouseButton.button == sf::Mouse::Button::Left)
 					{
@@ -366,8 +366,6 @@ void GamePlayState::HandleEvents()
 						{
 							if (util::logic::mouseIsOver(entMan->entities[i]->sprite, *app->window, mainView2->view))
 							{
-								logger::DEBUG("mouse is over an entity");
-
 								if (entMan->entities[i]->isSelected) // entity is already selected
 								{
 									logger::DEBUG("clicked entity is already selected.");
@@ -400,7 +398,7 @@ void GamePlayState::HandleEvents()
 											entMan->deselectAllEnts();
 											entMan->selectEnt(entMan->entities[i]);
 
-											logger::INFO("selected entity" + std::to_string(entMan->entities[i]->entityID));
+											logger::INFO("selected entity" + std::to_string(entMan->entities[i]->entityID) + " (" + entMan->entities[i]->type + ")");
 										}
 
 										selectedNothing = false;
@@ -452,7 +450,7 @@ void GamePlayState::HandleEvents()
 							// should it move the building's garrison point, and tell the unit to move to that spot?
 							// or just move the unit, and ignore the building
 							if (!world.getGlobalBounds().contains(movePos))
-								logger::INFO("Cannot set garrison point out of bounds!");
+								logger::INFO("Cannot set garrison point out of bounds.");
 							else
 								for (size_t i = 0; i < entMan->selectedEnts.size(); i++)
 									if (entMan->selectedEnts[i]->isBuilding)
@@ -583,7 +581,7 @@ void GamePlayState::Draw()
 					util::graphics::outline(*app->window, entMan->entities[i]->sprite, 2, sf::Color::Yellow);
 
 				showObjectCoords(entMan->entities[i]->sprite);
-				util::text::draw(*app->window, debugText, std::to_string(entMan->entities[i]->entityID) + "/" + std::to_string(entMan->entities.size()), sf::Vector2f(entMan->entities[i]->sprite.getPosition().x, entMan->entities[i]->sprite.getPosition().y - entMan->entities[i]->sprite.getLocalBounds().height / 2), sf::Vector2f(.2f, .2f));
+				util::text::draw(*app->window, debugText, std::to_string(entMan->entities[i]->entityID), sf::Vector2f(entMan->entities[i]->sprite.getPosition().x, entMan->entities[i]->sprite.getPosition().y - entMan->entities[i]->sprite.getLocalBounds().height / 2), sf::Vector2f(.2f, .2f));
 				util::text::draw(*app->window, debugText, entMan->entities[i]->type, sf::Vector2f(entMan->entities[i]->sprite.getPosition().x, entMan->entities[i]->sprite.getPosition().y), sf::Vector2f(.2f, .2f));
 
 				originShape.setPosition(entMan->entities[i]->getPosition());

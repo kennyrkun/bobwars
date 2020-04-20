@@ -50,7 +50,7 @@ public:
 	unsigned long long int maxEnts = 100000; // TODO: rename to entityLimit
 	unsigned long long int maxEntsPerTeam;
 
-	unsigned long long int totalEntities;
+	unsigned long long int totalEntities = 0;
 };
 
 #endif // ENTITY_MANAGER_HPP

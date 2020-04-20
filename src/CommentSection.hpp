@@ -4,6 +4,8 @@
 #include "Building.hpp"
 #include "EntityManager.hpp"
 
+#include "Util/Graphics/ProgressBar.hpp"
+
 #include <vector>
 
 class CommentSection : public Building
@@ -15,9 +17,8 @@ public:
 	struct Task
 	{
 		EntityType type;
-		time_t startTime = 0;
+		float progress;
 		float duration; // Seconds
-
 		bool finished = false;
 	};
 
@@ -32,14 +33,19 @@ public:
 
 	const int maxTasks = 15;
 
-	void Frame(const float delta) override;
+	std::vector<Task> tasks;
 
 	Status addTask(EntityType type);
 
-	std::vector<Task> tasks;
+	void setPosition(const sf::Vector2f& position);
+
+	void Frame(const float delta) override;
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 private:
 	EntityManager* entities;
+
+	ProgressBar progressBar;
 };
 
 #endif // !COMMENT_SECTION_HPP

@@ -23,7 +23,7 @@ public:
 
 	// Beware: this function is likely quite slow, due to multiple typecasts.
 	template <typename T>
-	T getComponent()
+	inline T getComponent()
 	{
 		for (auto& [name, component] : components)
 			if (dynamic_cast<T>(component))
@@ -36,6 +36,18 @@ public:
 	EntityComponent* hasComponent(const std::string& componentName);
 	// TODO: this doesn't work
 	EntityComponent* getComponent(const std::string& componentName);
+
+	/*
+	inline const std::vector<const std::string> componentList() const
+	{
+		std::string compon = "";
+
+		for (auto& [name, component] : components)
+			compon += name + ",";
+
+		return compon;
+	}
+	*/
 
 	virtual void Frame(float delta) override;
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;

@@ -79,7 +79,7 @@ public:
 private:
 	bool running;
 
-	time_t lastUpdate;
+	sf::Clock deltaClock;
 };
 
 #endif // !APP_ENGINE_HPP

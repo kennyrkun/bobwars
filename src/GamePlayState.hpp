@@ -61,7 +61,7 @@ private:
 
 	// TODO: rename this
 	Camera* mainView2;
-	int baseViewSpeed = 500;
+	int baseViewSpeed = 1;
 
 	sf::Clock framesClock; // for maxfps
 	sf::Clock gameClock; // total time of the game
