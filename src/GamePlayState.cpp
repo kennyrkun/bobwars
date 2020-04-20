@@ -14,6 +14,7 @@
 #include "Util/Graphics/Text.hpp"
 
 #include <algorithm>
+#include <random>
 
 // TODO: what the fuck is this
 sf::CircleShape test;
@@ -144,113 +145,103 @@ void GamePlayState::HandleEvents()
 			{
 			case MENU_CALLBACKS::CREATE_BOB:
 			{
-				if (entMan->entities.size() >= entMan->maxEntsPerTeam)
-				{
-					logger::INFO("Cannot create new Bob because the unit cap has been reached.");
+				if (entMan->selectedEnts.size() != 1)
+					break;
+				else if (entMan->selectedEnts[0]->type != "commentsection")
+					break;
 
-					// TODO: flash the unit icon red
-				}
-				else if (false)
-				{
+				CommentSection* section = static_cast<CommentSection*>(entMan->entities[0]);
 
-				}
-				else // all requirements satisfied
-				{
-					if (entMan->entities.size() < entMan->maxEntsPerTeam)
-					{
-						Bob* bob = entMan->newBob();
+				section->addTask(CommentSection::Task::Type::CreateBob);
 
-						if (entMan->selectedEnts.size() <= 1)
-						{
-							bob->setPosition(entMan->selectedEnts[0]->getPosition());
-
-							if (entMan->selectedEnts[0]->type == "commentsection")
-							{
-								CommentSection* comment = dynamic_cast<CommentSection*>(entMan->selectedEnts[0]);
-
-								if (comment != nullptr)
-								{
-									if (comment->hasGarrisonPoint)
-									{
-										GroundMoveComponent* move = dynamic_cast<GroundMoveComponent*>(bob->hasComponent("GroundMove"));
-										move->setMoveDestination(comment->getGarrisonPoint());
-										//bob->getComponent<GroundMoveComponent>("GroundMove")->setMoveDestination(comment->getGarrisonPoint());
-									}
-								}
-								else
-								{
-									logger::ERROR("commentsection is null");
-									logger::INFO("the first entity in the selected list is: " + entMan->selectedEnts[0]->type);
-								}
-							}
-						}
-
-						if (entMan->entities.size() >= entMan->maxEntsPerTeam)
-						{
-							logger::INFO("unit cap reached");
-							ui->unitCounter->text.setFillColor(sf::Color::Red);
-							ui->createEnabled = false;
-						}
-
-						ui->unitCounter->setCount(entMan->entities.size());
-					}
-				}
 				break;
 			}
+			/*
+			case MENU_CALLBACKS::CREATE_BOB:
+			{
+				if (entMan->entities.size() >= entMan->maxEntsPerTeam)
+					break;
+
+				Bob* bob = entMan->newBob();
+
+				if (entMan->selectedEnts.size() <= 1)
+				{
+					bob->setPosition(entMan->selectedEnts[0]->getPosition());
+
+					if (entMan->selectedEnts[0]->type == "commentsection")
+					{
+						CommentSection* comment = dynamic_cast<CommentSection*>(entMan->selectedEnts[0]);
+
+						if (comment != nullptr)
+						{
+							if (comment->hasGarrisonPoint)
+							{
+								GroundMoveComponent* move = dynamic_cast<GroundMoveComponent*>(bob->hasComponent("GroundMove"));
+								move->setMoveDestination(comment->getGarrisonPoint());
+								//bob->getComponent<GroundMoveComponent>("GroundMove")->setMoveDestination(comment->getGarrisonPoint());
+							}
+						}
+						else
+						{
+							logger::ERROR("commentsection is null");
+							logger::INFO("the first entity in the selected list is: " + entMan->selectedEnts[0]->type);
+						}
+					}
+				}
+
+				if (entMan->entities.size() >= entMan->maxEntsPerTeam)
+				{
+					logger::INFO("unit cap reached");
+					ui->unitCounter->text.setFillColor(sf::Color::Red);
+					ui->createEnabled = false;
+				}
+
+				ui->unitCounter->add(1);
+				break;
+			}
+			*/
 			case MENU_CALLBACKS::CREATE_BOOMER:
 			{
 				if (entMan->entities.size() >= entMan->maxEntsPerTeam)
-				{
-					logger::INFO("Cannot create new Boomer because the unit cap has been reached.");
+					// TODO: make the thing flash
+					return;
+					
+				Boomer* boomer = new Boomer(entMan->entities.size() + 1, entMan);
+				entMan->addEnt(boomer);
 
-					// TODO: flash the unit icon red
-				}
-				else if (false)
+				if (entMan->selectedEnts.size() <= 1)
 				{
+					boomer->setPosition(entMan->selectedEnts[0]->getPosition());
 
-				}
-				else // all requirements satisfied
-				{
-					if (entMan->entities.size() < entMan->maxEntsPerTeam)
+					if (entMan->selectedEnts[0]->type == "commentsection")
 					{
-						Boomer* boomer = new Boomer(entMan->entities.size() + 1, entMan);
-						entMan->addEnt(boomer);
+						CommentSection* comment = dynamic_cast<CommentSection*>(entMan->selectedEnts[0]);
 
-						if (entMan->selectedEnts.size() <= 1)
+						if (comment != nullptr)
 						{
-							boomer->setPosition(entMan->selectedEnts[0]->getPosition());
-
-							if (entMan->selectedEnts[0]->type == "commentsection")
+							if (comment->hasGarrisonPoint)
 							{
-								CommentSection* comment = dynamic_cast<CommentSection*>(entMan->selectedEnts[0]);
-
-								if (comment != nullptr)
-								{
-									if (comment->hasGarrisonPoint)
-									{
-										GroundMoveComponent* move = dynamic_cast<GroundMoveComponent*>(boomer->hasComponent("GroundMove"));
-										move->setMoveDestination(comment->getGarrisonPoint());
-										//bob->getComponent<GroundMoveComponent>("GroundMove")->setMoveDestination(comment->getGarrisonPoint());
-									}
-								}
-								else
-								{
-									logger::ERROR("commentsection is null");
-									logger::DEBUG("the first entity in the selected list is: " + entMan->selectedEnts[0]->type);
-								}
+								GroundMoveComponent* move = dynamic_cast<GroundMoveComponent*>(boomer->hasComponent("GroundMove"));
+								move->setMoveDestination(comment->getGarrisonPoint());
+								//bob->getComponent<GroundMoveComponent>("GroundMove")->setMoveDestination(comment->getGarrisonPoint());
 							}
 						}
-
-						if (entMan->entities.size() >= entMan->maxEntsPerTeam)
+						else
 						{
-							logger::INFO("unit cap reached");
-							ui->unitCounter->text.setFillColor(sf::Color::Red);
-							ui->createEnabled = false;
+							logger::ERROR("commentsection is null");
+							logger::DEBUG("the first entity in the selected list is: " + entMan->selectedEnts[0]->type);
 						}
-
-						ui->unitCounter->add(1);
 					}
 				}
+
+				if (entMan->entities.size() >= entMan->maxEntsPerTeam)
+				{
+					logger::INFO("unit cap reached");
+					ui->unitCounter->text.setFillColor(sf::Color::Red);
+					ui->createEnabled = false;
+				}
+
+				ui->unitCounter->add(1);
 				break;
 			}
 			case MENU_CALLBACKS::CREATE_COMMENT_SECTION:
@@ -365,7 +356,8 @@ void GamePlayState::HandleEvents()
 						// if we haven't broken the loop already, it means we either clicked an entity or clicked nothing
 						bool selectedNothing(true);
 						// TODO: do this in reverse so that we select entities on top first
-						for (size_t i = 0; i < entMan->entities.size(); i++)
+						//for (size_t i = 0; i < entMan->entities.size(); i++)
+						for (int i = entMan->entities.size() - 1; i >= 0; i--)
 						{
 							if (util::logic::mouseIsOver(entMan->entities[i]->sprite, *app->window, mainView2->view))
 							{
@@ -503,7 +495,20 @@ void GamePlayState::HandleEvents()
 
 		if (googleTimer.getElapsedTime().asSeconds() > 5)
 		{
-			entMan->create<GooglePlus>();
+			std::random_device dev;
+			std::mt19937 rng(dev());
+
+			int halfX = world.getSize().x / 2;
+			int halfY = world.getSize().y / 2;
+
+			std::uniform_int_distribution<std::mt19937::result_type> xdist(-halfX, halfX);
+			std::uniform_int_distribution<std::mt19937::result_type> ydist(-halfY, halfY);
+
+			int x = xdist(rng);
+			int y = ydist(rng);
+
+			entMan->create<GooglePlus>()->getComponent<GroundMoveComponent*>()->setMoveDestination(sf::Vector2f(x, y));
+
 			ui->unitCounter->add(1);
 			googleTimer.restart();
 		}
