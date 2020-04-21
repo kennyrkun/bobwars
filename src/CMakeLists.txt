@@ -30,6 +30,8 @@ SET(HEADERS AppEngine.hpp
 			MainMenuState.hpp
 			ResourceCounter.hpp
 			ResourceManager.hpp
+			Server.hpp
+			DedicatedServerState.hpp
 			Util/Graphics/ProgressBar.hpp
 			Util/SettingsParser.hpp
 			Util/Graphics/SmallUnitIcon.hpp
@@ -64,6 +66,8 @@ SET(SOURCES AppEngine.cpp
 			MainMenuState.cpp
 			ResourceCounter.cpp
 			ResourceManager.cpp
+			Server.cpp
+			DedicatedServerState.cpp
 			Util/SettingsParser.cpp
 			Util/Graphics/SmallUnitIcon.cpp
 			Util/Graphics/Text.cpp

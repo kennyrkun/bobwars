@@ -1,4 +1,5 @@
 #include "GameStartupState.hpp"
+#include "DedicatedServerState.hpp"
 #include "MainMenuState.hpp"
 
 #include "Util/Logger.hpp"
@@ -63,7 +64,17 @@ void GameStartupState::Update()
 	{
 		logger::INFO("ready to switch states");
 
+		for (size_t i = 0; i < app->settings.launchOptions.argc; i++)
+		{
+			if (std::string(app->settings.launchOptions.argv[i]) == "-server")
+			{
+				app->ChangeState(new DedicatedServerState);
+				return;
+			}
+		}
+		
 		app->ChangeState(new MainMenuState);
+		return;
 	}
 }
 
