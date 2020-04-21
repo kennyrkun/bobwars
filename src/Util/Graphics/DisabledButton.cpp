@@ -1,5 +1,6 @@
 #include "DisabledButton.hpp"
 
+#include <SFUI/Layouts/Layout.hpp>
 #include <SFUI/Theme.hpp>
 
 DisabledButton::DisabledButton(const sf::String& string)
@@ -48,7 +49,19 @@ void DisabledButton::draw(sf::RenderTarget& target, sf::RenderStates states) con
 void DisabledButton::onStateChanged(SFUI::State state)
 {
 	if (disabled)
+	{
+		// if the focus is coming from above
+		//	go below
+		// if the focus is coming from below
+		//	go above
+
+		// but it needs to iterate until we get there
+
+		//if (state == SFUI::State::Focused)
+		//	getParent()->focusNextWidget();
+
 		return;
+	}
 
 	m_box.applyState(state);
 }
