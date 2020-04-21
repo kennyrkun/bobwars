@@ -23,7 +23,7 @@ public:
 		app->ChangeState(state);
 	}
 
-private:
+protected:
 	AppEngine* app;
 };
 

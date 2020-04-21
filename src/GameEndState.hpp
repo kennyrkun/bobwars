@@ -19,10 +19,8 @@ public:
 	void Update();
 	void Draw();
 
-	SFUI::Menu* menu;
-
 private:
-	AppEngine* app;
+	SFUI::Menu* menu;
 };
 
 #endif // !GAME_END_STATE_HPP

@@ -19,8 +19,6 @@ public:
 	void Draw();
 
 private:
-	AppEngine* app;
-
 	sf::RectangleShape background;
 	sf::Texture* backgroundTexture; //HACK: don't crash on startup while in debug
 

@@ -22,8 +22,6 @@ public:
 	SFUI::Menu* menu;
 
 private:
-	AppEngine* app;
-
 	bool isClientReady = false;
 
 	DisabledButton* startGameButton;

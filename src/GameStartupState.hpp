@@ -21,8 +21,6 @@ public:
 	void Draw();
 
 private:
-	AppEngine* app;
-
 	bool mouseIsOver(sf::Shape &object);
 
 	bool ready = false;

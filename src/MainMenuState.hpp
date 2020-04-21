@@ -20,8 +20,6 @@ public:
 	void Draw();
 
 private:
-	AppEngine* app;
-
 	bool mouseIsOver(sf::Shape &object);
 
 	int dr, dg , db;

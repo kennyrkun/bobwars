@@ -45,8 +45,6 @@ public:
 	void Draw();
 
 private:
-	AppEngine* app;
-
 	sf::Clock googleTimer;
 	sf::Clock resourceTimer;
 
