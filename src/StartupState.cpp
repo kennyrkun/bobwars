@@ -1,4 +1,4 @@
-#include "GameStartupState.hpp"
+#include "StartupState.hpp"
 #include "DedicatedServerState.hpp"
 #include "MainMenuState.hpp"
 
@@ -7,9 +7,9 @@
 
 #include <SFML/Graphics.hpp>
 
-void GameStartupState::Init(AppEngine* app_)
+void StartupState::Init(AppEngine* app_)
 {
-	logger::INFO("Initialising GameStartupState");
+	logger::INFO("Initialising StartupState");
 
 	app = app_;
 
@@ -19,27 +19,27 @@ void GameStartupState::Init(AppEngine* app_)
 
 	ready = true;
 
-	logger::INFO("GameStartupState ready.");
+	logger::INFO("StartupState ready.");
 }
 
-void GameStartupState::Cleanup()
+void StartupState::Cleanup()
 {
-	logger::INFO("Cleaning up GameStartupState.");
+	logger::INFO("Cleaning up StartupState.");
 
-	logger::INFO("Cleaned up GameStartupState.");
+	logger::INFO("Cleaned up StartupState.");
 }
 
-void GameStartupState::Pause()
+void StartupState::Pause()
 {
-	logger::INFO("GameStartupState paused.");
+	logger::INFO("StartupState paused.");
 }
 
-void GameStartupState::Resume()
+void StartupState::Resume()
 {
-	logger::INFO("GameStartupState resumed.");
+	logger::INFO("StartupState resumed.");
 }
 
-void GameStartupState::HandleEvents()
+void StartupState::HandleEvents()
 {
 	sf::Event event;
 	while (app->window->pollEvent(event))
@@ -58,7 +58,7 @@ void GameStartupState::HandleEvents()
 	}
 }
 
-void GameStartupState::Update()
+void StartupState::Update()
 {
 	if (ready)
 	{
@@ -78,7 +78,7 @@ void GameStartupState::Update()
 	}
 }
 
-void GameStartupState::Draw()
+void StartupState::Draw()
 {
 	app->window->clear(sf::Color(100, 100, 100));
 
@@ -86,12 +86,4 @@ void GameStartupState::Draw()
 		util::text::draw(*app->window, "states: " + std::to_string(app->states.size()), sf::Vector2f(0, 0));
 
 	app->window->display();
-}
-
-bool GameStartupState::mouseIsOver(sf::Shape &object)
-{
-	if (object.getGlobalBounds().contains(app->window->mapPixelToCoords(sf::Mouse::getPosition(*app->window))))
-		return true;
-	else
-		return false;
 }

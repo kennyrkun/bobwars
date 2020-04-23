@@ -1,4 +1,4 @@
-#include "GameCreationState.hpp"
+#include "LobbyState.hpp"
 #include "MainMenuState.hpp"
 
 #include "AppEngine.hpp"
@@ -15,9 +15,9 @@ enum Callback
 	RETURN_TO_MAIN_MENU,
 };
 
-void GameCreationState::Init(AppEngine* app_)
+void LobbyState::Init(AppEngine* app_)
 {
-	logger::INFO("GameCreationState Init");
+	logger::INFO("LobbyState Init");
 	app = app_;
 
 	// create a menu 
@@ -26,6 +26,8 @@ void GameCreationState::Init(AppEngine* app_)
 	menu->setPosition(sf::Vector2f(10, 10));
 
 	SFUI::FormLayout* form = menu->addFormLayout();
+
+	form->addLabel("uwu");
 
 	// Slider for scale
 	SFUI::CheckBox* clientReadyToStartGame = new SFUI::CheckBox();
@@ -43,33 +45,36 @@ void GameCreationState::Init(AppEngine* app_)
 	app->dRPC.setState("creating a game");
 	app->dRPC.updatePresence();
 
-	logger::INFO("GameCreationState ready.");
+	logger::INFO("LobbyState ready.");
 }
 
-void GameCreationState::Cleanup()
+void LobbyState::Cleanup()
 {
-	logger::INFO("GameCreationState Cleaningup");
+	logger::INFO("LobbyState Cleaningup");
 
-	logger::INFO("GameCreationState Cleanedup");
+	logger::INFO("LobbyState Cleanedup");
 }
 
-void GameCreationState::Pause()
+void LobbyState::Pause()
 {
-	logger::INFO("GameCreationState Paused");
+	logger::INFO("LobbyState Paused");
 }
 
-void GameCreationState::Resume()
+void LobbyState::Resume()
 {
-	logger::INFO("GameCreationState Resumed");
+	logger::INFO("LobbyState Resumed");
 }
 
-void GameCreationState::HandleEvents()
+void LobbyState::HandleEvents()
 {
 	sf::Event event;
 	while (app->window->pollEvent(event))
 	{
 		if (event.type == sf::Event::EventType::Closed)
+		{
 			app->Quit();
+			return;
+		}
 
 		int id = menu->onEvent(event);
 		switch (id)
@@ -110,13 +115,13 @@ void GameCreationState::HandleEvents()
 	}
 }
 
-void GameCreationState::Update()
+void LobbyState::Update()
 {
 	if (!isClientReady)
 		startGameButton->onStateChanged(SFUI::State::Default);
 }
 
-void GameCreationState::Draw()
+void LobbyState::Draw()
 {
 	app->window->clear(SFUI::Theme::windowBgColor);
 

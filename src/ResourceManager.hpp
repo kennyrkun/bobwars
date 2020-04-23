@@ -25,6 +25,7 @@ public:
 	// TODO: fonts
 
 private:
+	// Smart pointers would be cool
 	std::map<std::string, sf::Texture*> loaded_textures;
 };
 

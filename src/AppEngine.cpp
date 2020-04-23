@@ -39,6 +39,7 @@ void AppEngine::Init(AppSettings settings_)
 			settings.maxfps = std::stoi(settings.launchOptions.argv[i += 1]);
 	}
 
+	// TODO: do this in startup state
 	if (!fs::exists("./bobwars"))
 		fs::create_directory("./bobwars");
 
@@ -53,10 +54,13 @@ void AppEngine::Init(AppSettings settings_)
 	SFUI::Theme::input.textColor = SFUI::Theme::hexToRgb("#000000");
 	SFUI::Theme::input.textColorHover = SFUI::Theme::hexToRgb("#CC7A00");
 	SFUI::Theme::input.textColorFocus = SFUI::Theme::hexToRgb("#000000");
+	SFUI::Theme::label.textColor = SFUI::Theme::hexToRgb("#ffffff");
+	SFUI::Theme::label.textColorHover = SFUI::Theme::hexToRgb("#ffffff");
+	SFUI::Theme::label.textColorFocus = SFUI::Theme::hexToRgb("#ffffff");
 	SFUI::Theme::windowBgColor = SFUI::Theme::hexToRgb("#dddbde");
 	SFUI::Theme::PADDING = 2.f;
 
-	window = new sf::RenderWindow(sf::VideoMode(settings.width, settings.height), settings.title);
+	window = new sf::RenderWindow(sf::VideoMode(settings.width, settings.height), settings.title, sf::Style::Titlebar | sf::Style::Close);
 	window->setVerticalSyncEnabled(true);
 
 	resMan = new ResourceManager;
@@ -86,6 +90,9 @@ void AppEngine::Cleanup()
 
 	resMan->freeAllTextures();
 	delete resMan;
+
+	if (server != nullptr)
+		delete server;
 
 	dRPC.Shutdown();
 
@@ -174,6 +181,9 @@ void AppEngine::Update()
 #endif
 
 		states.back()->Update();
+
+		if (!singleplayer && server != nullptr)
+			server->Update();
 	}
 }
 

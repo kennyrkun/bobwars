@@ -19,11 +19,11 @@ SET(HEADERS AppEngine.hpp
 			EntityManager.hpp
 			Explosion.hpp
 			GroundMoveComponent.hpp
-			GameCreationState.hpp
+			LobbyState.hpp
 			GameEndState.hpp
 			GamePauseState.hpp
 			GamePlayState.hpp
-			GameStartupState.hpp
+			StartupState.hpp
 			Google.hpp
 			GooglePlus.hpp
 			Interface.hpp
@@ -54,11 +54,11 @@ SET(SOURCES AppEngine.cpp
 			GroundMoveComponent.cpp
 			EntityManager.cpp
 			Explosion.cpp
-			GameCreationState.cpp
+			LobbyState.cpp
 			GameEndState.cpp
 			GamePauseState.cpp
 			GamePlayState.cpp
-			GameStartupState.cpp
+			StartupState.cpp
 			Google.cpp
 			GooglePlus.cpp
 			Interface.cpp

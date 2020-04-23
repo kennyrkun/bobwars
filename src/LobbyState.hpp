@@ -1,12 +1,12 @@
-#ifndef GAME_CREATION_STATE
-#define GAME_CREATION_STATE
+#ifndef LOBBY_STATE_HPP
+#define LOBBY_STATE_HPP
 
 #include "AppState.hpp"
 #include "Util/Graphics/DisabledButton.hpp"
 
-#include <SFUI/SFUI.hpp>
+#include <SFUI/Layouts/Menu.hpp>
 
-class GameCreationState : public AppState
+class LobbyState : public AppState
 {
 public:
 	void Init(AppEngine* app_);
@@ -27,4 +27,4 @@ private:
 	DisabledButton* startGameButton;
 };
 
-#endif // !GAME_CREATION_STATE
+#endif // !LOBBY_STATE_HPP

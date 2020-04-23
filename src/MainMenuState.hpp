@@ -20,34 +20,53 @@ public:
 	void Draw();
 
 private:
-	bool mouseIsOver(sf::Shape &object);
-
-	int dr, dg , db;
-	sf::Uint8 r = 255, g = 0, b = 0;
-
 	sf::RectangleShape backgroundmedia;
 
-	sf::Font font;
 	sf::Text bobwars;
 
 	SFUI::Menu *menu;
 
-	enum MAIN_MENU_CALLBACKS
+	enum class MenuState
 	{
-		PLAY_BUTTON,
-		LOAD_BUTTON,
-		SETTINGS_BUTTON,
-		EXIT_BUTTON
+		Main,
+		Multiplayer,
+		MultiplayerServer,
+		Singleplayer,
+		Settings
 	};
 
-	enum OPTIONS_MENU_CALLBACKS
+	enum MenuCallbacks
 	{
-		FULLSCREEN,
-		DEBUG,
+		Multiplayer,
+		MultieplayerServerJoin,
+		Singleplayer,
+		Settings,
+		Exit,
 
-		RESOLUTIONX,
-		RESOLUTIONY,
+		MultiplayerServerConnect,
+		MultiplayerServerBack,
+
+		MultiplayerNewGame,
+		MultiplayerJoinGame,
+		MultiplayerLoadGame,
+		MultiplayerBack,
+
+		SingleplayerNewGame,
+		SingleplayerLoadGame,
+		SingleplayerBack,
+		
+		Debug,
+		VSync,
+		MaxFPS,
+		Fullscreen,
+		ResolutionX,
+		ResolutionY,
+		DarkMode,
+		ApplySettings,
+		SettingsBack
 	};
+
+	void build(const MenuState& state);
 };
 
 #endif // !MAIN_MENU_STATE

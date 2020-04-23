@@ -1,5 +1,5 @@
-#include "GameCreationState.hpp"
 #include "MainMenuState.hpp"
+#include "LobbyState.hpp"
 
 #include "Util/Logger.hpp"
 #include "Util/Graphics/Text.hpp"
@@ -14,9 +14,9 @@ void MainMenuState::Init(AppEngine* app_)
 
 	app = app_;
 
-	font.loadFromFile("./bobwars/resource/interface/tahoma.ttf");
+	build(MenuState::Main);
 
-	bobwars.setFont(font);
+	bobwars.setFont(SFUI::Theme::getFont());
 	// TODO: 1/100000 chance the title screen will say bobo instead
 	bobwars.setString("bobwars");
 	bobwars.setCharacterSize(56);
@@ -37,14 +37,6 @@ void MainMenuState::Init(AppEngine* app_)
 	{
 		logger::ERROR("Failed to load title screen logo.");
 	}
-
-	menu = new SFUI::Menu(*app->window);
-	menu->addButton("New Game", MAIN_MENU_CALLBACKS::PLAY_BUTTON);
-	menu->add(new DisabledButton("Load"), MAIN_MENU_CALLBACKS::LOAD_BUTTON);
-	menu->add(new DisabledButton("Settings"), MAIN_MENU_CALLBACKS::SETTINGS_BUTTON);
-	menu->addButton("Exit", MAIN_MENU_CALLBACKS::EXIT_BUTTON);
-
-	menu->setPosition(sf::Vector2f((app->window->getSize().x / 2 - (menu->getSize().x / 2)) / 4, app->window->getSize().y / 2 - (menu->getSize().y / 2)));
 
 	bobwars.setPosition(menu->getPosition() - sf::Vector2f(50, bobwars.getLocalBounds().width / 2));
 
@@ -84,18 +76,54 @@ void MainMenuState::HandleEvents()
 		int id = menu->onEvent(event);
 		switch (id)
 		{
-		case MAIN_MENU_CALLBACKS::PLAY_BUTTON:
-			logger::INFO("Starting a new game...");
-			// TODO: we should ChangeState and rebuild the menu everytime, to save memory.
-			app->ChangeState(new GameCreationState);
-			return;
-		case MAIN_MENU_CALLBACKS::LOAD_BUTTON:
-			logger::WARNING("Saving/Loading system not yet implemented.");
+		case MenuCallbacks::Multiplayer:
+			build(MenuState::Multiplayer);
 			break;
-		case MAIN_MENU_CALLBACKS::SETTINGS_BUTTON:
+		case MenuCallbacks::Singleplayer:
+			build(MenuState::Singleplayer);
+			break;
+		case MenuCallbacks::Settings:
 			logger::WARNING("Settings functions not yet implemented.");
+			build(MenuState::Settings);
 			break;
-		case MAIN_MENU_CALLBACKS::EXIT_BUTTON:
+
+		case MenuCallbacks::MultiplayerServerConnect:
+			break;
+		case MenuCallbacks::MultiplayerServerBack:
+			build(MenuState::Multiplayer);
+			return;
+
+		case MenuCallbacks::MultiplayerJoinGame:
+			build(MenuState::MultiplayerServer);
+			return;
+		case MenuCallbacks::MultiplayerNewGame:
+			app->singleplayer = false;
+			app->ChangeState(new LobbyState);
+			return;
+		case MenuCallbacks::MultiplayerLoadGame:
+			//app->ChangeState(new SaveListState(true));
+			return;
+		case MenuCallbacks::MultiplayerBack:
+			build(MenuState::Main);
+			return;
+
+		case MenuCallbacks::SingleplayerNewGame:
+			app->singleplayer = true;
+			app->ChangeState(new LobbyState);
+			return;
+		case MenuCallbacks::SingleplayerLoadGame:
+			app->singleplayer = true;
+			//app->ChangeState(new SaveListState(true));
+			return;
+		case MenuCallbacks::SingleplayerBack:
+			build(MenuState::Main);
+			return;
+
+		case MenuCallbacks::SettingsBack:
+			build(MenuState::Main);
+			return;
+
+		case MenuCallbacks::Exit:
 			logger::INFO("Exiting game...");
 			app->Quit();
 			return;
@@ -115,6 +143,8 @@ void MainMenuState::HandleEvents()
 				app->settings.debug = !app->settings.debug;
 
 				logger::INFO("cl_debug set to " + std::to_string(app->settings.debug));
+
+				build(MenuState::Main);
 			}
 		}
 	}
@@ -122,27 +152,6 @@ void MainMenuState::HandleEvents()
 
 void MainMenuState::Update()
 {
-	r += dr;
-	g += dg;
-	b += db;
-
-	if (r == 255 && g == 0 && b == 0)
-		dr = 0; dg = 1; db = 0;
-
-	if (r == 255 && g == 255 && b == 0)
-		dr = -1; dg = 0; db = 0;
-
-	if (r == 0 && g == 255 && b == 0)
-		dr = 0; dg = 0; db = 1;
-
-	if (r == 0 && g == 255 && b == 255)
-		dr = 0; dg = -1; db = 0;
-
-	if (r == 0 && g == 0 && b == 255)
-		dr = 1; dg = 0; db = 0;
-
-	if (r == 255 && g == 0 && b == 255)
-		dr = 0; dg = 0; db = -1;
 }
 
 void MainMenuState::Draw()
@@ -161,12 +170,85 @@ void MainMenuState::Draw()
 	app->window->display();
 }
 
-// public:
-
-bool MainMenuState::mouseIsOver(sf::Shape &object)
+void MainMenuState::build(const MenuState& state)
 {
-	if (object.getGlobalBounds().contains(app->window->mapPixelToCoords(sf::Mouse::getPosition(*app->window))))
-		return true;
-	else
-		return false;
+	menu = new SFUI::Menu(*app->window);
+
+	sf::Vector2u windowSize = app->window->getSize();
+
+	switch (state)
+	{
+	case MenuState::Main:
+	{
+		menu->addButton("Multiplayer", MenuCallbacks::Multiplayer);
+		menu->addButton("Singleplayer", MenuCallbacks::Singleplayer);
+
+		if (!app->settings.debug)
+			menu->add(new DisabledButton("Settings"), MenuCallbacks::Settings);
+		else
+			menu->addButton("Settings", MenuCallbacks::Settings);
+		
+		menu->addButton("Exit", MenuCallbacks::Exit);
+
+		menu->setPosition(sf::Vector2f((windowSize.x / 2 - (menu->getSize().x / 2)) / 4, windowSize.y / 2 - (menu->getSize().y / 2)));
+		break;
+	}
+	case MenuState::MultiplayerServer:
+	{
+		SFUI::InputBox* addressBox = new SFUI::InputBox;
+		SFUI::InputBox* portBox = new SFUI::InputBox;
+
+		SFUI::FormLayout* form = menu->addFormLayout();
+
+		form->addRow("Address: ", addressBox);
+		form->addRow("Port: ", portBox);
+
+		SFUI::HorizontalBoxLayout* hbox = form->addHorizontalBoxLayout();
+
+		hbox->addButton("Connect", MenuCallbacks::MultiplayerServerConnect);
+		hbox->addButton("Back", MenuCallbacks::MultiplayerServerBack);
+
+		menu->setPosition(sf::Vector2f((windowSize.x / 2 - (menu->getSize().x / 2)) / 8, windowSize.y / 2 - (menu->getSize().y / 2)));
+		break;
+	}
+	case MenuState::Multiplayer:
+	{
+		menu->addButton("Join Game", MenuCallbacks::MultiplayerJoinGame);
+		menu->addButton("Host New Game", MenuCallbacks::MultiplayerNewGame);
+
+		if (!app->settings.debug)
+			menu->add(new DisabledButton("Host Saved Game"), MenuCallbacks::MultiplayerLoadGame);
+		else
+			menu->addButton("Host Saved Game", MenuCallbacks::MultiplayerLoadGame);
+
+		menu->addButton("Back", MenuCallbacks::MultiplayerBack);
+
+		menu->setPosition(sf::Vector2f((windowSize.x / 2 - (menu->getSize().x / 2)) / 4, windowSize.y / 2 - (menu->getSize().y / 2)));
+		break;
+	}
+	case MenuState::Singleplayer:
+	{
+		menu->addButton("New Game", MenuCallbacks::SingleplayerNewGame);
+
+		if (!app->settings.debug)
+			menu->add(new DisabledButton("Load Game"), MenuCallbacks::SingleplayerLoadGame);
+		else
+			menu->addButton("Load Game", MenuCallbacks::SingleplayerLoadGame);
+
+		menu->addButton("Back", MenuCallbacks::SingleplayerBack);
+
+		menu->setPosition(sf::Vector2f((windowSize.x / 2 - (menu->getSize().x / 2)) / 4, windowSize.y / 2 - (menu->getSize().y / 2)));
+		break;
+	}
+	case MenuState::Settings:
+	{
+		menu->addButton("Uwu");
+		menu->addButton("Back", MenuCallbacks::SettingsBack);
+
+		menu->setPosition(sf::Vector2f((windowSize.x / 2 - (menu->getSize().x / 2)) / 4, windowSize.y / 2 - (menu->getSize().y / 2)));
+		break;
+	}
+	default:
+		break;
+	}
 }

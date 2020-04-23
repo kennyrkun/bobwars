@@ -1,5 +1,5 @@
 #include "AppEngine.hpp"
-#include "GameStartupState.hpp"
+#include "StartupState.hpp"
 
 #include "Util/Logger.hpp"
 #include "Util/DiscordRPC.hpp"
@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
 	AppEngine app;
 	app.Init(options);
 
-	app.PushState(new GameStartupState);
+	app.PushState(new StartupState);
 
 	while (app.isRunning())
 	{

@@ -1,5 +1,5 @@
-#ifndef GAME_STARTUP_STATE_HPP
-#define GAME_STARTUP_STATE_HPP
+#ifndef STARTUP_STATE_HPP
+#define STARTUP_STATE_HPP
 
 #include "AppEngine.hpp"
 #include "AppState.hpp"
@@ -7,7 +7,7 @@
 #include <SFUI/SFUI.hpp>
 #include <SFML/Graphics.hpp>
 
-class GameStartupState : public AppState
+class StartupState : public AppState
 {
 public:
 	void Init(AppEngine* app_);
@@ -21,9 +21,7 @@ public:
 	void Draw();
 
 private:
-	bool mouseIsOver(sf::Shape &object);
-
 	bool ready = false;
 };
 
-#endif // !GAME_STARTUP_STATE_HPP
+#endif // !STARTUP_STATE_HPP

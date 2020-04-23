@@ -3,6 +3,7 @@
 
 #include "ResourceManager.hpp"
 #include "Util/DiscordRPC.hpp"
+#include "Server.hpp"
 
 #include <SFML/Graphics.hpp>
 
@@ -15,6 +16,10 @@ struct AppSettings
 {
 	std::string version = "0.17-20w17d-multiplayer";
 	std::string title = "bobwars " + version;
+
+	int clientProtocol = 1;
+	int serverProtocol = 1;
+
 	bool fullscreen = false;
 	bool vsync = true;
 	bool debug = false;
@@ -62,19 +67,23 @@ public:
 	bool isRunning() { return running; }
 	void Quit();
 
-	sf::RenderWindow* window;
-	AppSettings settings;
-
 	std::vector<AppState*> states;
 	std::vector<sf::Event> events;
 
-	ResourceManager* resMan;
+	sf::RenderWindow* window;
+	AppSettings settings;
+
+	ResourceManager* resMan = nullptr;
 
 	DiscordRPC dRPC;
 
 	Keybindings keys;
 
 	time_t delta;
+
+	bool singleplayer = true;
+
+	Server* server = nullptr;
 
 private:
 	bool running;
