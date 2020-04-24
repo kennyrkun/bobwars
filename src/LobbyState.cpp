@@ -59,6 +59,23 @@ void LobbyState::Init(AppEngine* app_)
 	teamContainer->addLabel("Team");
 	colorContainer->addLabel("Color");
 
+	std::vector<std::pair<std::string, sf::Color>> availableColors = { { "Red", sf::Color::Red }, 
+																	   { "Blue", sf::Color::Blue }, 
+																	   { "Green", sf::Color::Green }, 
+																	   { "Yellow", sf::Color::Yellow } };
+
+	for (size_t i = 0; i < maxPlayers; i++)
+	{
+		SFUI::OptionsBox<sf::Color>* opt = new SFUI::OptionsBox<sf::Color>();
+		for (size_t i = 0; i < availableColors.size(); i++)
+		{
+			opt->addItem(availableColors[i].first, availableColors[i].second);
+			/* code */
+		}
+		
+		colorContainer->add(opt);
+	}
+
 	playerInformationContainer->add(new SFUI::MultilineInputBox);
 	playerInformationContainer->add(new SFUI::InputBox);
 
