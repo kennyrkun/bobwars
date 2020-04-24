@@ -24,6 +24,9 @@ private:
 
 	sf::Text bobwars;
 
+	SFUI::InputBox* addressBox;
+	SFUI::InputBox* portBox;
+
 	SFUI::Menu *menu;
 
 	enum class MenuState
@@ -31,7 +34,7 @@ private:
 		Main,
 		Multiplayer,
 		MultiplayerServer,
-		Singleplayer,
+		MultiplayerConnectFailed,
 		Settings
 	};
 
@@ -39,22 +42,20 @@ private:
 	{
 		Multiplayer,
 		MultieplayerServerJoin,
-		Singleplayer,
 		Settings,
 		Exit,
-
-		MultiplayerServerConnect,
-		MultiplayerServerBack,
 
 		MultiplayerNewGame,
 		MultiplayerJoinGame,
 		MultiplayerLoadGame,
 		MultiplayerBack,
 
-		SingleplayerNewGame,
-		SingleplayerLoadGame,
-		SingleplayerBack,
-		
+		MultiplayerServerConnect,
+		MultiplayerServerBack,
+
+		MultiplayerConnectBack,
+		MultiplayerConnectRetry,
+
 		Debug,
 		VSync,
 		MaxFPS,
@@ -67,6 +68,8 @@ private:
 	};
 
 	void build(const MenuState& state);
+
+	bool tryServerConnect();
 };
 
 #endif // !MAIN_MENU_STATE

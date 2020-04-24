@@ -22,8 +22,6 @@ public:
 
 private:
     bool gui = false;
-
-	Server* server;
 };
 
 #endif // !DEDICATED_SERVER_STATE_HPP

@@ -19,54 +19,16 @@ it will have three states
 we will just 1 & 3 first, then 2.
 */
 
-struct Commands
-{
-    struct Client
-    {
-        enum General
-        {
-            ConnectionAccepted,
-            ConnectionRejected,
-            DisconnectAcknowledged,
-            Disconnected,
-            ServerClosed,
-        };
-
-        enum Lobby
-        {
-            ClientJoined,
-            ClientLeft,
-
-            UpdateClient,
-        };
-
-        struct Game
-        {
-            enum Team
-            {
-                Defeated,
-                DiplomaticStatusChanged
-            };
-
-            enum General
-            {
-                UpdateEntities,
-                GameOver,
-            };
-        };
-    };
-};
-
-class Client
+class ClientServerInterface
 {
 public:
-    int ID;
-    int team;
-    
-    sf::TcpSocket* socket = nullptr;
+    void Update();
+
+    sf::TcpSocket* socket;
+	sf::SocketSelector selector;
 };
 
-class Server
+class DedicatedServer
 {
 public:
     bool Start();

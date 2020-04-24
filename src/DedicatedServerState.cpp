@@ -12,8 +12,8 @@ void DedicatedServerState::Init(AppEngine* app_)
 
 	app = app_;
 
-    server = new Server;
-    if (!server->Start())
+    app->server = new DedicatedServer;
+    if (!app->server->Start())
 		app->Quit();
 
 	logger::INFO("DedicatedServerState ready.");
@@ -23,8 +23,8 @@ void DedicatedServerState::Cleanup()
 {
 	logger::INFO("Cleaning up DedicatedServerState.");
 
-    server->Stop();
-    delete server;
+    app->server->Stop();
+    delete app->server;
 
 	logger::INFO("Cleaned up DedicatedServerState.");
 }
@@ -41,28 +41,13 @@ void DedicatedServerState::Resume()
 
 void DedicatedServerState::HandleEvents()
 {
-	sf::Event event;
-	while (app->window->pollEvent(event))
-	{
-		if (event.type == sf::Event::EventType::Closed)
-        {
-			app->Quit();
-            return;
-        }
-	}
 }
 
 void DedicatedServerState::Update()
 {
-    server->Update();
+    app->server->Update();
 }
 
 void DedicatedServerState::Draw()
 {
-	app->window->clear(sf::Color(100, 100, 100));
-
-	if (app->settings.debug)
-		util::text::draw(*app->window, "states: " + std::to_string(app->states.size()), sf::Vector2f(0, 0));
-
-	app->window->display();
 }

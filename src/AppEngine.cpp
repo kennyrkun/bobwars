@@ -182,7 +182,7 @@ void AppEngine::Update()
 
 		states.back()->Update();
 
-		if (!singleplayer && server != nullptr)
+		if (server != nullptr)
 			server->Update();
 	}
 }

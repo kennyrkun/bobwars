@@ -79,16 +79,21 @@ void MainMenuState::HandleEvents()
 		case MenuCallbacks::Multiplayer:
 			build(MenuState::Multiplayer);
 			break;
-		case MenuCallbacks::Singleplayer:
-			build(MenuState::Singleplayer);
-			break;
 		case MenuCallbacks::Settings:
 			logger::WARNING("Settings functions not yet implemented.");
 			build(MenuState::Settings);
 			break;
 
 		case MenuCallbacks::MultiplayerServerConnect:
-			break;
+		{
+			if (!tryServerConnect())
+				build(MenuState::MultiplayerConnectFailed);
+			else
+			{
+				app->ChangeState(new LobbyState);
+				return;
+			}
+		}
 		case MenuCallbacks::MultiplayerServerBack:
 			build(MenuState::Multiplayer);
 			return;
@@ -97,25 +102,12 @@ void MainMenuState::HandleEvents()
 			build(MenuState::MultiplayerServer);
 			return;
 		case MenuCallbacks::MultiplayerNewGame:
-			app->singleplayer = false;
 			app->ChangeState(new LobbyState);
 			return;
 		case MenuCallbacks::MultiplayerLoadGame:
 			//app->ChangeState(new SaveListState(true));
 			return;
 		case MenuCallbacks::MultiplayerBack:
-			build(MenuState::Main);
-			return;
-
-		case MenuCallbacks::SingleplayerNewGame:
-			app->singleplayer = true;
-			app->ChangeState(new LobbyState);
-			return;
-		case MenuCallbacks::SingleplayerLoadGame:
-			app->singleplayer = true;
-			//app->ChangeState(new SaveListState(true));
-			return;
-		case MenuCallbacks::SingleplayerBack:
 			build(MenuState::Main);
 			return;
 
@@ -181,7 +173,6 @@ void MainMenuState::build(const MenuState& state)
 	case MenuState::Main:
 	{
 		menu->addButton("Multiplayer", MenuCallbacks::Multiplayer);
-		menu->addButton("Singleplayer", MenuCallbacks::Singleplayer);
 
 		if (!app->settings.debug)
 			menu->add(new DisabledButton("Settings"), MenuCallbacks::Settings);
@@ -226,20 +217,6 @@ void MainMenuState::build(const MenuState& state)
 		menu->setPosition(sf::Vector2f((windowSize.x / 2 - (menu->getSize().x / 2)) / 4, windowSize.y / 2 - (menu->getSize().y / 2)));
 		break;
 	}
-	case MenuState::Singleplayer:
-	{
-		menu->addButton("New Game", MenuCallbacks::SingleplayerNewGame);
-
-		if (!app->settings.debug)
-			menu->add(new DisabledButton("Load Game"), MenuCallbacks::SingleplayerLoadGame);
-		else
-			menu->addButton("Load Game", MenuCallbacks::SingleplayerLoadGame);
-
-		menu->addButton("Back", MenuCallbacks::SingleplayerBack);
-
-		menu->setPosition(sf::Vector2f((windowSize.x / 2 - (menu->getSize().x / 2)) / 4, windowSize.y / 2 - (menu->getSize().y / 2)));
-		break;
-	}
 	case MenuState::Settings:
 	{
 		menu->addButton("Uwu");
@@ -251,4 +228,20 @@ void MainMenuState::build(const MenuState& state)
 	default:
 		break;
 	}
+}
+
+bool MainMenuState::tryServerConnect()
+{
+	if (app->server)
+		delete app->server;
+
+	sf::IpAddress address = "192.168.0.1";
+	unsigned short port = 25565;
+
+	logger::INFO("Attempting to connect to server at " + address.toString() + ":" + std::to_string(port));
+
+//	if (app->server->socket->connect())
+//		return true;
+
+	return false;
 }

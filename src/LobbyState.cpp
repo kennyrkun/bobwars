@@ -25,25 +25,56 @@ void LobbyState::Init(AppEngine* app_)
 	// set the origin of the menu to 10, 10
 	menu->setPosition(sf::Vector2f(10, 10));
 
-	SFUI::FormLayout* form = menu->addFormLayout();
+	SFUI::VerticalBoxLayout* mainContainer = menu->addVerticalBoxLayout();
+	mainContainer->addLabel("Multiplayer Game");
 
-	form->addLabel("uwu");
+	SFUI::VerticalBoxLayout* playerInformationContainer = mainContainer->addVerticalBoxLayout();
+	SFUI::HorizontalBoxLayout* columnsContainer = playerInformationContainer->addHorizontalBoxLayout();
+	SFUI::VerticalBoxLayout* nameContainer = columnsContainer->addVerticalBoxLayout();
+	SFUI::VerticalBoxLayout* pingContainer = columnsContainer->addVerticalBoxLayout();
+	SFUI::VerticalBoxLayout* teamContainer = columnsContainer->addVerticalBoxLayout();
+	SFUI::VerticalBoxLayout* colorContainer = columnsContainer->addVerticalBoxLayout();
+	nameContainer->addLabel("Name");
 
-	// Slider for scale
-	SFUI::CheckBox* clientReadyToStartGame = new SFUI::CheckBox();
+	enum class SlotStatus
+	{
+		Open,
+		Closed,
+		AI
+	};
 
-	// TODO: SFUI::OptionsBox for side
+	const int maxPlayers = 7;
+	nameContainer->addLabel("You!");
+	for (size_t i = 0; i < maxPlayers - 1; i++)
+	{
+		SFUI::OptionsBox<SlotStatus>* opt = new SFUI::OptionsBox<SlotStatus>();
+		opt->addItem("Open", SlotStatus::Open);
+		opt->addItem("Closed", SlotStatus::Closed);
+		opt->addItem("AI", SlotStatus::AI);
+		nameContainer->add(opt);
+	}
+	
+	pingContainer->addLabel("Ping");
+	teamContainer->addLabel("Team");
+	colorContainer->addLabel("Color");
 
-	form->addRow("ClientReady:", clientReadyToStartGame, CLIENT_READY_TICK_BOX);
+	playerInformationContainer->add(new SFUI::MultilineInputBox);
+	playerInformationContainer->add(new SFUI::InputBox);
 
-	startGameButton = new DisabledButton("Start Game");
-	form->add(startGameButton, START_GAME);
+	SFUI::HorizontalBoxLayout* readyContainer = playerInformationContainer->addHorizontalBoxLayout();
+	readyContainer->addLabel("Ready");
+	readyContainer->add(new SFUI::CheckBox);
 
-	menu->addButton("back to Main Menu", RETURN_TO_MAIN_MENU);
+	SFUI::HorizontalBoxLayout* gameControlsContainer = playerInformationContainer->addHorizontalBoxLayout();
+	gameControlsContainer->addButton("Start");
+	gameControlsContainer->addButton("Cancel");
 
-	app->dRPC.clearPresence();
-	app->dRPC.setState("creating a game");
-	app->dRPC.updatePresence();
+/*
+	SFUI::VerticalBoxLayout* gameSettingsContainer = mainContainer->addVerticalBoxLayout();
+	SFUI::HorizontalBoxLayout* settingsTicksContainer = settingsTicksContainer->addHorizontalBoxLayout();
+	SFUI::VerticalBoxLayout* firstTickContainer = settingsTicksContainer->addVerticalBoxLayout();
+	SFUI::VerticalBoxLayout* secondTickContainer = settingsTicksContainer->addVerticalBoxLayout();
+*/
 
 	logger::INFO("LobbyState ready.");
 }
@@ -117,13 +148,11 @@ void LobbyState::HandleEvents()
 
 void LobbyState::Update()
 {
-	if (!isClientReady)
-		startGameButton->onStateChanged(SFUI::State::Default);
 }
 
 void LobbyState::Draw()
 {
-	app->window->clear(SFUI::Theme::windowBgColor);
+	app->window->clear(sf::Color(64, 64, 64));
 
 	app->window->draw(*menu);
 

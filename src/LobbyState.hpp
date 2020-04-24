@@ -22,6 +22,21 @@ public:
 	SFUI::Menu* menu;
 
 private:
+	enum class State
+	{
+		CreatingLobby,
+		ConnectingToLobby,
+		EditingLobby,
+	};
+
+	enum MenuCallbacks
+	{
+		HostStartGame,
+		LeaveLobby,
+
+		Count,
+	};
+
 	bool isClientReady = false;
 
 	DisabledButton* startGameButton;

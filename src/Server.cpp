@@ -2,7 +2,7 @@
 
 #include "Util/Logger.hpp"
 
-bool Server::Start()
+bool DedicatedServer::Start()
 {
     logger::INFO("Starting bobwars server...");
 
@@ -24,14 +24,14 @@ bool Server::Start()
     return true;
 }
 
-void Server::Stop()
+void DedicatedServer::Stop()
 {
     logger::INFO("Shutting down server...");
 
     logger::INFO("Goodbye.");
 }
 
-void Server::Update()
+void DedicatedServer::Update()
 {
     if (selector.wait(sf::seconds(10.0f)))
     {
@@ -86,7 +86,7 @@ void Server::Update()
     }
 }
 
-void Server::disconnectClient(sf::TcpSocket* socket, std::string reason)
+void DedicatedServer::disconnectClient(sf::TcpSocket* socket, std::string reason)
 {
     logger::INFO("Disconnecting " + socket->getRemoteAddress().toString());
 
@@ -112,7 +112,7 @@ void Server::disconnectClient(sf::TcpSocket* socket, std::string reason)
 	}
 }
 
-bool Server::detailedClientConnectionTest(sf::TcpSocket* socket)
+bool DedicatedServer::detailedClientConnectionTest(sf::TcpSocket* socket)
 {
     logger::INFO("Testing connection to " + socket->getRemoteAddress().toString());
 
@@ -126,7 +126,7 @@ bool Server::detailedClientConnectionTest(sf::TcpSocket* socket)
 	return true;
 }
 
-void Server::broadcastMessage(sf::Packet packet, sf::TcpSocket* socketToIgnore)
+void DedicatedServer::broadcastMessage(sf::Packet packet, sf::TcpSocket* socketToIgnore)
 {
 	for (auto& socket : sockets)
 		if (socket != socketToIgnore)

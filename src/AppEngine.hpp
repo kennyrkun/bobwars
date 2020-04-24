@@ -81,9 +81,9 @@ public:
 
 	time_t delta;
 
-	bool singleplayer = true;
+	bool dedicatedServer = false;
 
-	Server* server = nullptr;
+	DedicatedServer* server = nullptr;
 
 private:
 	bool running;
