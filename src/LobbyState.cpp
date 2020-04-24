@@ -25,8 +25,9 @@ void LobbyState::Init(AppEngine* app_)
 	// set the origin of the menu to 10, 10
 	menu->setPosition(sf::Vector2f(10, 10));
 
-	SFUI::VerticalBoxLayout* mainContainer = menu->addVerticalBoxLayout();
-	mainContainer->addLabel("Multiplayer Game");
+	menu->addLabel("Multiplayer Game");
+
+	SFUI::HorizontalBoxLayout* mainContainer = menu->addHorizontalBoxLayout();
 
 	SFUI::VerticalBoxLayout* playerInformationContainer = mainContainer->addVerticalBoxLayout();
 	SFUI::HorizontalBoxLayout* columnsContainer = playerInformationContainer->addHorizontalBoxLayout();
@@ -69,12 +70,35 @@ void LobbyState::Init(AppEngine* app_)
 	gameControlsContainer->addButton("Start");
 	gameControlsContainer->addButton("Cancel");
 
-/*
 	SFUI::VerticalBoxLayout* gameSettingsContainer = mainContainer->addVerticalBoxLayout();
-	SFUI::HorizontalBoxLayout* settingsTicksContainer = settingsTicksContainer->addHorizontalBoxLayout();
+
+	gameSettingsContainer->addLabel("GameSettings");
+	gameSettingsContainer->addButton("Random");
+
+	SFUI::FormLayout* settingsForm = gameSettingsContainer->addFormLayout();
+	settingsForm->addLabel("Game Type");
+	settingsForm->addLabel("Map Type");
+	settingsForm->addLabel("Map Size");
+	settingsForm->addLabel("Difficulty");
+	settingsForm->addLabel("Resources");
+	settingsForm->addLabel("Max Population");
+	settingsForm->addLabel("Game Speed");
+	settingsForm->addLabel("Reveal Map");
+	settingsForm->addLabel("Victory");
+
+	SFUI::HorizontalBoxLayout* settingsTicksContainer = gameSettingsContainer->addHorizontalBoxLayout();
 	SFUI::VerticalBoxLayout* firstTickContainer = settingsTicksContainer->addVerticalBoxLayout();
 	SFUI::VerticalBoxLayout* secondTickContainer = settingsTicksContainer->addVerticalBoxLayout();
-*/
+
+	SFUI::FormLayout* firstTickForm = firstTickContainer->addFormLayout();
+	firstTickForm->addRow("Team Together", new SFUI::CheckBox);
+	firstTickForm->addRow("All techs", new SFUI::CheckBox);
+	firstTickForm->addRow("Allow cheats", new SFUI::CheckBox);
+	
+	SFUI::FormLayout* secondTickForm = secondTickContainer->addFormLayout();
+	secondTickForm->addRow("Lock Teams", new SFUI::CheckBox);
+	secondTickForm->addRow("Lock Speed", new SFUI::CheckBox);
+	secondTickForm->addRow("Record Game", new SFUI::CheckBox);
 
 	logger::INFO("LobbyState ready.");
 }
