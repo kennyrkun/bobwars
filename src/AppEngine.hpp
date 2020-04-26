@@ -85,6 +85,9 @@ public:
 
 	DedicatedServer* server = nullptr;
 
+	sf::TcpSocket* socket = nullptr;
+	sf::SocketSelector selector;
+
 private:
 	bool running;
 

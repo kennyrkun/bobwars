@@ -32,6 +32,7 @@ SET(HEADERS AppEngine.hpp
 			ResourceManager.hpp
 			Server.hpp
 			DedicatedServerState.hpp
+			LobbyInformation.hpp
 			Util/Graphics/ProgressBar.hpp
 			Util/SettingsParser.hpp
 			Util/Graphics/SmallUnitIcon.hpp

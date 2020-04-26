@@ -93,16 +93,22 @@ void MainMenuState::HandleEvents()
 				app->ChangeState(new LobbyState);
 				return;
 			}
+			break;
 		}
 		case MenuCallbacks::MultiplayerServerBack:
 			build(MenuState::Multiplayer);
 			return;
 
+		case MenuCallbacks::MultiplayerConnectBack:
+			build(MenuState::MultiplayerServer);
+			return;
+
 		case MenuCallbacks::MultiplayerJoinGame:
+			//app->ChangeState(new LobbyState(false));
 			build(MenuState::MultiplayerServer);
 			return;
 		case MenuCallbacks::MultiplayerNewGame:
-			app->ChangeState(new LobbyState);
+			app->ChangeState(new LobbyState(true));
 			return;
 		case MenuCallbacks::MultiplayerLoadGame:
 			//app->ChangeState(new SaveListState(true));
@@ -186,8 +192,8 @@ void MainMenuState::build(const MenuState& state)
 	}
 	case MenuState::MultiplayerServer:
 	{
-		SFUI::InputBox* addressBox = new SFUI::InputBox;
-		SFUI::InputBox* portBox = new SFUI::InputBox;
+		addressBox = new SFUI::InputBox;
+		portBox = new SFUI::InputBox;
 
 		SFUI::FormLayout* form = menu->addFormLayout();
 
@@ -198,6 +204,14 @@ void MainMenuState::build(const MenuState& state)
 
 		hbox->addButton("Connect", MenuCallbacks::MultiplayerServerConnect);
 		hbox->addButton("Back", MenuCallbacks::MultiplayerServerBack);
+
+		menu->setPosition(sf::Vector2f((windowSize.x / 2 - (menu->getSize().x / 2)) / 8, windowSize.y / 2 - (menu->getSize().y / 2)));
+		break;
+	}
+	case MenuState::MultiplayerConnectFailed:
+	{
+		menu->addLabel("Failed to connect to server.");
+		menu->addButton("Back", MenuCallbacks::MultiplayerConnectBack);
 
 		menu->setPosition(sf::Vector2f((windowSize.x / 2 - (menu->getSize().x / 2)) / 8, windowSize.y / 2 - (menu->getSize().y / 2)));
 		break;
@@ -232,16 +246,32 @@ void MainMenuState::build(const MenuState& state)
 
 bool MainMenuState::tryServerConnect()
 {
-	if (app->server)
+	if (app->server != nullptr)
 		delete app->server;
 
-	sf::IpAddress address = "192.168.0.1";
-	unsigned short port = 25565;
+	if (app->socket != nullptr)
+		delete app->socket;
+
+	sf::IpAddress address = addressBox->getText().toAnsiString();
+	//unsigned short port = std::stoi(addressBox->getText().toAnsiString());
+	unsigned int port = 12345;
 
 	logger::INFO("Attempting to connect to server at " + address.toString() + ":" + std::to_string(port));
 
-//	if (app->server->socket->connect())
-//		return true;
+	app->socket = new sf::TcpSocket;
 
-	return false;
+	if (app->socket->connect(address, port) != sf::Socket::Status::Done)
+	{
+		logger::ERROR("Failed to connect to server.");
+
+		delete app->socket;
+		app->socket = nullptr;
+		app->selector.clear();
+
+		return false;
+	}
+
+	app->selector.add(*app->socket);
+
+	return true;
 }

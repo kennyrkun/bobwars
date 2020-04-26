@@ -46,14 +46,14 @@ void AppEngine::Init(AppSettings settings_)
 	logger::INFO("Preparing SFUI");
 
 	SFUI::Theme::loadFont("./bobwars/resource/interface/tahoma.ttf");
-	SFUI::Theme::loadTexture("./bobwars/resource/interface/texture_square.png");
+	SFUI::Theme::loadTexture("./bobwars/resource/interface/texture_square.png", settings.debug);
 	SFUI::Theme::textCharacterSize = 12;
 	SFUI::Theme::click.textColor = SFUI::Theme::hexToRgb("#ffffff");
 	SFUI::Theme::click.textColorHover = SFUI::Theme::hexToRgb("#ffffff");
 	SFUI::Theme::click.textColorFocus = SFUI::Theme::hexToRgb("#ffffff");
-	SFUI::Theme::input.textColor = SFUI::Theme::hexToRgb("#000000");
-	SFUI::Theme::input.textColorHover = SFUI::Theme::hexToRgb("#CC7A00");
-	SFUI::Theme::input.textColorFocus = SFUI::Theme::hexToRgb("#000000");
+	SFUI::Theme::input.textColor = SFUI::Theme::hexToRgb("#ffffff");
+	SFUI::Theme::input.textColorHover = SFUI::Theme::hexToRgb("#ffffff");
+	SFUI::Theme::input.textColorFocus = SFUI::Theme::hexToRgb("#ffffff");
 	SFUI::Theme::label.textColor = SFUI::Theme::hexToRgb("#ffffff");
 	SFUI::Theme::label.textColorHover = SFUI::Theme::hexToRgb("#ffffff");
 	SFUI::Theme::label.textColorFocus = SFUI::Theme::hexToRgb("#ffffff");
@@ -181,9 +181,6 @@ void AppEngine::Update()
 #endif
 
 		states.back()->Update();
-
-		if (server != nullptr)
-			server->Update();
 	}
 }
 

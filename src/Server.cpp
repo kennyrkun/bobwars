@@ -1,5 +1,7 @@
 #include "Server.hpp"
 
+#include "LobbyInformation.hpp"
+
 #include "Util/Logger.hpp"
 
 bool DedicatedServer::Start()
@@ -19,6 +21,8 @@ bool DedicatedServer::Start()
     logger::INFO("local ipv4: " + sf::IpAddress::getLocalAddress().toString());
     logger::INFO("public ipv4: " + sf::IpAddress::getPublicAddress().toString());
 
+    state = ServerState::Lobby;
+
     logger::INFO("Server is ready.");
 
     return true;
@@ -33,11 +37,17 @@ void DedicatedServer::Stop()
 
 void DedicatedServer::Update()
 {
-    if (selector.wait(sf::seconds(10.0f)))
+    if (selector.wait(updateDelay))
     {
         if (selector.isReady(listener))
         {
-            logger::INFO("listener is ready to accept a new client");
+            logger::INFO("SERVER: Client is attempting to connect.");
+
+            if (state != ServerState::Lobby)
+            {
+                logger::INFO("SERVER: rejected client connection while game is in progress");
+                return;
+            }
 
             sf::TcpSocket* newSocket = new sf::TcpSocket;
 
@@ -45,10 +55,45 @@ void DedicatedServer::Update()
             {
                 selector.add(*newSocket);
                 sockets.push_back(newSocket);
-                logger::INFO("listener accepted client");
+
+                if (information.totalPlayers + 1 > information.maxPlayers + 1)
+                {
+                    logger::INFO("rejecting client because the server is full");
+
+                    sf::Packet packet;
+                    packet << "serverFull";
+
+                    newSocket->send(packet);
+
+                    delete newSocket;
+                    newSocket = nullptr;
+                    selector.remove(*newSocket);
+
+                    return;
+                }
+                else
+                {
+                    information.totalPlayers++;
+
+                    LobbyInformation::SlotInformation newSlot;
+                    newSlot.state = LobbyInformation::SlotInformation::SlotState::OccupiedByPlayer;
+                    newSlot.name = newSocket->getRemoteAddress().toString();
+                    newSlot.ping = 0;
+                    newSlot.team = "unassigned";
+                    newSlot.color = "unassigned";
+
+                    information.slots.push_back(newSlot);
+
+                    sf::Packet packet;
+                    packet << "LobbyUpdate";
+                    packet << information;
+                    broadcastMessage(packet);
+                }
+
+                logger::INFO("SERVER: listener accepted client");
             }
             else
-                logger::ERROR("listener failed to accept client");
+                logger::ERROR("SERVER: listener failed to accept client");
         }
         else
         {
@@ -60,7 +105,7 @@ void DedicatedServer::Update()
 
                     if (socket->receive(packet) == sf::Socket::Disconnected)
                     {
-                        logger::INFO("client has disconnected");
+                        logger::INFO("SERVER: client has disconnected");
                         disconnectClient(socket, "Timed out");
 
                         sf::Packet notify;
@@ -88,7 +133,7 @@ void DedicatedServer::Update()
 
 void DedicatedServer::disconnectClient(sf::TcpSocket* socket, std::string reason)
 {
-    logger::INFO("Disconnecting " + socket->getRemoteAddress().toString());
+    logger::INFO("SERVER: Disconnecting " + socket->getRemoteAddress().toString());
 
 	sf::Packet disconnect;
 	disconnect << "youGotDisconnected";
@@ -104,7 +149,7 @@ void DedicatedServer::disconnectClient(sf::TcpSocket* socket, std::string reason
 
 	if (sockets.size() <= 0)
 	{
-        logger::INFO("Client list empty, cleaning up and resetting...");
+        logger::INFO("SERVER: Client list empty, cleaning up and resetting...");
 
 		sockets.clear();
 		selector.clear();
@@ -114,7 +159,7 @@ void DedicatedServer::disconnectClient(sf::TcpSocket* socket, std::string reason
 
 bool DedicatedServer::detailedClientConnectionTest(sf::TcpSocket* socket)
 {
-    logger::INFO("Testing connection to " + socket->getRemoteAddress().toString());
+    logger::INFO("SERVER: Testing connection to " + socket->getRemoteAddress().toString());
 
 	sf::Packet connectionTest;
 

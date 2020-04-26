@@ -1,6 +1,8 @@
 #ifndef SERVER_HPP
 #define SERVER_HPP
 
+#include "LobbyInformation.hpp"
+
 #include <SFML/Network.hpp>
 
 #include <string>
@@ -22,8 +24,6 @@ we will just 1 & 3 first, then 2.
 class ClientServerInterface
 {
 public:
-    void Update();
-
     sf::TcpSocket* socket;
 	sf::SocketSelector selector;
 };
@@ -36,11 +36,34 @@ public:
 
     void Update();
 
+    inline unsigned short getBoundPort() const
+    {
+        return listener.getLocalPort();
+    }
+
     void disconnectClient(sf::TcpSocket* socket, std::string reason = "Generic Disconnect");
     bool detailedClientConnectionTest(sf::TcpSocket* socket);
     void broadcastMessage(sf::Packet packet, sf::TcpSocket* socketToIgnore = nullptr);
 
+    sf::Time updateDelay = sf::seconds(10.0f);
+
+    enum class ServerState
+    {
+        Lobby,
+        Game,
+        End,
+    };
+
+    inline void changeState(const ServerState& state)
+    {
+        this->state = state;
+    }
+
 private:
+    ServerState state;
+
+    LobbyInformation information;
+
     sf::TcpListener listener;
     sf::SocketSelector selector;
     std::list<sf::TcpSocket*> sockets;
