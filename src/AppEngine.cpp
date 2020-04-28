@@ -87,12 +87,18 @@ void AppEngine::Cleanup()
 
 	window->close();
 	delete window;
+	window = nullptr;
 
 	resMan->freeAllTextures();
 	delete resMan;
+	resMan = nullptr;
 
 	if (server != nullptr)
+	{
+		server->Stop();
 		delete server;
+		server = nullptr;
+	}
 
 	dRPC.Shutdown();
 

@@ -28,8 +28,7 @@ struct LobbyInformation
     bool recordGame;
 
     bool allPlayersReady = false;
-    int totalPlayers = -1;
-    int maxPlayers = 7;
+    int maxPlayers = 8;
 
     time_t timeSent;
 
@@ -44,15 +43,18 @@ struct LobbyInformation
         } state;
 
         std::string name;
+        int playerID = -1;
+        bool ready;
         float ping;
         std::string team;
         std::string color;
     };
 
+    // TODO: convert this to an std::list
     std::vector<SlotInformation> slots;
 };
 
-inline sf::Packet& operator <<(sf::Packet& packet, const LobbyInformation& lobby)
+inline sf::Packet& operator <<(sf::Packet& packet, LobbyInformation& lobby)
 {
     packet << lobby.gameName 
            << lobby.type 
@@ -67,15 +69,29 @@ inline sf::Packet& operator <<(sf::Packet& packet, const LobbyInformation& lobby
            << lobby.allowCheats 
            << lobby.lockTeams 
            << lobby.lockSpeed 
-           << lobby.recordGame 
-           << lobby.allPlayersReady 
-           << lobby.totalPlayers
+           << lobby.recordGame;
+
+            for (size_t i = 0; i < lobby.slots.size(); i++)
+            {
+                if (!lobby.slots[i].ready)
+                    break;
+
+                lobby.allPlayersReady = true;
+                break;
+            }
+
+           packet << lobby.allPlayersReady
            << lobby.maxPlayers;
+
+    int slotCount = lobby.slots.size();
+    packet << slotCount;
 
     for (size_t i = 0; i < lobby.slots.size(); i++)
     {
         packet << lobby.slots[i].state
                << lobby.slots[i].name
+               << lobby.slots[i].playerID
+               << lobby.slots[i].ready
                << lobby.slots[i].ping
                << lobby.slots[i].team
                << lobby.slots[i].color;
@@ -86,25 +102,27 @@ inline sf::Packet& operator <<(sf::Packet& packet, const LobbyInformation& lobby
 
 inline sf::Packet& operator >>(sf::Packet& packet, LobbyInformation& lobby)
 {
-        packet >> lobby.gameName 
-           >> lobby.type 
-           >> lobby.mapSize
-           >> lobby.difficulty 
-           >> lobby.resources 
-           >> lobby.population 
-           >> lobby.gameSpeed 
-           >> lobby.revealMap 
-           >> lobby.teamTogether 
-           >> lobby.allTechs 
-           >> lobby.allowCheats 
-           >> lobby.lockTeams 
-           >> lobby.lockSpeed 
-           >> lobby.recordGame 
-           >> lobby.allPlayersReady 
-           >> lobby.totalPlayers
-           >> lobby.maxPlayers;
+    packet >> lobby.gameName 
+        >> lobby.type 
+        >> lobby.mapSize
+        >> lobby.difficulty 
+        >> lobby.resources 
+        >> lobby.population 
+        >> lobby.gameSpeed 
+        >> lobby.revealMap 
+        >> lobby.teamTogether 
+        >> lobby.allTechs 
+        >> lobby.allowCheats 
+        >> lobby.lockTeams 
+        >> lobby.lockSpeed 
+        >> lobby.recordGame
+        >> lobby.allPlayersReady 
+        >> lobby.maxPlayers;
 
-    for (size_t i = 0; i < lobby.totalPlayers; i++)
+    int slotCount = 0;
+    packet >> slotCount;
+
+    for (size_t i = 0; i < slotCount; i++)
     {
         LobbyInformation::SlotInformation slot;
 
@@ -115,6 +133,8 @@ inline sf::Packet& operator >>(sf::Packet& packet, LobbyInformation& lobby)
         slot.state = state_;
 
         packet >> slot.name
+               >> slot.playerID
+               >> slot.ready
                >> slot.ping
                >> slot.team
                >> slot.color;

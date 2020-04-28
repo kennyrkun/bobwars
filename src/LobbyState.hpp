@@ -7,7 +7,8 @@
 
 #include <SFUI/SFUI.hpp>
 
-#include <map>
+#include <vector>
+#include <string>
 
 class LobbyState : public AppState
 {
@@ -54,10 +55,28 @@ private:
 		ChangeClientTeam,
 		ChangeClientColor,
 
+		ClientLeave,
+
 		Count,
 	};
 
-	SFUI::InputBox* gameNameBox = nullptr;
+	SFUI::Label* gameNameLabel;
+	SFUI::InputBox* gameNameBox;
+
+	SFUI::Label* typeLabel;
+	SFUI::Label* mapSizeLabel;
+	SFUI::Label* difficultyLabel;
+	SFUI::Label* resourcesLabel;
+	SFUI::Label* populationLabel;
+	SFUI::Label* gameSpeedLabel;
+	SFUI::Label* revealMapLabel;
+	SFUI::Label* victoryLabel;
+	SFUI::Label* teamTogetherLabel;
+	SFUI::Label* allTechsLabel;
+	SFUI::Label* allowCheatsLabel;
+	SFUI::Label* lockTeamsLabel;
+	SFUI::Label* lockSpeedLabel;
+	SFUI::Label* recordGameLabel;
 
 	SFUI::OptionsBox<std::string>* typeBox;
 	SFUI::OptionsBox<std::string>* mapSizeBox;
@@ -68,21 +87,27 @@ private:
 	SFUI::OptionsBox<std::string>* revealMapBox;
 	SFUI::OptionsBox<std::string>* victoryBox;
 
-	SFUI::InputBox* chatBox = nullptr;
-	SFUI::InputBox* chatInputBox = nullptr;
+	SFUI::InputBox* chatBox;
+	SFUI::InputBox* chatInputBox;
 
-	SFUI::CheckBox* teamTogetherBox = nullptr;
-	SFUI::CheckBox* allTechsBox = nullptr;
-	SFUI::CheckBox* allowCheatsBox = nullptr;
-	SFUI::CheckBox* lockTeamsBox = nullptr;
-	SFUI::CheckBox* lockSpeedBox = nullptr;
-	SFUI::CheckBox* recordGameBox = nullptr;
+	SFUI::CheckBox* teamTogetherBox;
+	SFUI::CheckBox* allTechsBox;
+	SFUI::CheckBox* allowCheatsBox;
+	SFUI::CheckBox* lockTeamsBox;
+	SFUI::CheckBox* lockSpeedBox;
+	SFUI::CheckBox* recordGameBox;
 
 	bool lobbyHost = false;
-	bool allPlayersReady = false;
-	int playerNumber = 2;
+	int playerNumber = -1;
 
 	void buildMenu(const LobbyInformation& information);
+
+	//bool sendServerUpdate(const std::string& command, const std::string& value = "");
+
+	template <typename T>
+	bool sendInformationChange(const int& id, const T& value);
+
+	bool sendServerCommand(const std::string& command, std::vector<std::string> arguments = {});
 };
 
 #endif // !LOBBY_STATE_HPP

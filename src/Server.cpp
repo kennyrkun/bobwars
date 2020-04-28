@@ -6,33 +6,51 @@
 
 bool DedicatedServer::Start()
 {
-    logger::INFO("Starting bobwars server...");
+    logger::INFO("SERVER: Starting bobwars server...");
 
 	if (listener.listen(12345) != sf::Socket::Status::Done)
 	{
-        logger::ERROR("Failed to bind to port.");
+        logger::ERROR("SERVER: Failed to bind to port.");
         return false;
 	}
 	else
-        logger::INFO("Successfully bound to port " + std::to_string(listener.getLocalPort()));
+        logger::INFO("SERVER: Successfully bound to port " + std::to_string(listener.getLocalPort()));
 
 	selector.add(listener);
 
-    logger::INFO("local ipv4: " + sf::IpAddress::getLocalAddress().toString());
-    logger::INFO("public ipv4: " + sf::IpAddress::getPublicAddress().toString());
+    logger::INFO("SERVER: local ipv4: " + sf::IpAddress::getLocalAddress().toString());
+    logger::INFO("SERVER: public ipv4: " + sf::IpAddress::getPublicAddress().toString());
 
     state = ServerState::Lobby;
 
-    logger::INFO("Server is ready.");
+    logger::INFO("SERVER: Server is ready.");
 
     return true;
 }
 
 void DedicatedServer::Stop()
 {
-    logger::INFO("Shutting down server...");
+    logger::INFO("SERVER: Shutting down server...");
 
-    logger::INFO("Goodbye.");
+    listener.close();
+
+    sf::Packet shutdownNotification;
+    shutdownNotification << "Disconnected";
+    shutdownNotification << "ServerShuttingDown";
+
+    for (Client* client : clients)
+    {
+        if (client->send(shutdownNotification) != sf::Socket::Status::Done)
+            logger::WARNING("SERVER: Failed to send shutdown notification to " + client->getRemoteAddress().toString() + ":" + std::to_string(client->getRemotePort()));
+
+        delete client;
+        client = nullptr;
+    }
+
+    clients.clear();
+    selector.clear();
+
+    logger::INFO("SERVER: Goodbye.");
 }
 
 void DedicatedServer::Update()
@@ -53,60 +71,66 @@ void DedicatedServer::Update()
 
             if (listener.accept(*newSocket) == sf::Socket::Status::Done)
             {
+                logger::INFO("SERVER: New client is connecting...");
+
                 selector.add(*newSocket);
-                sockets.push_back(newSocket);
 
-                if (information.totalPlayers + 1 > information.maxPlayers + 1)
+                if (information.slots.size() + 1 > information.maxPlayers)
                 {
-                    logger::INFO("rejecting client because the server is full");
+                    sf::Packet notifyServerFull;
+                    notifyServerFull << "ConnectionRejected";
+                    notifyServerFull << "ServerFull";
 
-                    sf::Packet packet;
-                    packet << "serverFull";
-
-                    newSocket->send(packet);
+                    newSocket->send(notifyServerFull);
 
                     delete newSocket;
                     newSocket = nullptr;
                     selector.remove(*newSocket);
 
+                    logger::INFO("SEVER: Connection Rejected: Server is full.");
+
                     return;
                 }
                 else
                 {
-                    information.totalPlayers++;
+                    Client* newClient = static_cast<Client*>(newSocket);
+                    newClient->playerID = ++nextClientID;
+                    clients.push_back(newClient);
 
                     LobbyInformation::SlotInformation newSlot;
                     newSlot.state = LobbyInformation::SlotInformation::SlotState::OccupiedByPlayer;
                     newSlot.name = newSocket->getRemoteAddress().toString();
+                    newSlot.playerID = newClient->playerID;
                     newSlot.ping = 0;
                     newSlot.team = "unassigned";
                     newSlot.color = "unassigned";
 
                     information.slots.push_back(newSlot);
 
-                    sf::Packet packet;
-                    packet << "LobbyUpdate";
-                    packet << information;
-                    broadcastMessage(packet);
-                }
+                    sf::Packet acceptConnection;
+                    acceptConnection << "ConnectionAccepted";
+                    broadcastMessage(acceptConnection);
 
-                logger::INFO("SERVER: listener accepted client");
+                    updateLobby();
+
+                    logger::INFO("SERVER: now has " + std::to_string(information.slots.size()) + " players");
+                }
             }
             else
                 logger::ERROR("SERVER: listener failed to accept client");
         }
         else
         {
-            for (auto& socket : sockets)
+            for (auto& client : clients)
             {
-                if (selector.isReady(*socket))
+                if (selector.isReady(*client))
                 {
                     sf::Packet packet;
 
-                    if (socket->receive(packet) == sf::Socket::Disconnected)
+                    if (client->receive(packet) == sf::Socket::Disconnected)
                     {
                         logger::INFO("SERVER: client has disconnected");
-                        disconnectClient(socket, "Timed out");
+                        disconnectClient(client, "Timed out");
 
                         sf::Packet notify;
                         notify << "userLeft";
@@ -121,9 +145,127 @@ void DedicatedServer::Update()
                     std::string command;
                     packet >> command;
 
-                    if (command == "userJoining")
+                    if (command == "ClientDisconnecting")
                     {
+                        logger::INFO("SERVER: disconnecting client");
+
+                        for (int i = 0; i < information.slots.size(); i++)
+                        {
+                            if (information.slots[i].playerID == client->playerID)
+                            {
+                                information.slots.erase(information.slots.begin() + i);
+                                break;
+                            }
+                        }
+
+                        disconnectClient(client, "DisconnectAcknowledged");
+
+                        updateLobby();
                     }
+                    else if (command == "ChangeLobbyName")
+                    {
+                        std::string newName;
+                        packet >> newName;
+
+                        information.gameName = newName;
+
+                        updateLobby();
+                    }
+                    else if (command == "StartGame")
+                    {
+                        // TODO: make sure the person this is coming from is the host
+                        if (information.allPlayersReady)
+                        {
+                            changeState(ServerState::Game);
+                            // TODO: play game;
+                            return;
+                        }
+                        else
+                        {
+                            logger::ERROR("SERVER: cannot start game until all players are ready.");
+                        } 
+                    }
+                    else if (command == "LobbyInformationChange")
+                    {
+                        int id = 0;
+                        packet >> id;
+
+                        logger::INFO("id: " + std::to_string(id));
+
+                        switch (id)
+                        {
+                        case LobbyCallbacks::ChangeLobbyName:
+                        {
+                            packet >> information.gameName;
+                            break;
+                        }
+                        case LobbyCallbacks::ChangeSlotStatus:
+                            break;
+                        case LobbyCallbacks::RandomiseLobbySettings:
+                            break;
+                        case LobbyCallbacks::ChangeGameType:
+                            packet >> information.type;
+                            break;
+                        case LobbyCallbacks::ChangeMapSize:
+                            packet >> information.mapSize;
+                            break;
+                        case LobbyCallbacks::ChangeDifficulty:
+                            packet >> information.difficulty;
+                            break;
+                        case LobbyCallbacks::ChangeResources:
+                            packet >> information.resources;
+                            break;
+                        case LobbyCallbacks::ChangePopulation:
+                            packet >> information.population;
+                            break;
+                        case LobbyCallbacks::ChangeRevealMap:
+                            packet >> information.revealMap;
+                            break;
+                        case LobbyCallbacks::ChangeVictory:
+                            packet >> information.victory;
+                            break;
+                        case LobbyCallbacks::ChangeTeamTogether:
+                            packet >> information.teamTogether;
+                            break;
+                        case LobbyCallbacks::ChangeLockTeams:
+                            packet >> information.lockTeams;
+                            break;
+                        case LobbyCallbacks::ChangeAllTechs:
+                            packet >> information.allTechs;
+                            break;
+                        case LobbyCallbacks::ChangeLockSpeed:
+                            packet >> information.lockSpeed;
+                            break;
+                        case LobbyCallbacks::ChangeAllowCheats:
+                            packet >> information.allowCheats;
+                            break;
+                        case LobbyCallbacks::ChangeRecordGame:
+                            packet >> information.recordGame;
+                            break;
+                        case LobbyCallbacks::ChangeClientName:
+                            break;
+                        case LobbyCallbacks::ChangeClientTeam:
+                            break;
+                        case LobbyCallbacks::ChangeClientColor:
+                            break;
+                        default:
+                        {
+                            if (id != -1)
+                                logger::INFO("SERVER: unhandled case for lobby callback: " + std::to_string(id));
+                            break;
+                        }
+                        } // switch
+
+                        sf::Packet packet;
+                        packet << "LobbyUpdate";
+                        packet << information;
+                        broadcastMessage(packet);
+                    }
+                    else
+                    {  
+                        logger::INFO("SERVER: received unknown command from client: " + command);
+                    }
+                    
                     break;
                 }
             }
@@ -131,49 +273,50 @@ void DedicatedServer::Update()
     }
 }
 
-void DedicatedServer::disconnectClient(sf::TcpSocket* socket, std::string reason)
+void DedicatedServer::disconnectClient(Client* client, std::string reason)
 {
-    logger::INFO("SERVER: Disconnecting " + socket->getRemoteAddress().toString());
+    logger::INFO("SERVER: Disconnecting " + client->getRemoteAddress().toString());
 
 	sf::Packet disconnect;
-	disconnect << "youGotDisconnected";
+	disconnect << "Disconnected";
 	disconnect << reason;
 
 	// don't bother checking for errors, this is just a courtesy
-	socket->send(disconnect);
+	client->send(disconnect);
 
-	selector.remove(*socket);
-	socket->disconnect();
-	sockets.remove(socket);
-	delete socket;
+	client->disconnect();
+	selector.remove(*client);
+	clients.remove(client);
+	delete client;
+    client = nullptr;
 
-	if (sockets.size() <= 0)
+	if (clients.size() <= 0)
 	{
-        logger::INFO("SERVER: Client list empty, cleaning up and resetting...");
+        logger::INFO("SERVER: Client list empty, cleaning...");
 
-		sockets.clear();
+		clients.clear();
 		selector.clear();
 		selector.add(listener);
 	}
 }
 
-bool DedicatedServer::detailedClientConnectionTest(sf::TcpSocket* socket)
+bool DedicatedServer::detailedClientConnectionTest(Client* client)
 {
-    logger::INFO("SERVER: Testing connection to " + socket->getRemoteAddress().toString());
+    logger::INFO("SERVER: Testing connection to " + client->getRemoteAddress().toString());
 
 	sf::Packet connectionTest;
 
-	if (socket->send(connectionTest) == sf::Socket::Status::Disconnected)
+	if (client->send(connectionTest) == sf::Socket::Status::Disconnected)
 		return false;
-	else if (socket->getRemoteAddress() == sf::IpAddress::None)
+	else if (client->getRemoteAddress() == sf::IpAddress::None)
 		return false;
 
 	return true;
 }
 
-void DedicatedServer::broadcastMessage(sf::Packet packet, sf::TcpSocket* socketToIgnore)
+void DedicatedServer::broadcastMessage(sf::Packet packet, Client* ignoreClient)
 {
-	for (auto& socket : sockets)
-		if (socket != socketToIgnore)
-			socket->send(packet);
+	for (auto& client : clients)
+		if (client != ignoreClient)
+			client->send(packet);
 }

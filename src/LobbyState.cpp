@@ -20,30 +20,20 @@ void LobbyState::Init(AppEngine* app_)
 			delete app->server;
 
 		app->server = new DedicatedServer;
-		app->server->Start();
-		app->server->updateDelay = sf::milliseconds(10);
-
-		if (app->socket != nullptr)
+		if (!app->server->Start())
 		{
-			delete app->socket;
-			app->selector.clear();
+			logger::ERROR("Failed to start server.");
+			abort();
 		}
+		app->server->updateDelay = sf::milliseconds(10);
 
 		logger::INFO("Attempting to connect to local server...");
 
-		app->socket = new sf::TcpSocket;
-
-		if (app->socket->connect(sf::IpAddress::LocalHost, app->server->getBoundPort()) != sf::Socket::Status::Done)
+		if (!app->network.connect(sf::IpAddress::LocalHost, app->server->getBoundPort()))
 		{
-			logger::ERROR("Failed to connect to server");
-
-			delete app->socket;
-			app->socket = nullptr;
-			app->selector.clear();
+			logger::ERROR("Failed to connect to local server");
 			abort();
 		}
-
-		app->selector.add(*app->socket);
 	}
 
 	menu = new SFUI::Menu(*app->window);
@@ -53,16 +43,11 @@ void LobbyState::Init(AppEngine* app_)
 
 void LobbyState::Cleanup()
 {
-	logger::INFO("LobbyState Cleaningup");
+	logger::INFO("Cleaning up LobbyState.");
 
-/*
-	if (lobbyHost)
-		// notify clients the server is shutting down
-	else
-		// notify server client (me) is disconnecting
-*/
+	app->network.close();
 
-	logger::INFO("LobbyState Cleanedup");
+	logger::INFO("Cleaned up LobbyState.");
 }
 
 void LobbyState::Pause()
@@ -80,36 +65,56 @@ void LobbyState::HandleEvents()
 	if (lobbyHost)
 		app->server->Update();
 
-	if (app->selector.wait(sf::milliseconds(10)))
+	if (app->network.ready())
 	{
-		if (app->selector.isReady(*app->socket))
+		sf::Packet packet;
+
+		if (app->network.receive(packet) == sf::Socket::Disconnected)
 		{
-			sf::Packet packet;
+			logger::ERROR("Connection to server unexepectedly terminated.");
+			app->ChangeState(new MainMenuState);
+			return;
+		}
 
-			if (app->socket->receive(packet) == sf::Socket::Disconnected)
-			{
-				logger::ERROR("Disconnected.");
-				abort();
-			}
+		std::string command;
+		packet >> command;
 
-			std::string command;
-			packet >> command;
+		if (command == "ConnectionAccepted")
+		{
+			packet >> playerNumber;
+			logger::INFO("server accepted connection. we are playerID " + std::to_string(playerNumber));
+		}
+		else if (command == "ConnectionRejected")
+		{
+			std::string reason;
+			packet >> reason;
+			
+			logger::INFO("server rejected connection: " + reason);
 
-			if (command == "LobbyUpdate")
-			{
-				logger::INFO("Updating networked lobby.");
+			app->ChangeState(new MainMenuState);
+			return;
+		}
+		else if (command == "Disconnected")
+		{
+			std::string reason;
+			packet >> reason;
+			logger::INFO("Disconnected from server: " + reason);
 
-				LobbyInformation lobby;
-				packet >> lobby;
+			app->ChangeState(new MainMenuState);
+			return;
+		}
+		else if (command == "LobbyUpdate")
+		{
+			logger::INFO("Updating lobby...");
 
-				logger::DEBUG("Recieved lobby information.");
+			LobbyInformation lobby;
+			packet >> lobby;
 
-				buildMenu(lobby);
-			}
-			else
-			{
-				logger::ERROR("unknown command received from server: " + command);
-			}
+			buildMenu(lobby);
+		}
+		else
+		{
+			logger::ERROR("Unknown command from server: " + command);
 		}
 	}
 
@@ -121,29 +126,83 @@ void LobbyState::HandleEvents()
 			app->Quit();
 			return;
 		}
+		// TODO: window resize
 
 		int id = menu->onEvent(event);
 		switch (id)
 		{
 		case MenuCallbacks::HostStartGame:
 		{
-			if (allPlayersReady)
-			{
-				app->ChangeState(new GamePlayState);
-				return;
-			}
-			else
-			{
-				logger::ERROR("cannot start game until all players are ready.");
-			}
-
-			break;
+			sendServerCommand("StartGame");
+			//app->ChangeState(new GamePlayState);
+			return;
 		}
 		case MenuCallbacks::LeaveLobby:
 		{
+			if (lobbyHost)
+			{
+				app->server->Stop();
+
+				delete app->server;
+				app->server = nullptr;
+			}
+			else
+				sendServerCommand("ClientDisconnecting", { std::to_string(playerNumber) });
+
 			app->ChangeState(new MainMenuState);
 			return;
 		}
+		case MenuCallbacks::ChangeLobbyName:
+			sendInformationChange(id, gameNameBox->getText().toAnsiString());
+			break;
+		case MenuCallbacks::ChangeSlotStatus:
+			sendInformationChange(id, "");
+			break;
+		case MenuCallbacks::RandomiseLobbySettings:
+			sendInformationChange(id, "");
+			break;
+		case MenuCallbacks::ChangeGameType:
+			sendInformationChange(id, typeBox->getSelectedValue());
+			break;
+		case MenuCallbacks::ChangeMapSize:
+			sendInformationChange(id, mapSizeBox->getSelectedValue());
+			break;
+		case MenuCallbacks::ChangeDifficulty:
+			sendInformationChange(id, difficultyBox->getSelectedValue());
+			break;
+		case MenuCallbacks::ChangeResources:
+			sendInformationChange(id, resourcesBox->getSelectedValue());
+			break;
+		case MenuCallbacks::ChangePopulation:
+			sendInformationChange(id, populationBox->getSelectedValue());
+			break;
+		case MenuCallbacks::ChangeGameSpeed:
+			sendInformationChange(id, gameSpeedBox->getSelectedValue());
+			break;
+		case MenuCallbacks::ChangeRevealMap:
+			sendInformationChange(id, revealMapBox->getSelectedValue());
+			break;
+		case MenuCallbacks::ChangeVictory:
+			sendInformationChange(id, victoryBox->getSelectedValue());
+			break;
+		case MenuCallbacks::ChangeTeamTogether:
+			sendInformationChange(id, teamTogetherBox->isChecked());
+			break;
+		case MenuCallbacks::ChangeLockTeams:
+			sendInformationChange(id, lockTeamsBox->isChecked());
+			break;
+		case MenuCallbacks::ChangeLockSpeed:
+			sendInformationChange(id, lockSpeedBox->isChecked());
+			break;
+		case MenuCallbacks::ChangeAllTechs:
+			sendInformationChange(id, allTechsBox->isChecked());
+			break;
+		case MenuCallbacks::ChangeAllowCheats:
+			sendInformationChange(id, allowCheatsBox->isChecked());
+			break;
+		case MenuCallbacks::ChangeRecordGame:
+			sendInformationChange(id, recordGameBox->isChecked());
+			break;
 		default:
 		{
 			if (id != -1)
@@ -184,7 +243,7 @@ void LobbyState::buildMenu(const LobbyInformation& information)
 	{
 		gameNameBox = new SFUI::InputBox;
 		gameNameBox->setText(information.gameName);
-		menu->add(gameNameBox);
+		menu->add(gameNameBox, MenuCallbacks::ChangeLobbyName);
 	}
 	else
 		menu->addLabel(information.gameName);
@@ -211,18 +270,12 @@ void LobbyState::buildMenu(const LobbyInformation& information)
 																	   { "Black", sf::Color::Black },
 																	   { "Cyan", sf::Color::Cyan } };
 
-	logger::INFO("doing spoopy shit");
-
-	for (int i = 0; i < information.totalPlayers; i++)
+	for (int i = 0; i < information.slots.size(); i++)
 	{
-		logger::DEBUG("loopieloop");
-
 		if (i == playerNumber)
 			nameContainer->addLabel("You!");
 		else
 			nameContainer->addLabel(information.slots[i].name);
-
-		logger::DEBUG("playerNumber");
 
 		if (i == playerNumber)
 		{
@@ -259,16 +312,12 @@ void LobbyState::buildMenu(const LobbyInformation& information)
 			colorContainer->addLabel(information.slots[i].color);
 	}
 
-	logger::DEBUG("Building settings panel");
-
 	SFUI::VerticalBoxLayout* gameSettingsContainer = mainContainer->addVerticalBoxLayout();
 	SFUI::HorizontalBoxLayout* firstRow = gameSettingsContainer->addHorizontalBoxLayout();
 	firstRow->addLabel("Settings");
 
-	/*
 	if (lobbyHost)
-		firstRow->addButton("Random", MenuCallbacks::RandomiseLobbySettings);
-	*/
+		firstRow->add(new DisabledButton("Random"), MenuCallbacks::RandomiseLobbySettings);
 
 	SFUI::FormLayout* settingsForm = gameSettingsContainer->addFormLayout();
 
@@ -324,14 +373,14 @@ void LobbyState::buildMenu(const LobbyInformation& information)
 	}
 	else
 	{
-		settingsForm->addLabel("Game Type: ");
-		settingsForm->addLabel("Map Size: ");
-		settingsForm->addLabel("Difficulty: ");
-		settingsForm->addLabel("Resources: ");
-		settingsForm->addLabel("Max Population: ");
-		settingsForm->addLabel("Game Speed: ");
-		settingsForm->addLabel("Reveal Map: ");
-		settingsForm->addLabel("Victory: ");
+		settingsForm->addLabel("Game Type: " + information.type);
+		settingsForm->addLabel("Map Size: "+ information.mapSize);
+		settingsForm->addLabel("Difficulty: "+ information.difficulty);
+		settingsForm->addLabel("Resources: "+ information.resources);
+		settingsForm->addLabel("Max Population: "+ information.population);
+		settingsForm->addLabel("Game Speed: "+ information.gameSpeed);
+		settingsForm->addLabel("Reveal Map: "+ information.revealMap);
+		settingsForm->addLabel("Victory: "+ information.victory);
 	}
 	
 	SFUI::HorizontalBoxLayout* settingsTicksContainer = gameSettingsContainer->addHorizontalBoxLayout();
@@ -341,29 +390,29 @@ void LobbyState::buildMenu(const LobbyInformation& information)
 	SFUI::FormLayout* firstTickForm = firstTickContainer->addFormLayout();
 	if (lobbyHost)
 	{
-		firstTickForm->addRow("Team Together", new SFUI::CheckBox(information.teamTogether));
-		firstTickForm->addRow("All Techs", new SFUI::CheckBox(information.allTechs));
-		firstTickForm->addRow("Allow cheats", new SFUI::CheckBox(information.allowCheats));
+		firstTickForm->addRow("Team Together", teamTogetherBox = new SFUI::CheckBox(information.teamTogether), MenuCallbacks::ChangeTeamTogether);
+		firstTickForm->addRow("All Techs", allTechsBox = new SFUI::CheckBox(information.allTechs), MenuCallbacks::ChangeAllTechs);
+		firstTickForm->addRow("Allow cheats", allowCheatsBox = new SFUI::CheckBox(information.allowCheats), MenuCallbacks::ChangeAllowCheats);
 	}
 	else
 	{
-		firstTickForm->addLabel("Team Together: false");
-		firstTickForm->addLabel("All Techs: false");
-		firstTickForm->addLabel("Allow cheats: false");
+		firstTickForm->addLabel("Team Together: " + std::string(information.teamTogether ? "true" : "false"));
+		firstTickForm->addLabel("All Techs: " + std::string(information.allTechs ? "true" : "false"));
+		firstTickForm->addLabel("Allow cheats: " + std::string(information.allowCheats ? "true" : "false"));
 	}
 	
 	SFUI::FormLayout* secondTickForm = secondTickContainer->addFormLayout();
 	if (lobbyHost)
 	{
-		secondTickForm->addRow("Lock Teams", new SFUI::CheckBox(information.lockTeams));
-		secondTickForm->addRow("Lock Speed", new SFUI::CheckBox(information.lockSpeed));
-		secondTickForm->addRow("Record Game", new SFUI::CheckBox(information.recordGame));
+		secondTickForm->addRow("Lock Teams", lockTeamsBox = new SFUI::CheckBox(information.lockTeams), MenuCallbacks::ChangeLockTeams);
+		secondTickForm->addRow("Lock Speed", lockSpeedBox = new SFUI::CheckBox(information.lockSpeed), MenuCallbacks::ChangeLockSpeed);
+		secondTickForm->addRow("Record Game", recordGameBox = new SFUI::CheckBox(information.recordGame), MenuCallbacks::ChangeRecordGame);
 	}
 	else
 	{
-		secondTickForm->addLabel("Lock Teams: false");
-		secondTickForm->addLabel("Lock Speed: false");
-		secondTickForm->addLabel("Record Game: false");
+		secondTickForm->add(lockTeamsLabel = new SFUI::Label("Lock Teams: " + std::string(information.lockTeams ? "true" : "false")));
+		secondTickForm->add(lockSpeedLabel = new SFUI::Label("Lock Speed: " + std::string(information.lockSpeed ? "true" : "false")));
+		secondTickForm->add(recordGameLabel= new SFUI::Label("Record Game: " + std::string(information.recordGame ? "true" : "false")));
 	}
 
 	SFUI::VerticalBoxLayout* chatAndControlsContainer = menu->addVerticalBoxLayout();
@@ -380,7 +429,53 @@ void LobbyState::buildMenu(const LobbyInformation& information)
 	SFUI::HorizontalBoxLayout* gameControlsContainer = chatAndControlsContainer->addHorizontalBoxLayout();
 
 	if (lobbyHost)
-		gameControlsContainer->addButton("Start Game", MenuCallbacks::HostStartGame);
+		if (information.allPlayersReady)
+			gameControlsContainer->addButton("Start Game", MenuCallbacks::HostStartGame);
+		else
+			gameControlsContainer->add(new DisabledButton("Start Game"), MenuCallbacks::HostStartGame);
 
 	gameControlsContainer->addButton("Cancel", MenuCallbacks::LeaveLobby);
+}
+
+/*
+bool LobbyState::sendInformationChange(const std::string& command, const std::string& value)
+{
+	sf::Packet packet;
+	packet << "LobbyInformationChange";
+	packet << command;
+	packet << value;
+
+	if (!app->network.send(packet))
+		return false;
+
+	return true;
+}
+*/
+
+template <typename T>
+bool LobbyState::sendInformationChange(const int& id, const T& value)
+{
+	sf::Packet packet;
+	packet << "LobbyInformationChange";
+	packet << id;
+	packet << value;
+
+	if (!app->network.send(packet))
+		return false;
+
+	return true;
+}
+
+bool LobbyState::sendServerCommand(const std::string& command, std::vector<std::string> arguments)
+{
+	sf::Packet packet;
+	packet << command;
+
+	for (size_t i = 0; i < arguments.size(); i++)
+		packet << arguments[i];
+
+	if (!app->network.send(packet))
+		return false;
+
+	return true;
 }

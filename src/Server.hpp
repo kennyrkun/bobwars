@@ -3,6 +3,8 @@
 
 #include "LobbyInformation.hpp"
 
+#include "Util/Logger.hpp"
+
 #include <SFML/Network.hpp>
 
 #include <string>
@@ -24,8 +26,63 @@ we will just 1 & 3 first, then 2.
 class ClientServerInterface
 {
 public:
+    inline bool connect(sf::IpAddress address, unsigned short port, sf::Time timeout = sf::Time::Zero)
+    {
+        selector.clear();
+        socket = new sf::TcpSocket;
+
+        if (socket->connect(address, port, timeout) != sf::Socket::Status::Done)
+        {
+            logger::ERROR("Failed to connect to server at " + address.toString() + ":" + std::to_string(port));
+
+            close();
+
+            return false;
+        }
+
+        selector.add(*socket);
+
+        return true;
+    }
+
+    void close()
+    {
+        socket->disconnect();
+        delete socket;
+        socket = nullptr;
+        selector.clear();
+    }
+
+    // TODO: pass packet by reference
+    inline sf::Socket::Status send(sf::Packet packet)
+    {
+        return socket->send(packet);
+    }
+
+    inline sf::Socket::Status receive(sf::Packet& packet)
+    {
+        return socket->receive(packet);
+    }
+
+    inline bool ready()
+    {
+        if (selector.wait(sf::milliseconds(10)))
+		    if (selector.isReady(*socket))
+                return true;
+
+        return false;
+    }
+
+private:
     sf::TcpSocket* socket;
 	sf::SocketSelector selector;
+};
+
+class Client : public sf::TcpSocket
+{
+public:
+    std::string name;
+    int playerID = -1;
 };
 
 class DedicatedServer
@@ -41,11 +98,13 @@ public:
         return listener.getLocalPort();
     }
 
-    void disconnectClient(sf::TcpSocket* socket, std::string reason = "Generic Disconnect");
-    bool detailedClientConnectionTest(sf::TcpSocket* socket);
-    void broadcastMessage(sf::Packet packet, sf::TcpSocket* socketToIgnore = nullptr);
+    void disconnectClient(Client* client, std::string reason = "Generic Disconnect");
+    bool detailedClientConnectionTest(Client* client);
+    void broadcastMessage(sf::Packet packet, Client* ignoreClient = nullptr);
 
     sf::Time updateDelay = sf::seconds(10.0f);
+
+    int nextClientID = 0;
 
     enum class ServerState
     {
@@ -59,6 +118,46 @@ public:
         this->state = state;
     }
 
+    inline void updateLobby()
+    {
+        sf::Packet packet;
+        packet << "LobbyUpdate";
+        packet << information;
+        broadcastMessage(packet);
+    }
+
+    enum LobbyCallbacks
+	{
+		HostStartGame,
+		LeaveLobby,
+
+		ChangeLobbyName,
+		ChangeSlotStatus,
+		RandomiseLobbySettings,
+		ChangeGameType,
+		ChangeMapSize,
+		ChangeDifficulty,
+		ChangeResources,
+		ChangePopulation,
+		ChangeGameSpeed,
+		ChangeRevealMap,
+		ChangeVictory,
+		ChangeTeamTogether,
+		ChangeLockTeams,
+		ChangeAllTechs,
+		ChangeLockSpeed,
+		ChangeAllowCheats,
+		ChangeRecordGame,
+
+		ChangeClientName,
+		ChangeClientTeam,
+		ChangeClientColor,
+
+        ClientLeave,
+
+		Count,
+	};
+
 private:
     ServerState state;
 
@@ -66,7 +165,7 @@ private:
 
     sf::TcpListener listener;
     sf::SocketSelector selector;
-    std::list<sf::TcpSocket*> sockets;
+    std::list<Client*> clients;
 };
 
 #endif // !SERVER_HPP

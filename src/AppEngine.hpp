@@ -17,6 +17,7 @@ struct AppSettings
 	std::string version = "0.17-20w17d-multiplayer";
 	std::string title = "bobwars " + version;
 
+	// TODO: make these const
 	int clientProtocol = 1;
 	int serverProtocol = 1;
 
@@ -85,8 +86,7 @@ public:
 
 	DedicatedServer* server = nullptr;
 
-	sf::TcpSocket* socket = nullptr;
-	sf::SocketSelector selector;
+	ClientServerInterface network;
 
 private:
 	bool running;

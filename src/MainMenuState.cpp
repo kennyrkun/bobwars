@@ -247,31 +247,22 @@ void MainMenuState::build(const MenuState& state)
 bool MainMenuState::tryServerConnect()
 {
 	if (app->server != nullptr)
+	{
+		logger::WARNING("Server exists, but it probably shouldn't. Deleting. Report this to a developer.");
 		delete app->server;
-
-	if (app->socket != nullptr)
-		delete app->socket;
+	}
 
 	sf::IpAddress address = addressBox->getText().toAnsiString();
 	//unsigned short port = std::stoi(addressBox->getText().toAnsiString());
 	unsigned int port = 12345;
 
-	logger::INFO("Attempting to connect to server at " + address.toString() + ":" + std::to_string(port));
+	logger::INFO("Attempting to connect to remote server at " + address.toString() + ":" + std::to_string(port));
 
-	app->socket = new sf::TcpSocket;
-
-	if (app->socket->connect(address, port) != sf::Socket::Status::Done)
+	if (!app->network.connect(address, port))
 	{
-		logger::ERROR("Failed to connect to server.");
-
-		delete app->socket;
-		app->socket = nullptr;
-		app->selector.clear();
-
+		logger::ERROR("Failed to connect to remote server.");
 		return false;
 	}
-
-	app->selector.add(*app->socket);
 
 	return true;
 }
