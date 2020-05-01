@@ -126,7 +126,7 @@ public:
         broadcastMessage(packet);
     }
 
-    enum LobbyCallbacks
+	enum LobbyCallbacks
 	{
 		HostStartGame,
 		LeaveLobby,
@@ -152,8 +152,11 @@ public:
 		ChangeClientName,
 		ChangeClientTeam,
 		ChangeClientColor,
+        ChangeClientReady,
 
-        ClientLeave,
+		SendChatMessage,
+
+		ClientLeave,
 
 		Count,
 	};

@@ -8,7 +8,8 @@ bool DedicatedServer::Start()
 {
     logger::INFO("SERVER: Starting bobwars server...");
 
-	if (listener.listen(12345) != sf::Socket::Status::Done)
+    // TODO: allow the port to be selected
+    if (listener.listen(sf::TcpListener::AnyPort) != sf::Socket::Status::Done)
 	{
         logger::ERROR("SERVER: Failed to bind to port.");
         return false;
@@ -99,17 +100,17 @@ void DedicatedServer::Update()
 
                     LobbyInformation::SlotInformation newSlot;
                     newSlot.state = LobbyInformation::SlotInformation::SlotState::OccupiedByPlayer;
-                    newSlot.name = newSocket->getRemoteAddress().toString();
+                    newSlot.name = newSocket->getRemoteAddress().toString() + "(" + std::to_string(newClient->playerID) +")";
                     newSlot.playerID = newClient->playerID;
-                    newSlot.ping = 0;
-                    newSlot.team = "unassigned";
-                    newSlot.color = "unassigned";
+                    newSlot.ping = -1;
+                    newSlot.team = "Bob";
 
                     information.slots.push_back(newSlot);
 
                     sf::Packet acceptConnection;
                     acceptConnection << "ConnectionAccepted";
-                    broadcastMessage(acceptConnection);
+                    acceptConnection << newClient->playerID;
+                    newClient->send(acceptConnection);
 
                     updateLobby();
 
@@ -127,7 +128,7 @@ void DedicatedServer::Update()
                 {
                     sf::Packet packet;
 
-                    if (client->receive(packet) == sf::Socket::Disconnected)
+                    if (client->receive(packet) == sf::Socket::Status::Disconnected)
                     {
                         logger::INFO("SERVER: client has disconnected");
                         disconnectClient(client, "Timed out");
@@ -218,6 +219,9 @@ void DedicatedServer::Update()
                         case LobbyCallbacks::ChangePopulation:
                             packet >> information.population;
                             break;
+                        case LobbyCallbacks::ChangeGameSpeed:
+                            packet >> information.gameSpeed;
+                            break;
                         case LobbyCallbacks::ChangeRevealMap:
                             packet >> information.revealMap;
                             break;
@@ -243,9 +247,38 @@ void DedicatedServer::Update()
                             packet >> information.recordGame;
                             break;
                         case LobbyCallbacks::ChangeClientName:
+                        {                            
+                            for (int i = 0; i < information.slots.size(); i++)
+                                if (information.slots[i].playerID == client->playerID)
+                                {
+                                    packet >> information.slots[i].name;
+                                    break;
+                                }
+                            
                             break;
+                        }
                         case LobbyCallbacks::ChangeClientTeam:
+                        {
+                            for (int i = 0; i < information.slots.size(); i++)
+                                if (information.slots[i].playerID == client->playerID)
+                                {
+                                    packet >> information.slots[i].team;
+                                    break;
+                                }
+
                             break;
+                        }
+                        case LobbyCallbacks::ChangeClientReady:
+                        {
+                            for (int i = 0; i < information.slots.size(); i++)
+                                if (information.slots[i].playerID == client->playerID)
+                                {
+                                    packet >> information.slots[i].ready;
+                                    break;
+                                }
+
+                            break;
+                        }
                         case LobbyCallbacks::ChangeClientColor:
                             break;
                         default:

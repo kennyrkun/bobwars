@@ -54,6 +54,9 @@ private:
 		ChangeClientName,
 		ChangeClientTeam,
 		ChangeClientColor,
+		ChangeClientReady,
+
+		SendChatMessage,
 
 		ClientLeave,
 
@@ -62,6 +65,9 @@ private:
 
 	SFUI::Label* gameNameLabel;
 	SFUI::InputBox* gameNameBox;
+
+	SFUI::InputBox* clientNameBox;
+	SFUI::OptionsBox<std::string>* clientTeamBox;
 
 	SFUI::Label* typeLabel;
 	SFUI::Label* mapSizeLabel;
@@ -97,6 +103,8 @@ private:
 	SFUI::CheckBox* lockSpeedBox;
 	SFUI::CheckBox* recordGameBox;
 
+	SFUI::CheckBox* readyBox;
+
 	bool lobbyHost = false;
 	int playerNumber = -1;
 
@@ -104,8 +112,8 @@ private:
 
 	//bool sendServerUpdate(const std::string& command, const std::string& value = "");
 
-	template <typename T>
-	bool sendInformationChange(const int& id, const T& value);
+	bool sendInformationChange(const int& id, const bool& value);
+	bool sendInformationChange(const int& id, std::string value);
 
 	bool sendServerCommand(const std::string& command, std::vector<std::string> arguments = {});
 };

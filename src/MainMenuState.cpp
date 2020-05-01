@@ -253,8 +253,8 @@ bool MainMenuState::tryServerConnect()
 	}
 
 	sf::IpAddress address = addressBox->getText().toAnsiString();
-	//unsigned short port = std::stoi(addressBox->getText().toAnsiString());
-	unsigned int port = 12345;
+	std::string port_s = portBox->getText().toAnsiString();
+	unsigned short port = std::stoi(port_s);
 
 	logger::INFO("Attempting to connect to remote server at " + address.toString() + ":" + std::to_string(port));
 

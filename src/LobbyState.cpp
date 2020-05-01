@@ -69,7 +69,7 @@ void LobbyState::HandleEvents()
 	{
 		sf::Packet packet;
 
-		if (app->network.receive(packet) == sf::Socket::Disconnected)
+		if (app->network.receive(packet) == sf::Socket::Status::Disconnected)
 		{
 			logger::ERROR("Connection to server unexepectedly terminated.");
 			app->ChangeState(new MainMenuState);
@@ -129,6 +129,10 @@ void LobbyState::HandleEvents()
 		// TODO: window resize
 
 		int id = menu->onEvent(event);
+
+		if (id >= 0)
+			logger::DEBUG("duwu" + std::to_string(id));
+
 		switch (id)
 		{
 		case MenuCallbacks::HostStartGame:
@@ -171,8 +175,11 @@ void LobbyState::HandleEvents()
 			sendInformationChange(id, difficultyBox->getSelectedValue());
 			break;
 		case MenuCallbacks::ChangeResources:
+		{
+			logger::INFO("doing resource shit");
 			sendInformationChange(id, resourcesBox->getSelectedValue());
 			break;
+		}
 		case MenuCallbacks::ChangePopulation:
 			sendInformationChange(id, populationBox->getSelectedValue());
 			break;
@@ -203,6 +210,20 @@ void LobbyState::HandleEvents()
 		case MenuCallbacks::ChangeRecordGame:
 			sendInformationChange(id, recordGameBox->isChecked());
 			break;
+
+		case MenuCallbacks::ChangeClientName:
+			sendInformationChange(id, clientNameBox->getText().toAnsiString());
+			break;
+		case MenuCallbacks::ChangeClientTeam:
+			sendInformationChange(id, clientTeamBox->getSelectedValue());
+			break;
+		case MenuCallbacks::ChangeClientReady:
+			sendInformationChange(id, readyBox->isChecked());
+			break;
+
+		case MenuCallbacks::SendChatMessage:
+			break;
+
 		default:
 		{
 			if (id != -1)
@@ -244,6 +265,8 @@ void LobbyState::buildMenu(const LobbyInformation& information)
 		gameNameBox = new SFUI::InputBox;
 		gameNameBox->setText(information.gameName);
 		menu->add(gameNameBox, MenuCallbacks::ChangeLobbyName);
+
+		menu->addLabel(std::to_string(app->server->getBoundPort()));
 	}
 	else
 		menu->addLabel(information.gameName);
@@ -255,38 +278,43 @@ void LobbyState::buildMenu(const LobbyInformation& information)
 	SFUI::VerticalBoxLayout* nameContainer = columnsContainer->addVerticalBoxLayout();
 	SFUI::VerticalBoxLayout* pingContainer = columnsContainer->addVerticalBoxLayout();
 	SFUI::VerticalBoxLayout* teamContainer = columnsContainer->addVerticalBoxLayout();
-	SFUI::VerticalBoxLayout* colorContainer = columnsContainer->addVerticalBoxLayout();
 
 	nameContainer->addLabel("Name");
 	pingContainer->addLabel("Ping");
 	teamContainer->addLabel("Team");
-	colorContainer->addLabel("Color");
 
-	std::vector<std::pair<std::string, sf::Color>> availableColors = { { "Red", sf::Color::Red }, 
-																	   { "Blue", sf::Color::Blue }, 
-																	   { "Green", sf::Color::Green }, 
-																	   { "Yellow", sf::Color::Yellow },
-																	   { "Magenta", sf::Color::Magenta },
-																	   { "Black", sf::Color::Black },
-																	   { "Cyan", sf::Color::Cyan } };
+	logger::DEBUG("Beginning loop");
 
 	for (int i = 0; i < information.slots.size(); i++)
 	{
-		if (i == playerNumber)
-			nameContainer->addLabel("You!");
-		else
-			nameContainer->addLabel(information.slots[i].name);
+		const auto& slot = information.slots[i];
 
-		if (i == playerNumber)
+		logger::DEBUG("created reference to slot " + std::to_string(i) + ":" + std::to_string(slot.playerID) + ":" + std::to_string(playerNumber));
+
+		if (slot.playerID == playerNumber)
 		{
-			SFUI::OptionsBox<Team>* team = new SFUI::OptionsBox<Team>();
-			team->addItem("Bob", Team::GoodGuys);
-			team->addItem("Google", Team::BadGuys);
-			teamContainer->add(team);
+			logger::DEBUG("creating name inputbox");
+
+			clientNameBox = new SFUI::InputBox;
+			clientNameBox->setText(slot.name);
+			nameContainer->add(clientNameBox, MenuCallbacks::ChangeClientName);
+		}
+		else
+			nameContainer->addLabel(slot.name + " - Ready");
+
+		if (slot.playerID == playerNumber)
+		{
+			logger::DEBUG("creating team selector");
+
+			clientTeamBox = new SFUI::OptionsBox<std::string>();
+			clientTeamBox->addItem("Bob", "Bob");
+			clientTeamBox->addItem("Google", "Google");
+			clientTeamBox->selectItem(slot.team);
+			teamContainer->add(clientTeamBox, MenuCallbacks::ChangeClientTeam);
 		}
 		else
 		{
-			teamContainer->addLabel(information.slots[i].team);
+			teamContainer->addLabel(slot.team);
 		}
 
 		/*
@@ -298,19 +326,10 @@ void LobbyState::buildMenu(const LobbyInformation& information)
 		pingContainer->add(ib);
 		*/
 
-		pingContainer->addLabel(std::to_string(information.slots[i].ping));
-
-		if (i == playerNumber)
-		{
-			SFUI::OptionsBox<sf::Color>* opt = new SFUI::OptionsBox<sf::Color>();
-			for (size_t i = 0; i < availableColors.size(); i++)
-				opt->addItem(availableColors[i].first, availableColors[i].second);
-			
-			colorContainer->add(opt);
-		}
-		else
-			colorContainer->addLabel(information.slots[i].color);
+		pingContainer->addLabel(std::to_string(slot.ping));
 	}
+
+	logger::DEBUG("Building game settings container.");
 
 	SFUI::VerticalBoxLayout* gameSettingsContainer = mainContainer->addVerticalBoxLayout();
 	SFUI::HorizontalBoxLayout* firstRow = gameSettingsContainer->addHorizontalBoxLayout();
@@ -324,51 +343,58 @@ void LobbyState::buildMenu(const LobbyInformation& information)
 	if (lobbyHost)
 	{
 		typeBox = new SFUI::OptionsBox<std::string>();
-		typeBox->addItem("Regular", "regular");
+		typeBox->addItem("Regular", "Regular");
 		settingsForm->addRow("Game Type", typeBox, MenuCallbacks::ChangeGameType);
 
 		mapSizeBox = new SFUI::OptionsBox<std::string>();
-		mapSizeBox->addItem("Tiny", "tiny");
-		mapSizeBox->addItem("Small", "small");
-		mapSizeBox->addItem("Regular", "regular");
-		mapSizeBox->addItem("Big", "big");
-		mapSizeBox->addItem("Huge", "huge");
-		mapSizeBox->addItem("Memory Maximum", "memoryMaximum");
+		mapSizeBox->addItem("Tiny", "Tiny");
+		mapSizeBox->addItem("Small", "Small");
+		mapSizeBox->addItem("Regular", "Regular");
+		mapSizeBox->addItem("Big", "Big");
+		mapSizeBox->addItem("Huge", "Huge");
+		mapSizeBox->addItem("Memory Maximum", "MemoryMaximum");
+		mapSizeBox->selectItem(information.mapSize);
 		settingsForm->addRow("Map Size", mapSizeBox, MenuCallbacks::ChangeMapSize);
 
 		difficultyBox = new SFUI::OptionsBox<std::string>();
-		difficultyBox->addItem("Easy", "easy");
-		difficultyBox->addItem("Normal", "normal");
-		difficultyBox->addItem("Hard", "hard");
-		difficultyBox->addItem("Cheaters", "cheaters");
+		difficultyBox->addItem("Easy", "Easy");
+		difficultyBox->addItem("Normal", "Normal");
+		difficultyBox->addItem("Hard", "Hard");
+		difficultyBox->addItem("Cheaters", "Cheaters");
+		difficultyBox->selectItem(information.difficulty);
 		settingsForm->addRow("Difficulty", difficultyBox, MenuCallbacks::ChangeDifficulty);
 
 		resourcesBox = new SFUI::OptionsBox<std::string>();
-		resourcesBox->addItem("Few", "few");
-		resourcesBox->addItem("Normal", "normal");
-		resourcesBox->addItem("Lots", "lots");
+		resourcesBox->addItem("Few", "Few");
+		resourcesBox->addItem("Normal", "Normal");
+		resourcesBox->addItem("Lots", "Lots");
+		resourcesBox->selectItem(information.resources);
 		settingsForm->addRow("Resources", resourcesBox, MenuCallbacks::ChangeResources);
 
 		populationBox = new SFUI::OptionsBox<std::string>();
-		populationBox->addItem("Less", "less");
-		populationBox->addItem("Normal", "normal");
-		populationBox->addItem("More", "more");
-		populationBox->addItem("Memory Maximum", "memoryMaximum");
+		populationBox->addItem("Less", "Less");
+		populationBox->addItem("Normal", "Normal");
+		populationBox->addItem("More", "More");
+		populationBox->addItem("Memory Maximum", "MemoryMaximum");
+		populationBox->selectItem(information.population);
 		settingsForm->addRow("Population", populationBox, MenuCallbacks::ChangePopulation);
 
 		gameSpeedBox = new SFUI::OptionsBox<std::string>();
-		gameSpeedBox->addItem("Slow", "slow");
-		gameSpeedBox->addItem("Normal", "normal");
-		gameSpeedBox->addItem("Fast", "fast");
+		gameSpeedBox->addItem("Slow", "Slow");
+		gameSpeedBox->addItem("Normal", "Normal");
+		gameSpeedBox->addItem("Fast", "Fast");
+		gameSpeedBox->selectItem(information.gameSpeed);
 		settingsForm->addRow("Game Speed", gameSpeedBox, MenuCallbacks::ChangeGameSpeed);
 
 		revealMapBox = new SFUI::OptionsBox<std::string>();
-		revealMapBox->addItem("Fog", "fog");
-		revealMapBox->addItem("All Revealed", "allRevealed");
+		revealMapBox->addItem("Fog", "Fog");
+		revealMapBox->addItem("All Revealed", "AllRevealed");
+		revealMapBox->selectItem(information.revealMap);
 		settingsForm->addRow("Reveal Map", revealMapBox, MenuCallbacks::ChangeRevealMap);
 
 		victoryBox = new SFUI::OptionsBox<std::string>();
-		victoryBox->addItem("Regular", "regular");
+		victoryBox->addItem("Regular", "Regular");
+		victoryBox->selectItem(information.victory);
 		settingsForm->addRow("Victory", victoryBox, MenuCallbacks::ChangeVictory);
 	}
 	else
@@ -424,7 +450,17 @@ void LobbyState::buildMenu(const LobbyInformation& information)
 
 	SFUI::HorizontalBoxLayout* readyContainer = chatAndControlsContainer->addHorizontalBoxLayout();
 	readyContainer->addLabel("Ready");
-	readyContainer->add(new SFUI::CheckBox);
+
+	bool clientReady = false;
+	for (const auto& slot : information.slots)
+		if (slot.playerID == playerNumber)
+		{
+			if (slot.ready)
+				clientReady = true;
+			break;
+		}
+
+	readyContainer->add(readyBox = new SFUI::CheckBox(clientReady), MenuCallbacks::ChangeClientReady);
 
 	SFUI::HorizontalBoxLayout* gameControlsContainer = chatAndControlsContainer->addHorizontalBoxLayout();
 
@@ -437,12 +473,11 @@ void LobbyState::buildMenu(const LobbyInformation& information)
 	gameControlsContainer->addButton("Cancel", MenuCallbacks::LeaveLobby);
 }
 
-/*
-bool LobbyState::sendInformationChange(const std::string& command, const std::string& value)
+bool LobbyState::sendInformationChange(const int& id, const bool& value)
 {
 	sf::Packet packet;
 	packet << "LobbyInformationChange";
-	packet << command;
+	packet << id;
 	packet << value;
 
 	if (!app->network.send(packet))
@@ -450,11 +485,11 @@ bool LobbyState::sendInformationChange(const std::string& command, const std::st
 
 	return true;
 }
-*/
 
-template <typename T>
-bool LobbyState::sendInformationChange(const int& id, const T& value)
+bool LobbyState::sendInformationChange(const int& id, std::string value)
 {
+	logger::INFO("trasmitting value: " + value);
+
 	sf::Packet packet;
 	packet << "LobbyInformationChange";
 	packet << id;

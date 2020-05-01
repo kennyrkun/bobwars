@@ -14,7 +14,7 @@ class AppState;
 
 struct AppSettings
 {
-	std::string version = "0.17-20w17d-multiplayer";
+	std::string version = "0.17-20w18a-multiplayer";
 	std::string title = "bobwars " + version;
 
 	// TODO: make these const

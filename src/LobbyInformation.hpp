@@ -1,6 +1,8 @@
 #ifndef LOBBY_INFORMATION_HPP
 #define LOBBY_INFORMATION_HPP
 
+#include "Util/Logger.hpp"
+
 #include <SFML/Network.hpp>
 
 #include <ctime>
@@ -30,7 +32,7 @@ struct LobbyInformation
     bool allPlayersReady = false;
     int maxPlayers = 8;
 
-    time_t timeSent;
+    sf::Time timeSent;
 
     struct SlotInformation
     {
@@ -47,7 +49,6 @@ struct LobbyInformation
         bool ready;
         float ping;
         std::string team;
-        std::string color;
     };
 
     // TODO: convert this to an std::list
@@ -74,7 +75,10 @@ inline sf::Packet& operator <<(sf::Packet& packet, LobbyInformation& lobby)
             for (size_t i = 0; i < lobby.slots.size(); i++)
             {
                 if (!lobby.slots[i].ready)
+                {
+                    lobby.allPlayersReady = false;
                     break;
+                }
 
                 lobby.allPlayersReady = true;
                 break;
@@ -93,9 +97,10 @@ inline sf::Packet& operator <<(sf::Packet& packet, LobbyInformation& lobby)
                << lobby.slots[i].playerID
                << lobby.slots[i].ready
                << lobby.slots[i].ping
-               << lobby.slots[i].team
-               << lobby.slots[i].color;
+               << lobby.slots[i].team;
     }
+
+    logger::DEBUG("Inserted Lobby into Packet");
 
     return packet;
 }
@@ -136,11 +141,12 @@ inline sf::Packet& operator >>(sf::Packet& packet, LobbyInformation& lobby)
                >> slot.playerID
                >> slot.ready
                >> slot.ping
-               >> slot.team
-               >> slot.color;
+               >> slot.team;
 
         lobby.slots.push_back(slot);
     }
+
+    logger::DEBUG("Extracted Lobby from Packet");
 
     return packet;
 }
