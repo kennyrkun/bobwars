@@ -114,7 +114,7 @@ void DedicatedServer::Update()
 
                     updateLobby();
 
-                    logger::INFO("SERVER: now has " + std::to_string(information.slots.size()) + " players");
+                    logger::INFO("SERVER: now has " + std::to_string(information.slots.size()) + " players. newest client is ID: " + std::to_string(newClient->playerID));
                 }
             }
             else

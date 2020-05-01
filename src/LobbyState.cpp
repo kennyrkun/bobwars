@@ -300,7 +300,10 @@ void LobbyState::buildMenu(const LobbyInformation& information)
 			nameContainer->add(clientNameBox, MenuCallbacks::ChangeClientName);
 		}
 		else
-			nameContainer->addLabel(slot.name + " - Ready");
+			if (slot.ready)
+				nameContainer->addLabel(slot.name + " - Ready");
+			else
+				nameContainer->addLabel(slot.name);
 
 		if (slot.playerID == playerNumber)
 		{
