@@ -22,12 +22,12 @@ struct LobbyInformation
     std::string revealMap;
     std::string victory;
 
-    bool teamTogether;
-    bool allTechs;
-    bool allowCheats;
-    bool lockTeams;
-    bool lockSpeed;
-    bool recordGame;
+    bool teamTogether = false;
+    bool allTechs = false;
+    bool allowCheats = false;
+    bool lockTeams = false;
+    bool lockSpeed = false;
+    bool recordGame = false;
 
     bool allPlayersReady = false;
     int maxPlayers = 8;
@@ -46,9 +46,9 @@ struct LobbyInformation
 
         std::string name;
         int playerID = -1;
-        bool ready;
-        float ping;
-        std::string team;
+        bool ready = false;
+        float ping = -1;
+        std::string team = "Bob";
     };
 
     // TODO: convert this to an std::list

@@ -5,8 +5,6 @@
 
 #include "AppEngine.hpp"
 
-#include "Server.hpp"
-
 class DedicatedServerState : public AppState
 {
 public:

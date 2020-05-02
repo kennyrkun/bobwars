@@ -5,7 +5,8 @@
 #include "AppEngine.hpp"
 #include "AppState.hpp"
 #include "BaseEntity.hpp"
-#include "Server.hpp"
+#include "Server/DedicatedServer.hpp"
+#include "Server/ServerLobbyState.hpp"
 
 #include "Util/Logger.hpp"
 
@@ -26,6 +27,8 @@ void LobbyState::Init(AppEngine* app_)
 			abort();
 		}
 		app->server->updateDelay = sf::milliseconds(10);
+
+		app->server->changeState(new ServerLobbyState);
 
 		logger::INFO("Attempting to connect to local server...");
 
@@ -130,15 +133,11 @@ void LobbyState::HandleEvents()
 
 		int id = menu->onEvent(event);
 
-		if (id >= 0)
-			logger::DEBUG("duwu" + std::to_string(id));
-
 		switch (id)
 		{
 		case MenuCallbacks::HostStartGame:
 		{
 			sendServerCommand("StartGame");
-			//app->ChangeState(new GamePlayState);
 			return;
 		}
 		case MenuCallbacks::LeaveLobby:
@@ -221,7 +220,7 @@ void LobbyState::HandleEvents()
 			sendInformationChange(id, readyBox->isChecked());
 			break;
 
-		case MenuCallbacks::SendChatMessage:
+		case MenuCallbacks::ClientSendChatMessage:
 			break;
 
 		default:

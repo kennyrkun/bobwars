@@ -30,9 +30,13 @@ SET(HEADERS AppEngine.hpp
 			MainMenuState.hpp
 			ResourceCounter.hpp
 			ResourceManager.hpp
-			Server.hpp
 			DedicatedServerState.hpp
 			LobbyInformation.hpp
+			Server/DedicatedServer.hpp
+			Server/ServerState.hpp
+			Server/ServerLobbyState.hpp
+			Server/ServerGamePlayState.hpp
+			Server/ServerInterface.hpp
 			Util/Graphics/ProgressBar.hpp
 			Util/SettingsParser.hpp
 			Util/Graphics/SmallUnitIcon.hpp
@@ -67,8 +71,11 @@ SET(SOURCES AppEngine.cpp
 			MainMenuState.cpp
 			ResourceCounter.cpp
 			ResourceManager.cpp
-			Server.cpp
 			DedicatedServerState.cpp
+			Server/DedicatedServer.cpp
+			Server/ServerGamePlayState.cpp
+			Server/ServerInterface.cpp
+			Server/ServerLobbyState.cpp
 			Util/SettingsParser.cpp
 			Util/Graphics/SmallUnitIcon.cpp
 			Util/Graphics/Text.cpp

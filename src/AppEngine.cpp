@@ -1,6 +1,7 @@
 #include "AppEngine.hpp"
 #include "AppState.hpp"
 
+#include "Server/DedicatedServer.hpp"
 #include "Util/Logger.hpp"
 
 #include <SFUI/Theme.hpp>

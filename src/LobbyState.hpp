@@ -53,12 +53,9 @@ private:
 
 		ChangeClientName,
 		ChangeClientTeam,
-		ChangeClientColor,
-		ChangeClientReady,
-
-		SendChatMessage,
-
-		ClientLeave,
+        ChangeClientReady,
+		ClientDisconnect,
+		ClientSendChatMessage,
 
 		Count,
 	};

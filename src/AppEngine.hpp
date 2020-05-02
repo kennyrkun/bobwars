@@ -3,18 +3,17 @@
 
 #include "ResourceManager.hpp"
 #include "Util/DiscordRPC.hpp"
-#include "Server.hpp"
+#include "Server/DedicatedServer.hpp"
+#include "Server/ServerInterface.hpp"
 
 #include <SFML/Graphics.hpp>
 
 #include <vector>
 #include <string>
 
-class AppState;
-
 struct AppSettings
 {
-	std::string version = "0.17-20w18a-multiplayer";
+	std::string version = "0.17-20w18b-multiplayer";
 	std::string title = "bobwars " + version;
 
 	// TODO: make these const
@@ -48,6 +47,8 @@ struct Keybindings
 
 	sf::Keyboard::Key multipleSelectionModifier = sf::Keyboard::Key::LControl;
 };
+
+class AppState;
 
 class AppEngine
 {
@@ -86,7 +87,7 @@ public:
 
 	DedicatedServer* server = nullptr;
 
-	ClientServerInterface network;
+	ServerInterface network;
 
 private:
 	bool running;

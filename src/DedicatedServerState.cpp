@@ -3,6 +3,8 @@
 
 #include "Util/Logger.hpp"
 #include "Util/Graphics/Text.hpp"
+#include "Server/DedicatedServer.hpp"
+#include "Server/ServerLobbyState.hpp"
 
 #include <SFML/Graphics.hpp>
 
@@ -14,7 +16,12 @@ void DedicatedServerState::Init(AppEngine* app_)
 
     app->server = new DedicatedServer;
     if (!app->server->Start())
-		app->Quit();
+	{
+		logger::ERROR("Failed to start server, aborting.");
+		abort();
+	}
+
+	app->server->changeState(new ServerLobbyState);
 
 	logger::INFO("DedicatedServerState ready.");
 }
@@ -25,6 +32,7 @@ void DedicatedServerState::Cleanup()
 
     app->server->Stop();
     delete app->server;
+	app->server = nullptr;
 
 	logger::INFO("Cleaned up DedicatedServerState.");
 }
@@ -45,6 +53,7 @@ void DedicatedServerState::HandleEvents()
 
 void DedicatedServerState::Update()
 {
+	// TODO: if server is running
     app->server->Update();
 }
 
