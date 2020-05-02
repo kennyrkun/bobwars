@@ -77,6 +77,17 @@ private:
 	void showObjectCoords(sf::Sprite &object);
 
 	void saveGame();
+
+	enum UnitCommands
+    {
+        CreateUnit,
+        DeleteUnit,
+        MoveUnit,
+        UnitAction,
+
+        FailNotEnoughResource,
+        FailTooManyUnits,
+    };
 };
 
 #endif // !GAME_PLAY_STATE_HPP

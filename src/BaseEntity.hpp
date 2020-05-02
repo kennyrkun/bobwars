@@ -51,6 +51,7 @@ public:
 	~BaseEntity();
 
 	const int entityID;
+	int entityOwnerID = -1;
 
 	AppEngine* app;
 

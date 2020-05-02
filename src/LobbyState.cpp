@@ -15,7 +15,7 @@ void LobbyState::Init(AppEngine* app_)
 	logger::INFO("LobbyState Init");
 	app = app_;
 
-	if (lobbyHost)
+	if (app->serverHost)
 	{
 		if (app->server != nullptr)
 			delete app->server;
@@ -64,7 +64,7 @@ void LobbyState::Resume()
 
 void LobbyState::HandleEvents()
 {
-	if (lobbyHost)
+	if (app->serverHost)
 		app->server->Update();
 
 	if (app->network.ready())
@@ -83,8 +83,8 @@ void LobbyState::HandleEvents()
 
 		if (command == "ConnectionAccepted")
 		{
-			packet >> playerNumber;
-			logger::INFO("server accepted connection. we are playerID " + std::to_string(playerNumber));
+			packet >> app->network.netID;
+			logger::INFO("server accepted connection. we are playerID " + std::to_string(app->network.netID));
 		}
 		else if (command == "ConnectionRejected")
 		{
@@ -147,7 +147,7 @@ void LobbyState::HandleEvents()
 		}
 		case MenuCallbacks::LeaveLobby:
 		{
-			if (lobbyHost)
+			if (app->serverHost)
 			{
 				app->server->Stop();
 
@@ -155,7 +155,7 @@ void LobbyState::HandleEvents()
 				app->server = nullptr;
 			}
 			else
-				sendServerCommand("ClientDisconnecting", { std::to_string(playerNumber) });
+				sendServerCommand("ClientDisconnecting", { std::to_string(app->network.netID) });
 
 			app->network.close();
 
@@ -266,7 +266,7 @@ void LobbyState::buildMenu(const LobbyInformation& information)
 	// set the origin of the menu to 10, 10
 	menu->setPosition(sf::Vector2f(10, 10));
 
-	if (lobbyHost)
+	if (app->serverHost)
 	{
 		gameNameBox = new SFUI::InputBox;
 		gameNameBox->setText(information.gameName);
@@ -295,9 +295,9 @@ void LobbyState::buildMenu(const LobbyInformation& information)
 	{
 		const auto& slot = information.slots[i];
 
-		logger::DEBUG("created reference to slot " + std::to_string(i) + ":" + std::to_string(slot.playerID) + ":" + std::to_string(playerNumber));
+		logger::DEBUG("created reference to slot " + std::to_string(i) + ":" + std::to_string(slot.playerID) + ":" + std::to_string(app->network.netID));
 
-		if (slot.playerID == playerNumber)
+		if (slot.playerID == app->network.netID)
 		{
 			logger::DEBUG("creating name inputbox");
 
@@ -311,7 +311,7 @@ void LobbyState::buildMenu(const LobbyInformation& information)
 			else
 				nameContainer->addLabel(slot.name);
 
-		if (slot.playerID == playerNumber)
+		if (slot.playerID == app->network.netID)
 		{
 			logger::DEBUG("creating team selector");
 
@@ -344,12 +344,12 @@ void LobbyState::buildMenu(const LobbyInformation& information)
 	SFUI::HorizontalBoxLayout* firstRow = gameSettingsContainer->addHorizontalBoxLayout();
 	firstRow->addLabel("Settings");
 
-	if (lobbyHost)
+	if (app->serverHost)
 		firstRow->add(new DisabledButton("Random"), MenuCallbacks::RandomiseLobbySettings);
 
 	SFUI::FormLayout* settingsForm = gameSettingsContainer->addFormLayout();
 
-	if (lobbyHost)
+	if (app->serverHost)
 	{
 		typeBox = new SFUI::OptionsBox<std::string>();
 		typeBox->addItem("Regular", "Regular");
@@ -423,7 +423,7 @@ void LobbyState::buildMenu(const LobbyInformation& information)
 	SFUI::VerticalBoxLayout* secondTickContainer = settingsTicksContainer->addVerticalBoxLayout();
 
 	SFUI::FormLayout* firstTickForm = firstTickContainer->addFormLayout();
-	if (lobbyHost)
+	if (app->serverHost)
 	{
 		firstTickForm->addRow("Team Together", teamTogetherBox = new SFUI::CheckBox(information.teamTogether), MenuCallbacks::ChangeTeamTogether);
 		firstTickForm->addRow("All Techs", allTechsBox = new SFUI::CheckBox(information.allTechs), MenuCallbacks::ChangeAllTechs);
@@ -437,7 +437,7 @@ void LobbyState::buildMenu(const LobbyInformation& information)
 	}
 	
 	SFUI::FormLayout* secondTickForm = secondTickContainer->addFormLayout();
-	if (lobbyHost)
+	if (app->serverHost)
 	{
 		secondTickForm->addRow("Lock Teams", lockTeamsBox = new SFUI::CheckBox(information.lockTeams), MenuCallbacks::ChangeLockTeams);
 		secondTickForm->addRow("Lock Speed", lockSpeedBox = new SFUI::CheckBox(information.lockSpeed), MenuCallbacks::ChangeLockSpeed);
@@ -462,7 +462,7 @@ void LobbyState::buildMenu(const LobbyInformation& information)
 
 	bool clientReady = false;
 	for (const auto& slot : information.slots)
-		if (slot.playerID == playerNumber)
+		if (slot.playerID == app->network.netID)
 		{
 			if (slot.ready)
 				clientReady = true;
@@ -473,7 +473,7 @@ void LobbyState::buildMenu(const LobbyInformation& information)
 
 	SFUI::HorizontalBoxLayout* gameControlsContainer = chatAndControlsContainer->addHorizontalBoxLayout();
 
-	if (lobbyHost)
+	if (app->serverHost)
 		if (information.allPlayersReady)
 			gameControlsContainer->addButton("Start Game", MenuCallbacks::HostStartGame);
 		else

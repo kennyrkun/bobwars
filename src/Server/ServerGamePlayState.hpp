@@ -2,16 +2,20 @@
 #define SERVER_GAME_PLAY_STATE_HPP
 
 #include "ServerState.hpp"
+#include "DedicatedServer.hpp"
+
+#include <vector>
 
 class ServerGamePlayState : public ServerState
 {
 public:
+    void HandleClientConnect();
+    void HandleClientDisconnect(DedicatedServer::Client* client);
+
     void Update() override;
 
-    enum GamePlayCallbacks
+    enum UnitCommands
     {
-        PlayerDisconnect,
-
         CreateUnit,
         DeleteUnit,
         MoveUnit,
@@ -19,9 +23,18 @@ public:
 
         FailNotEnoughResource,
         FailTooManyUnits,
-
-        GamePlayCallbacksCount,
     };
+
+    struct Player
+    {
+        int playerID;
+        const std::string name;
+        float ping;
+    };
+
+    int maxPlayers = 8;
+
+    std::vector<Player*> players;
 };
 
 #endif // !SERVER_GAME_PLAY_STATE_HPP

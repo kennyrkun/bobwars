@@ -84,10 +84,13 @@ public:
 	time_t delta;
 
 	bool dedicatedServer = false;
+	bool serverHost = false;
 
 	DedicatedServer* server = nullptr;
 
 	ServerInterface network;
+
+	void TerminateNetworking();
 
 private:
 	bool running;

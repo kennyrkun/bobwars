@@ -18,7 +18,7 @@ namespace fs = std::experimental::filesystem;
 
 void AppEngine::Init(AppSettings settings_)
 {
-	std::cout << "AppEngine Init" << std::endl;
+	std::cout << "Initialising AppEngine." << std::endl;
 
 	settings = settings_;
 
@@ -70,7 +70,7 @@ void AppEngine::Init(AppSettings settings_)
 
 	running = true;
 
-	std::cout << "AppEngine ready" << std::endl;
+	std::cout << "AppEngine ready." << std::endl;
 }
 
 void AppEngine::Cleanup()
@@ -116,8 +116,6 @@ void AppEngine::ChangeState(AppState* state)
 		states.pop_back();
 	}
 
-	std::cout << "changing state" << std::endl;
-
 	states.push_back(state);
 	states.back()->Init(this);
 }
@@ -127,8 +125,6 @@ void AppEngine::PushState(AppState* state)
 	// pause current state
 	if (!states.empty())
 		states.back()->Pause();
-
-	std::cout << "pushing state" << std::endl;
 
 	// store and init the new state
 	states.push_back(state);
@@ -212,3 +208,16 @@ void AppEngine::Quit()
 	running = false;
 }
 
+void AppEngine::TerminateNetworking()
+{
+	if (server)
+	{
+		delete server;
+		server = nullptr;
+	}
+
+	network.close();
+
+	dedicatedServer = false;
+	serverHost = false;
+}

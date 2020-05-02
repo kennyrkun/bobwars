@@ -144,7 +144,7 @@ void ServerLobbyState::Update()
                         int id = 0;
                         packet >> id;
 
-                        logger::INFO("id: " + std::to_string(id));
+                        logger::DEBUG("SERVER: LobbyCallback ID: " + std::to_string(id));
 
                         switch (id)
                         {

@@ -36,6 +36,18 @@ sf::Socket::Status ServerInterface::sendCommand(const std::string& command)
     return send(packet);
 }
 
+template <typename T>
+sf::Socket::Status ServerInterface::sendCommand(const std::string& command, const std::vector<T>& args)
+{
+    sf::Packet packet;
+    packet << command;
+
+    for (size_t i = 0; i < args.size(); i++)
+        packet << args[i];
+
+    return send(packet);
+}
+
 // TODO: pass packet by reference
 sf::Socket::Status ServerInterface::send(sf::Packet packet)
 {

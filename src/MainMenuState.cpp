@@ -108,8 +108,11 @@ void MainMenuState::HandleEvents()
 			build(MenuState::MultiplayerServer);
 			return;
 		case MenuCallbacks::MultiplayerNewGame:
-			app->ChangeState(new LobbyState(true));
+		{
+			app->serverHost = true;
+			app->ChangeState(new LobbyState);
 			return;
+		}
 		case MenuCallbacks::MultiplayerLoadGame:
 			//app->ChangeState(new SaveListState(true));
 			return;

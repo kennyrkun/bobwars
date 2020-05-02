@@ -1,6 +1,7 @@
 #include "GamePlayState.hpp"
 #include "GamePauseState.hpp"
 #include "GameEndState.hpp"
+#include "MainMenuState.hpp"
 
 #include "Interface.hpp"
 #include "EntityManager.hpp"
@@ -41,7 +42,10 @@ void GamePlayState::Init(AppEngine* app_)
 	worldTexture = new sf::Texture; // fix not running in debug
 
 	if (!worldTexture->loadFromFile("bobwars/resource/textures/world.png"))
+	{
 		logger::ERROR("Failed to load world textures!");
+		abort();
+	}
 
 	//TODO: make camera align with world center on game start
 	world.setSize(sf::Vector2f(800, 600));
@@ -130,6 +134,44 @@ void GamePlayState::Resume()
 
 void GamePlayState::HandleEvents()
 {
+	if (app->serverHost)
+		app->server->Update();
+
+	if (app->network.ready())
+	{
+		sf::Packet packet;
+
+		if (app->network.receive(packet) == sf::Socket::Status::Disconnected)
+		{
+			logger::ERROR("Connection to server unexepectedly terminated.");
+			app->TerminateNetworking();
+			app->ChangeState(new MainMenuState);
+			return;
+		}
+
+		std::string command;
+		packet >> command;
+
+		if (command == "Disconnected")
+		{
+			std::string reason;
+			packet >> reason;
+			logger::INFO("Disconnected from server: " + reason);
+
+			app->TerminateNetworking();
+			app->ChangeState(new MainMenuState);
+			return;
+		}
+		else if (command == "GameUpdate")
+		{
+			logger::DEBUG("Updating Game");
+		}
+		else
+		{
+			logger::ERROR("Unknown command from server: " + command);
+		}
+	}
+
 	sf::Time timePerFrame = sf::seconds(1.0f / 60.0f); // 60 frames per second
 
 	//if (sf::milliseconds(app->delta) <= timePerFrame)
@@ -140,7 +182,7 @@ void GamePlayState::HandleEvents()
 			int actionID = ui->unitActionMenu->onEvent(event);
 
 			if (actionID != -1)
-				logger::INFO(std::to_string(actionID));
+				logger::DEBUG("actionID: " + std::to_string(actionID));
 
 			switch (actionID)
 			{
@@ -155,10 +197,12 @@ void GamePlayState::HandleEvents()
 					break;
 
 				if (sf::Keyboard::isKeyPressed(app->keys.multipleSelectionModifier))
-					for (size_t i = 0; i < entMan->selectedEnts[0]->maxTasks; i++)
+					for (size_t i = 0; i < 5; i++)
 						entMan->selectedEnts[0]->addTask(static_cast<EntityType>(actionID));
 				else
 					entMan->selectedEnts[0]->addTask(static_cast<EntityType>(actionID));
+
+				app->network.sendCommand("AddUnitTask");
 
 				break;
 			}
@@ -699,7 +743,7 @@ void GamePlayState::deleteEntities(const std::vector<BaseEntity*>& entities)
 
 void GamePlayState::deleteButton()
 {
-	int deleteAmount = entMan->selectedEnts.size();
+	app->network.sendCommand("DeleteSelection");
 
 	if (!entMan->selectedEnts.empty())
 	{

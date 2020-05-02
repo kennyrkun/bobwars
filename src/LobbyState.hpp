@@ -13,8 +13,6 @@
 class LobbyState : public AppState
 {
 public:
-	LobbyState(bool host = false) : lobbyHost(host) {}
-
 	void Init(AppEngine* app_);
 	void Cleanup();
 
@@ -101,9 +99,6 @@ private:
 	SFUI::CheckBox* recordGameBox;
 
 	SFUI::CheckBox* readyBox;
-
-	bool lobbyHost = false;
-	int playerNumber = -1;
 
 	void buildMenu(const LobbyInformation& information);
 
