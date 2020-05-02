@@ -29,6 +29,13 @@ void ServerInterface::close()
     selector.clear();
 }
 
+sf::Socket::Status ServerInterface::sendCommand(const std::string& command)
+{
+    sf::Packet packet;
+    packet << command;
+    return send(packet);
+}
+
 // TODO: pass packet by reference
 sf::Socket::Status ServerInterface::send(sf::Packet packet)
 {

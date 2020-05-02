@@ -127,6 +127,10 @@ void ServerLobbyState::Update()
                         // TODO: make sure the person this is coming from is the host
                         if (information.allPlayersReady)
                         {
+                            sf::Packet packet;
+                            packet << "StartingGame";
+                            server->broadcastMessage(packet);
+
                             server->changeState(new ServerGamePlayState);
                             return;
                         }

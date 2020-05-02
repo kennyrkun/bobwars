@@ -40,6 +40,7 @@ void LobbyState::Init(AppEngine* app_)
 	}
 
 	menu = new SFUI::Menu(*app->window);
+	menu->addLabel("Waiting for Lobby Information...");
 
 	logger::INFO("LobbyState ready.");
 }
@@ -47,8 +48,6 @@ void LobbyState::Init(AppEngine* app_)
 void LobbyState::Cleanup()
 {
 	logger::INFO("Cleaning up LobbyState.");
-
-	app->network.close();
 
 	logger::INFO("Cleaned up LobbyState.");
 }
@@ -115,6 +114,12 @@ void LobbyState::HandleEvents()
 
 			buildMenu(lobby);
 		}
+		else if (command == "StartingGame")
+		{
+			logger::INFO("Switching to GamePlayState...");
+			app->ChangeState(new GamePlayState);
+			return;
+		}
 		else
 		{
 			logger::ERROR("Unknown command from server: " + command);
@@ -151,6 +156,8 @@ void LobbyState::HandleEvents()
 			}
 			else
 				sendServerCommand("ClientDisconnecting", { std::to_string(playerNumber) });
+
+			app->network.close();
 
 			app->ChangeState(new MainMenuState);
 			return;

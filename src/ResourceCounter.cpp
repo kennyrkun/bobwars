@@ -52,7 +52,7 @@ void ResourceCounter::setCount(resourceAmount_t count)
 void ResourceCounter::add(resourceAmount_t amount)
 {
 	resourceAmount_t newAmount = currentCount + amount;
-	logger::DEBUG(std::to_string(currentCount) + " + " + std::to_string(amount) + " = " + std::to_string(newAmount));
+	//logger::DEBUG(std::to_string(currentCount) + " + " + std::to_string(amount) + " = " + std::to_string(newAmount));
 	setCount(newAmount);
 }
 

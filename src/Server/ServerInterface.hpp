@@ -10,6 +10,8 @@ public:
     bool connect(sf::IpAddress address, unsigned short port, sf::Time timeout = sf::Time::Zero);
     void close();
 
+    sf::Socket::Status sendCommand(const std::string& command);
+
     // TODO: pass packet by reference
     sf::Socket::Status send(sf::Packet packet);
     sf::Socket::Status receive(sf::Packet& packet);
