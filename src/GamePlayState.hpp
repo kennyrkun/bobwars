@@ -3,33 +3,17 @@
 
 #include "AppEngine.hpp"
 #include "AppState.hpp"
-
 #include "Camera.hpp"
 
 #include <SFML/Graphics.hpp>
 
 #include <string>
 
+class GameSimulation;
 class EntityManager;
 class Interface;
 class BaseEntity;
 enum class EntityType;
-
-struct GameWorld
-{
-	void loadMapFile(std::string file);
-
-	sf::Texture mapTexture;
-	sf::RectangleShape map;
-
-	size_t mapSizeX;
-	size_t mapSizeY;
-};
-
-struct Resources
-{
-	int memes = 100;
-};
 
 class GamePlayState : public AppState
 {
@@ -45,14 +29,7 @@ public:
 	void Draw();
 
 private:
-	sf::Clock googleTimer;
-	sf::Clock resourceTimer;
-
-	EntityManager *entMan;
 	Interface *ui;
-
-	sf::RectangleShape world;
-	sf::Texture		   *worldTexture;
 
 	sf::Text debugFrameCounter;
 	sf::Text debugText;
@@ -65,29 +42,15 @@ private:
 	int baseViewSpeed = 1;
 
 	sf::Clock framesClock; // for maxfps
-	sf::Clock gameClock; // total time of the game
+
+	GameSimulation* simulation;
 
 	void updateGameCamera();
-
-	void createEntity(EntityType type, const sf::Vector2f& position);
-	void deleteEntities(const std::vector<BaseEntity*>& entities);
-
-	void deleteButton();
 
 	void showObjectCoords(sf::Sprite &object);
 
 	void saveGame();
-
-	enum UnitCommands
-    {
-        CreateUnit,
-        DeleteUnit,
-        MoveUnit,
-        UnitAction,
-
-        FailNotEnoughResource,
-        FailTooManyUnits,
-    };
+	void loadGame();
 };
 
 #endif // !GAME_PLAY_STATE_HPP

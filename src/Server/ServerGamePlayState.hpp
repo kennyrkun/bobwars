@@ -4,6 +4,8 @@
 #include "ServerState.hpp"
 #include "DedicatedServer.hpp"
 
+#include "../EntityManager.hpp"
+
 #include <vector>
 
 class ServerGamePlayState : public ServerState
@@ -14,6 +16,7 @@ public:
 
     void Update() override;
 
+private:
     enum UnitCommands
     {
         CreateUnit,
@@ -35,6 +38,8 @@ public:
     int maxPlayers = 8;
 
     std::vector<Player*> players;
+
+    EntityManager entMan;
 };
 
 #endif // !SERVER_GAME_PLAY_STATE_HPP

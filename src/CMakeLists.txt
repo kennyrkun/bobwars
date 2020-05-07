@@ -23,6 +23,8 @@ SET(HEADERS AppEngine.hpp
 			GameEndState.hpp
 			GamePauseState.hpp
 			GamePlayState.hpp
+			GameSimulation.hpp
+			GameWorld.hpp
 			StartupState.hpp
 			Google.hpp
 			GooglePlus.hpp
@@ -63,6 +65,8 @@ SET(SOURCES AppEngine.cpp
 			GameEndState.cpp
 			GamePauseState.cpp
 			GamePlayState.cpp
+			GameSimulation.cpp
+			GameWorld.cpp
 			StartupState.cpp
 			Google.cpp
 			GooglePlus.cpp

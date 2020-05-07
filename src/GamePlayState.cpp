@@ -3,6 +3,7 @@
 #include "GameEndState.hpp"
 #include "MainMenuState.hpp"
 
+#include "GameSimulation.hpp"
 #include "Interface.hpp"
 #include "EntityManager.hpp"
 #include "Bob.hpp"
@@ -30,28 +31,17 @@ void GamePlayState::Init(AppEngine* app_)
 
 	logger::INFO("Pre-game setup.");
 
-	entMan = new EntityManager;
+	simulation = new GameSimulation;
 
 	debugText.setFont(SFUI::Theme::getFont());
 	debugText.setCharacterSize(14);
 
 	// TODO: actually "create" the gameworld in GameCreationState, or maybe GameWorldLoadState
 
-	logger::INFO("Loading world texture...");
+	logger::INFO("Creating simulation->..");
 
-	worldTexture = new sf::Texture; // fix not running in debug
-
-	if (!worldTexture->loadFromFile("bobwars/resource/textures/world.png"))
-	{
-		logger::ERROR("Failed to load world textures!");
-		abort();
-	}
-
-	//TODO: make camera align with world center on game start
-	world.setSize(sf::Vector2f(800, 600));
-	world.setOrigin(sf::Vector2f(world.getSize().x / 2, world.getSize().y / 2));
-	world.setPosition(sf::Vector2f(0, 0));
-	world.setTexture(*&worldTexture);
+	simulation->entMan = new EntityManager;
+	simulation->world.generate();
 
 	logger::INFO("Preparing user interface elements...");
 
@@ -79,18 +69,18 @@ void GamePlayState::Init(AppEngine* app_)
 //	viewAnchor = new sf::View(screendimensions, sf::Vector2f(app->window->getSize().x, app->window->getSize().y));
 
 	ui = new Interface(app->window, &mainView2->view);
-	ui->unitCounter->setMax(entMan->maxEntsPerTeam);
+	ui->unitCounter->setMax(simulation->entMan->maxEntsPerTeam);
 
 	mainView2->setPosition(sf::Vector2f(0, 0));
 
 	baseViewSpeed = 500;
 
-	entMan->addEnt(new CommentSection(entMan->getNextID(), entMan));
+	simulation->entMan->addEnt(new CommentSection(simulation->entMan->getNextID(), simulation->entMan));
 
-	entMan->addEnt(new Bob(entMan->getNextID(), entMan))->setPosition(sf::Vector2f(0, 51));
-	entMan->addEnt(new Bob(entMan->getNextID(), entMan))->setPosition(sf::Vector2f(0, -51));
-	entMan->addEnt(new Bob(entMan->getNextID(), entMan))->setPosition(sf::Vector2f(51, 0));
-	entMan->addEnt(new Bob(entMan->getNextID(), entMan))->setPosition(sf::Vector2f(-51, 0));
+	simulation->entMan->addEnt(new Bob(simulation->entMan->getNextID(), simulation->entMan))->setPosition(sf::Vector2f(0, 51));
+	simulation->entMan->addEnt(new Bob(simulation->entMan->getNextID(), simulation->entMan))->setPosition(sf::Vector2f(0, -51));
+	simulation->entMan->addEnt(new Bob(simulation->entMan->getNextID(), simulation->entMan))->setPosition(sf::Vector2f(51, 0));
+	simulation->entMan->addEnt(new Bob(simulation->entMan->getNextID(), simulation->entMan))->setPosition(sf::Vector2f(-51, 0));
 
 	ui->unitCounter->setCount(5);
 
@@ -108,12 +98,13 @@ void GamePlayState::Cleanup()
 {
 	logger::DEBUG("GamePlayState cleaning up");
 
+	app->network.sendCommand("Disconnecting");
+
 	app->window->setView(app->window->getDefaultView());
 
 	delete mainView2;
-	delete entMan;
+	delete simulation->entMan;
 	delete ui;
-	delete worldTexture;
 
 	logger::DEBUG("GamePlayState cleaned up");
 }
@@ -187,20 +178,20 @@ void GamePlayState::HandleEvents()
 			switch (actionID)
 			{
 			case MENU_CALLBACKS::DELETE_SELECTION:
-				deleteButton();
+				simulation->deleteButton();
 				break;
 			case MENU_CALLBACKS::NULL_CALLBACK:
 				break;
 			default:
 			{
-				if (entMan->selectedEnts.size() != 1)
+				if (simulation->entMan->selectedEnts.size() != 1)
 					break;
 
 				if (sf::Keyboard::isKeyPressed(app->keys.multipleSelectionModifier))
 					for (size_t i = 0; i < 5; i++)
-						entMan->selectedEnts[0]->addTask(static_cast<EntityType>(actionID));
+						simulation->entMan->selectedEnts[0]->addTask(static_cast<EntityType>(actionID));
 				else
-					entMan->selectedEnts[0]->addTask(static_cast<EntityType>(actionID));
+					simulation->entMan->selectedEnts[0]->addTask(static_cast<EntityType>(actionID));
 
 				app->network.sendCommand("AddUnitTask");
 
@@ -222,11 +213,11 @@ void GamePlayState::HandleEvents()
 				}
 				else if (event.key.code == sf::Keyboard::Key::Space)
 				{
-					if (!entMan->selectedEnts.empty())
+					if (!simulation->entMan->selectedEnts.empty())
 					{
 						logger::INFO("centering mainview on selected entity");
 
-						mainView2->setCenter(entMan->selectedEnts[0]->sprite.getPosition());
+						mainView2->setCenter(simulation->entMan->selectedEnts[0]->sprite.getPosition());
 
 						// TODO: do we want to do this?
 						mainView2->view.setRotation(0);
@@ -251,7 +242,7 @@ void GamePlayState::HandleEvents()
 				}
 				else if (event.key.code == sf::Keyboard::Key::Delete || event.key.code == sf::Keyboard::Key::End)
 				{
-					deleteButton();
+					simulation->deleteButton();
 				}
 				else if (event.key.code == sf::Keyboard::Key::LControl || event.key.code == sf::Keyboard::Key::A || event.key.code == sf::Keyboard::Key::Equal || sf::Keyboard::Key::Dash)
 				{
@@ -260,19 +251,19 @@ void GamePlayState::HandleEvents()
 
 					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl))
 					{
-						if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) && !entMan->entities.empty())
+						if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) && !simulation->entMan->entities.empty())
 						{
-							entMan->deselectAllEnts();
-							entMan->selectedEnts = entMan->entities;
+							simulation->entMan->deselectAllEnts();
+							simulation->entMan->selectedEnts = simulation->entMan->entities;
 
-							for (size_t i = 0; i < entMan->entities.size(); i++)
-								entMan->entities[i]->isSelected = true;
+							for (size_t i = 0; i < simulation->entMan->entities.size(); i++)
+								simulation->entMan->entities[i]->isSelected = true;
 
 							ui->deleteEnabled = true;
 
-							ui->updateSelectionInfo(entMan->selectedEnts);
+							ui->updateSelectionInfo(simulation->entMan->selectedEnts);
 
-							logger::INFO("selected " + std::to_string(entMan->selectedEnts.size()) + " entities (of " + std::to_string(entMan->entities.size()) + ")");
+							logger::INFO("selected " + std::to_string(simulation->entMan->selectedEnts.size()) + " entities (of " + std::to_string(simulation->entMan->entities.size()) + ")");
 						}
 						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Equal))
 						{
@@ -305,12 +296,12 @@ void GamePlayState::HandleEvents()
 						// if we haven't broken the loop already, it means we either clicked an entity or clicked nothing
 						bool selectedNothing(true);
 						// TODO: do this in reverse so that we select entities on top first
-						//for (size_t i = 0; i < entMan->entities.size(); i++)
-						for (int i = entMan->entities.size() - 1; i >= 0; i--)
+						//for (size_t i = 0; i < simulation->entMan->entities.size(); i++)
+						for (int i = simulation->entMan->entities.size() - 1; i >= 0; i--)
 						{
-							if (util::logic::mouseIsOver(entMan->entities[i]->sprite, *app->window, mainView2->view))
+							if (util::logic::mouseIsOver(simulation->entMan->entities[i]->sprite, *app->window, mainView2->view))
 							{
-								if (entMan->entities[i]->isSelected) // entity is already selected
+								if (simulation->entMan->entities[i]->isSelected) // entity is already selected
 								{
 									logger::DEBUG("clicked entity is already selected.");
 
@@ -321,10 +312,10 @@ void GamePlayState::HandleEvents()
 									{
 										// in Age of Empires II, if you hold control and click
 										// on an already selected entity it is deselected
-										entMan->deselectEnt(entMan->entities[i]);
+										simulation->entMan->deselectEnt(simulation->entMan->entities[i]);
 										selectedNothing = false;
 
-										logger::INFO("removed entity" + std::to_string(entMan->entities[i]->entityID) + " from selection");
+										logger::INFO("removed entity" + std::to_string(simulation->entMan->entities[i]->entityID) + " from selection");
 									}
 									else // we're going to single out a unit
 									{
@@ -333,16 +324,16 @@ void GamePlayState::HandleEvents()
 										// and then select one of them, it will deselect
 										// all entities except that one.
 
-										if (entMan->selectedEnts.size() == 1)
+										if (simulation->entMan->selectedEnts.size() == 1)
 										{
-											logger::INFO("entity " + std::to_string(entMan->entities[i]->entityID) + " already selected");
+											logger::INFO("entity " + std::to_string(simulation->entMan->entities[i]->entityID) + " already selected");
 										}
 										else // singling out one unit
 										{
-											entMan->deselectAllEnts();
-											entMan->selectEnt(entMan->entities[i]);
+											simulation->entMan->deselectAllEnts();
+											simulation->entMan->selectEnt(simulation->entMan->entities[i]);
 
-											logger::INFO("selected entity" + std::to_string(entMan->entities[i]->entityID) + " (" + entMan->entities[i]->type + ")");
+											logger::INFO("selected entity" + std::to_string(simulation->entMan->entities[i]->entityID) + " (" + simulation->entMan->entities[i]->type + ")");
 										}
 
 										selectedNothing = false;
@@ -352,11 +343,11 @@ void GamePlayState::HandleEvents()
 								{
 									// if we're not selecting an additional unit, deselect all other entities first
 									if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl))
-										entMan->deselectAllEnts();
+										simulation->entMan->deselectAllEnts();
 
-									entMan->selectEnt(entMan->entities[i]);
+									simulation->entMan->selectEnt(simulation->entMan->entities[i]);
 
-									logger::INFO("selected entity" + std::to_string(entMan->entities[i]->entityID));
+									logger::INFO("selected entity" + std::to_string(simulation->entMan->entities[i]->entityID));
 
 									ui->deleteEnabled = true;
 
@@ -369,14 +360,14 @@ void GamePlayState::HandleEvents()
 
 						if (selectedNothing) // selected nothing and didn't already have nothing
 						{
-							if (!entMan->entities.empty())
+							if (!simulation->entMan->entities.empty())
 							{
-								entMan->deselectAllEnts();
+								simulation->entMan->deselectAllEnts();
 
 								ui->deleteEnabled = false;
 
 								logger::INFO("All entities deselected");
-								ui->updateSelectionInfo(entMan->selectedEnts);
+								ui->updateSelectionInfo(simulation->entMan->selectedEnts);
 							}
 
 							rectSelecting = true;
@@ -387,11 +378,11 @@ void GamePlayState::HandleEvents()
 							break;
 						}
 
-						ui->updateSelectionInfo(entMan->selectedEnts);
+						ui->updateSelectionInfo(simulation->entMan->selectedEnts);
 					}
 					else if (event.mouseButton.button == sf::Mouse::Button::Right)
 					{
-						if (!entMan->selectedEnts.empty())
+						if (!simulation->entMan->selectedEnts.empty())
 						{
 							sf::Vector2f movePos(app->window->mapPixelToCoords(sf::Mouse::getPosition(*app->window), mainView2->view));
 
@@ -399,18 +390,18 @@ void GamePlayState::HandleEvents()
 							// if a building and a bob are selected, and the user right clicks
 							// should it move the building's garrison point, and tell the unit to move to that spot?
 							// or just move the unit, and ignore the building
-							if (!world.getGlobalBounds().contains(movePos))
+							if (!simulation->world.getGlobalBounds().contains(movePos))
 								logger::INFO("Cannot set garrison point out of bounds.");
 							else
-								for (size_t i = 0; i < entMan->selectedEnts.size(); i++)
-									if (entMan->selectedEnts[i]->isBuilding)
+								for (size_t i = 0; i < simulation->entMan->selectedEnts.size(); i++)
+									if (simulation->entMan->selectedEnts[i]->isBuilding)
 									{
-										Building* ent = static_cast<Building*>(entMan->selectedEnts[i]);
+										Building* ent = static_cast<Building*>(simulation->entMan->selectedEnts[i]);
 										ent->setGarrisonPoint(movePos);
 									}
-									else if (entMan->selectedEnts[i]->isComponentEntity)
+									else if (simulation->entMan->selectedEnts[i]->isComponentEntity)
 									{
-										ComponentEntity* entity = static_cast<ComponentEntity*>(entMan->selectedEnts[i]);
+										ComponentEntity* entity = static_cast<ComponentEntity*>(simulation->entMan->selectedEnts[i]);
 										GroundMoveComponent* move = entity->getComponent<GroundMoveComponent*>();
 										
 										if (move != nullptr)
@@ -440,13 +431,13 @@ void GamePlayState::HandleEvents()
 
 					sf::FloatRect bounds = rectSelect.getGlobalBounds();
 
-					for (size_t i = 0; i < entMan->entities.size(); i++)
+					for (size_t i = 0; i < simulation->entMan->entities.size(); i++)
 					{
 						// TODO: make sure this works for all entities.
 						// not all entities may have a sprite, and some may have more than one
 						// BaseEntity should implement getGlobalBounds();
-						if (bounds.intersects(entMan->entities[i]->sprite.getGlobalBounds()))
-							entMan->selectEnt(entMan->entities[i]);
+						if (bounds.intersects(simulation->entMan->entities[i]->sprite.getGlobalBounds()))
+							simulation->entMan->selectEnt(simulation->entMan->entities[i]);
 					}
 				}
 			}
@@ -476,13 +467,13 @@ void GamePlayState::HandleEvents()
 			ui->HandleEvents(event);
 		} // pollevent
 
-		if (googleTimer.getElapsedTime().asSeconds() > 5)
+		if (simulation->googleTimer.getElapsedTime().asSeconds() > 5)
 		{
 			std::random_device dev;
 			std::mt19937 rng(dev());
 
-			int halfX = world.getSize().x / 2;
-			int halfY = world.getSize().y / 2;
+			int halfX = simulation->world.getSize().x / 2;
+			int halfY = simulation->world.getSize().y / 2;
 
 			std::uniform_int_distribution<std::mt19937::result_type> xdist(-halfX, halfX);
 			std::uniform_int_distribution<std::mt19937::result_type> ydist(-halfY, halfY);
@@ -490,27 +481,27 @@ void GamePlayState::HandleEvents()
 			int x = xdist(rng);
 			int y = ydist(rng);
 
-			entMan->create<GooglePlus>()->getComponent<GroundMoveComponent*>()->setMoveDestination(sf::Vector2f(x, y));
+			simulation->entMan->create<GooglePlus>()->getComponent<GroundMoveComponent*>()->setMoveDestination(sf::Vector2f(x, y));
 
 			ui->unitCounter->add(1);
-			googleTimer.restart();
+			simulation->googleTimer.restart();
 		}
 
-		if (resourceTimer.getElapsedTime().asSeconds() > 10)
+		if (simulation->resourceTimer.getElapsedTime().asSeconds() > 10)
 		{
 			ui->memesCounter->add(50);
-			resourceTimer.restart();
+			simulation->resourceTimer.restart();
 		}
 
-		for (size_t i = 0; i < entMan->entities.size(); i++)
+		for (size_t i = 0; i < simulation->entMan->entities.size(); i++)
 		{
-			entMan->entities[i]->Frame(app->delta);
+			simulation->entMan->entities[i]->Frame(app->delta);
 
-			if (entMan->entities[i]->health <= 0)
-				entMan->deleteEnt(entMan->entities[i]);
+			if (simulation->entMan->entities[i]->health <= 0)
+				simulation->entMan->deleteEnt(simulation->entMan->entities[i]);
 		}
 
-		if (entMan->entities.size() <= 0)
+		if (simulation->entMan->entities.size() <= 0)
 		{
 			app->ChangeState(new GameEndState);
 			return;
@@ -539,10 +530,10 @@ void GamePlayState::Draw()
 	// ------------ MAIN VIEW
 	app->window->setView(mainView2->view);
 
-	app->window->draw(world);
+	app->window->draw(simulation->world);
 
-	for (size_t i = 0; i < entMan->entities.size(); i++)
-		app->window->draw(*entMan->entities[i]);
+	for (BaseEntity* entity : simulation->entMan->entities)
+		app->window->draw(*entity);
 
 	if (rectSelecting)
 		app->window->draw(rectSelect);
@@ -554,64 +545,54 @@ void GamePlayState::Draw()
 		originShape.setOrigin(sf::Vector2f(1, 1));
 		originShape.setFillColor(sf::Color::Red);
 
-		for (BaseEntity* entity : entMan->entities)
+		for (BaseEntity* entity : simulation->entMan->entities)
 		{
-			if (!entMan->entities.empty())
+			if (!entity->isSelected)
+				util::graphics::outline(*app->window, entity->sprite, 2, sf::Color::Red);
+			else
+				util::graphics::outline(*app->window, entity->sprite, 2, sf::Color::Yellow);
+
+			showObjectCoords(entity->sprite);
+			util::text::draw(*app->window, debugText, std::to_string(entity->entityID), sf::Vector2f(entity->sprite.getPosition().x, entity->sprite.getPosition().y - entity->sprite.getLocalBounds().height / 2), sf::Vector2f(.2f, .2f));
+			util::text::draw(*app->window, debugText, entity->type, sf::Vector2f(entity->sprite.getPosition().x, entity->sprite.getPosition().y), sf::Vector2f(.2f, .2f));
+
+			originShape.setPosition(entity->getPosition());
+
+			app->window->draw(originShape);
+
+			Line line;
+			line.setThickness(1.0f);
+
+			if (entity->isComponentEntity)
 			{
-				if (!entity->isSelected)
-					util::graphics::outline(*app->window, entity->sprite, 2, sf::Color::Red);
+				ComponentEntity* ent = static_cast<ComponentEntity*>(entity);
+
+				if (entity->isSelected)
+					line.setColor(sf::Color::Yellow);
 				else
-					util::graphics::outline(*app->window, entity->sprite, 2, sf::Color::Yellow);
+					line.setColor(sf::Color::Red);
 
-				showObjectCoords(entity->sprite);
-				util::text::draw(*app->window, debugText, std::to_string(entity->entityID), sf::Vector2f(entity->sprite.getPosition().x, entity->sprite.getPosition().y - entity->sprite.getLocalBounds().height / 2), sf::Vector2f(.2f, .2f));
-				util::text::draw(*app->window, debugText, entity->type, sf::Vector2f(entity->sprite.getPosition().x, entity->sprite.getPosition().y), sf::Vector2f(.2f, .2f));
-
-				originShape.setPosition(entity->getPosition());
-
-				app->window->draw(originShape);
-
-				Line line;
-				line.setThickness(1.0f);
-
-				if (entity->isComponentEntity)
+				if (ent->hasComponent("GroundMove"))
 				{
-					ComponentEntity* ent = static_cast<ComponentEntity*>(entity);
-
-					if (entity->isSelected)
-						line.setColor(sf::Color::Yellow);
-					else
-						line.setColor(sf::Color::Red);
-
-					if (ent->hasComponent("GroundMove"))
-					{
-						GroundMoveComponent* move = static_cast<GroundMoveComponent*>(ent->getComponent("GroundMove"));
-						line.setPoints(entity->sprite.getPosition(), move->getMoveDesintation());
-					}
+					GroundMoveComponent* move = static_cast<GroundMoveComponent*>(ent->getComponent("GroundMove"));
+					line.setPoints(entity->sprite.getPosition(), move->getMoveDesintation());
 				}
-				else if (entity->isBuilding)
-				{
-					Building* building = static_cast<Building*>(entity);
-
-					if (building->hasGarrisonPoint)
-						line.setPoints(entity->sprite.getPosition(), building->getGarrisonPoint());
-				}
-
-				app->window->draw(line.vertices, 4, sf::Quads);
 			}
+			else if (entity->isBuilding)
+			{
+				Building* building = static_cast<Building*>(entity);
+
+				if (building->hasGarrisonPoint)
+					line.setPoints(entity->sprite.getPosition(), building->getGarrisonPoint());
+			}
+
+			app->window->draw(line.vertices, 4, sf::Quads);
 		}
 	}
 	else
-		if (!entMan->selectedEnts.empty())
-			for (size_t i = 0; i < entMan->selectedEnts.size(); i++)
-			{
-				util::graphics::outline(*app->window, entMan->selectedEnts[i]->sprite, 2, sf::Color::Yellow);
-
-				/*
-				if (entMan->selectedEnts[i]->isMoving || entMan->selectedEnts[i]->hasGarrisonPoint)
-					app->window->draw(entMan->selectedEnts[i]->moveDest);
-				*/
-			}
+		if (!simulation->entMan->selectedEnts.empty())
+			for	(BaseEntity* entity : simulation->entMan->selectedEnts)
+				util::graphics::outline(*app->window, entity->sprite, 2, sf::Color::Yellow);
 
 	// ------------- ANCHOR
 	app->window->setView(*ui->getViewAnchor());
@@ -640,26 +621,26 @@ void GamePlayState::Draw()
 		// TODO: add camera rotation to debug text
 		std::string viewCoordinates = "Camera: X: " + std::to_string(static_cast<int>(mainView2->getCenter().x)) + " Y: " + std::to_string(static_cast<int>(mainView2->getCenter().y));
 		util::text::draw(*app->window, debugText, viewCoordinates, sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 12));
-		util::text::draw(*app->window, debugText, "selectedEntities: " + std::to_string(entMan->selectedEnts.size()), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 24));
-		util::text::draw(*app->window, debugText, "totalEntities: " + std::to_string(entMan->entities.size()), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 36));
-		util::text::draw(*app->window, debugText, "maxEntities: " + std::to_string(entMan->maxEnts), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 48));
-		util::text::draw(*app->window, debugText, "physicalMaxEntities: " + std::to_string(entMan->physicalMaxEnts), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 60));
-		util::text::draw(*app->window, debugText, "maxEntitiesPerTeam: " + std::to_string(entMan->maxEntsPerTeam), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 72));
+		util::text::draw(*app->window, debugText, "selectedEntities: " + std::to_string(simulation->entMan->selectedEnts.size()), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 24));
+		util::text::draw(*app->window, debugText, "totalEntities: " + std::to_string(simulation->entMan->entities.size()), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 36));
+		util::text::draw(*app->window, debugText, "maxEntities: " + std::to_string(simulation->entMan->maxEnts), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 48));
+		util::text::draw(*app->window, debugText, "physicalMaxEntities: " + std::to_string(simulation->entMan->physicalMaxEnts), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 60));
+		util::text::draw(*app->window, debugText, "maxEntitiesPerTeam: " + std::to_string(simulation->entMan->maxEntsPerTeam), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 72));
 		util::text::draw(*app->window, debugText, "delta: " + std::to_string(app->delta), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 84));
 
-		if (!entMan->selectedEnts.empty() && entMan->selectedEnts.size() == 1)
+		if (!simulation->entMan->selectedEnts.empty() && simulation->entMan->selectedEnts.size() == 1)
 		{
-			util::text::draw(*app->window, debugText, "entityID: " + std::to_string(entMan->selectedEnts[0]->entityID), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 108));
-//			util::text::draw(*app->window, debugText, "team: " + std::to_string(entMan->selectedEnts[0]->team), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 120));
-			util::text::draw(*app->window, debugText, "type: " + entMan->selectedEnts[0]->type, sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 132));
-			util::text::draw(*app->window, debugText, "health: " + std::to_string(entMan->selectedEnts[0]->health), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 144));
-			util::text::draw(*app->window, debugText, "hitpoints: " + std::to_string(entMan->selectedEnts[0]->hitpoints), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 156));
-			util::text::draw(*app->window, debugText, "armor: " + std::to_string(entMan->selectedEnts[0]->armor), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 168));
+			util::text::draw(*app->window, debugText, "entityID: " + std::to_string(simulation->entMan->selectedEnts[0]->entityID), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 108));
+//			util::text::draw(*app->window, debugText, "team: " + std::to_string(simulation->entMan->selectedEnts[0]->team), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 120));
+			util::text::draw(*app->window, debugText, "type: " + simulation->entMan->selectedEnts[0]->type, sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 132));
+			util::text::draw(*app->window, debugText, "health: " + std::to_string(simulation->entMan->selectedEnts[0]->health), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 144));
+			util::text::draw(*app->window, debugText, "hitpoints: " + std::to_string(simulation->entMan->selectedEnts[0]->hitpoints), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 156));
+			util::text::draw(*app->window, debugText, "armor: " + std::to_string(simulation->entMan->selectedEnts[0]->armor), sf::Vector2f(debugFrameCounter.getPosition().x, debugFrameCounter.getPosition().y + 168));
 
 /*
-			if (entMan->selectedEnts[0]->isComponentEntity)
+			if (simulation->entMan->selectedEnts[0]->isComponentEntity)
 			{
-				static_cast<ComponentEntity*>(entMan->selectedEnts[0])->componentList();
+				static_cast<ComponentEntity*>(simulation->entMan->selectedEnts[0])->componentList();
 			}
 */
 		}
@@ -676,8 +657,6 @@ void GamePlayState::Draw()
 
 	app->window->display();
 }
-
-// Private
 
 void GamePlayState::updateGameCamera()
 {
@@ -724,56 +703,6 @@ void GamePlayState::updateGameCamera()
 	mainView2->setPosition(newPosition);
 }
 
-void GamePlayState::createEntity(EntityType type, const sf::Vector2f& position)
-{
-	if (entMan->entities.size() >= entMan->maxEntsPerTeam)
-	{
-
-	}
-	else
-	{
-		logger::ERROR("Cannot create any more entities.");
-	}
-}
-
-void GamePlayState::deleteEntities(const std::vector<BaseEntity*>& entities)
-{
-
-}
-
-void GamePlayState::deleteButton()
-{
-	app->network.sendCommand("DeleteSelection");
-
-	if (!entMan->selectedEnts.empty())
-	{
-		for (size_t i = 0; i < entMan->selectedEnts.size(); i++)
-		{
-			logger::DEBUG("Deleting entity " + std::to_string(entMan->selectedEnts[i]->entityID));
-
-			entMan->deleteEnt(entMan->selectedEnts[i]);
-
-			// this is here because deleteEnt will delete the object from both entities and selectedEntities,
-			// when it does this, those vectors resize themselves. this resize causes the deletion to skip numbers
-			// instead of deleting 1 2 3 4, like we expect, it deletes 2 4 6 8.
-			// keep this
-			// TODO: i think this is bullshit
-			i--;
-		}
-
-		ui->deleteEnabled = false;
-
-		if (entMan->entities.size() < entMan->maxEnts)
-			ui->createEnabled = true;
-	}
-	else
-	{
-		logger::INFO("nothing to delete");
-	}
-
-	ui->updateSelectionInfo(entMan->selectedEnts);
-}
-
 void GamePlayState::showObjectCoords(sf::Sprite &object)
 {
 	// TODO: this can be put into draw call, yes?
@@ -793,5 +722,6 @@ void GamePlayState::showObjectCoords(sf::Sprite &object)
 
 void GamePlayState::saveGame()
 {
-	
+	logger::INFO("Saving game.");
+	simulation->saveToFile("");
 }
